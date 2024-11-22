@@ -1,9 +1,10 @@
 require "base64"
+require "fileutils"
 require 'json'
 require 'net/http'
 require "open3"
 require "tempfile"
-require_relative "../box_box/enums"
+require_relative "../enums/enums"
 require_relative "../egg/egg"
 require_relative "../strink/strink"
 
@@ -15,7 +16,7 @@ module SaladPrep
 		end
 
 		def get_nginx_value(key = "conf-path")
-			output = `sudo -p "Need pass to get nginx values" nginx -V 2>&1` 
+			output = `nginx -V 2>&1` 
 			output.split.find{|a| a =~ /--#{key}/}[/.*=(.*)/, 1]
 		end
 
@@ -47,11 +48,7 @@ module SaladPrep
 					#some os'es are finicky about creating directories at the root lvl
 					#even with sudo, so we're not going to even try
 					#we'll just create missing dir in $sitesFolderPath folder
-					system(
-						"sudo", "-p", "Add nginx conf dir:",
-						"mkdir", "pv", abs_path,
-						exception: true
-					)
+					FileUtils.mkdir_p(abs_path)
 				end
 				return abs_path
 			end
@@ -65,11 +62,7 @@ module SaladPrep
 				unless /[a-zA-Z0-9\-_\.]+-local\.[a-zA-Z0-9\.]/ =~ domain
 					raise "#{domain} is not a valid local url"
 				end
-				script = <<~CALL
-					sudo -p 'password to update hosts' \
-						sh -c "printf '127.0.0.1\t#{domain}\n'" >> /etc/hosts
-					CALL
-				system(script, exception: true)
+				File.open("/etc/hosts", "a").write("127.0.0.1\t#{domain}\n")
 			end
 		end
 
@@ -158,9 +151,9 @@ module SaladPrep
 				raise "Common name has illegal characters"
 			end
 			case Gem::Platform::local.os
-			when BoxBox::BoxOSes::MACOS
+			when Enums::BoxOSes::MACOS
 				`security find-certificate -a -p -c #{common_name} #{keychain_osx}`
-			when BoxBox::BoxOSes::LINUX
+			when Enums::BoxOSes::LINUX
 				scan_pems_file_for_common_name(
 					common_name,
 					"/etc/ssl/certs/ca-certificates.crt"
@@ -198,31 +191,27 @@ module SaladPrep
 
 		def clean_up_invalid_cert(common_name, cert_name)
 			case Gem::Platform::local.os
-			when BoxBox::BoxOSes::MACOS
+			when Enums::BoxOSes::MACOS
 				certs_matching_name(common_name).each do |cert|
 					sha_256_value = extract_sha256_from_cert(cert)
 					if is_cert_expired(cert)
 						system(
-							"sudo", "security", "delete-certificate",
+							"security", "delete-certificate",
 							"-z", sha_256_value, "-t", keychain_osx,
 							exception: true
 						)
 					end
 				end
-			when BoxBox::BoxOSes::LINUX
+			when Enums::BoxOSes::LINUX
 				certs_matching_name(common_name).each do |cert|
 					if is_cert_expired(cert)
 						cert_dir="/usr/local/share/ca-certificates"
 						if Strink::empty_s?(cert_name)
 							cert_name = common_name
 						end
+						FileUtils.rm(Dir.glob("#{cert_dir}/#{cert_name}*.crt"))
 						system(
-							"sudo", "-p", "Need pass to delete from #{cert_dir}",
-							"rm", "#{cert_dir}/#{cert_name}*.crt",
-							exception: true
-						)
-						system(
-							"sudo", "update-ca-certificates",
+							"update-ca-certificates",
 							exception: true
 						)
 					end
@@ -256,14 +245,7 @@ module SaladPrep
 				}
 			}
 			POLICY
-
-			script = <<~CALL
-				sudo -p 'Need password to create firefox policy file' \
-				sh -c \
-					"echo '#{content}' > '#{policy_file}'"
-			CALL
-			system(script, exception: true)
-
+			File.open(policy_file, "w").write(content)
 		end
 
 		def get_trusted_by_firefox_json_with_added_cert(
@@ -293,12 +275,7 @@ module SaladPrep
 						public_key_file_path,
 						File.open(policy_file).read
 					)
-					script = <<~CALL
-						sudo -p 'Need password to update firefox policy file' \
-						sh -c \
-							"echo '#{content}' > '#{policy_file}'"
-					CALL
-					system(script, exception: true)
+					File.open(policy_file, "w").write(content)
 				else
 					create_firefox_cert_policy_file(
 						public_key_file_path,
@@ -310,9 +287,9 @@ module SaladPrep
 
 		def openssl_default_conf
 			case Gem::Platform::local.os
-			when BoxBox::BoxOSes::MACOS
+			when Enums::BoxOSes::MACOS
 				"/System/Library/OpenSSL/openssl.cnf"
-			when BoxBox::BoxOSes::LINUX
+			when Enums::BoxOSes::LINUX
 				"/etc/ssl/openssl.cnf"
 			else
 			end
@@ -342,7 +319,7 @@ module SaladPrep
 
 		def install_local_cert_osx(public_key_file_path)
 			system(
-				"sudo", "security", "add-trusted-cert", "-p",
+				"security", "add-trusted-cert", "-p",
 				"ssl", "-d", "-r", "trustRoot",
 				"-k", keychain_osx, public_key_file_path,
 				exception: true
@@ -350,11 +327,7 @@ module SaladPrep
 		end
 
 		def install_local_cert_debian(public_key_file_path)
-			system(
-				"sudo", "-p", "Password to install trusted certificate",
-				"cp", public_key_file_path, "/usr/local/share/ca-certificates",
-				exception: true
-			)
+			FileUtils.cp(public_key_file_path, "/usr/local/share/ca-certificates")
 			system(
 				"sudo", "update-ca-certificates",
 				exception: true
@@ -368,7 +341,7 @@ module SaladPrep
 			private_key_file_path
 		)
 			case Gem::Platform::local.os
-			when BoxBox::BoxOSes::MACOS
+			when Enums::BoxOSes::MACOS
 				openssl_gen_cert(
 					common_name, 
 					domain, 
@@ -376,7 +349,7 @@ module SaladPrep
 					private_key_file_path
 				)
 				install_local_cert_osx(public_key_file_path)
-			when BoxBox::BoxOSes::LINUX
+			when Enums::BoxOSes::LINUX
 				if File.file?("/etc/debian_version")
 					openssl_gen_cert(
 						common_name, 
@@ -410,8 +383,8 @@ module SaladPrep
 				end
 				set_firefox_cert_policy(public_key_file_path)
 			else
-				public_key_file_path = "#{remote_public_key}.public.key.crt"
-				private_key_file_path = "#{remote_private_key}.private.key.pem"
+				public_key_file_path = "#{remote_public_key}"
+				private_key_file_path = "#{remote_private_key}"
 				if ! File.file?(public_key_file_path) 
 					|| !File?.file?(private_key_file_path)
 					|| is_cert_expired(File.open(public_key_file_path).read)
@@ -427,9 +400,71 @@ module SaladPrep
 			end
 		end
 
-		def enable_nginx_include(conf_dir_include)
+		
+		def enable_nginx_include(conf_dir_include, nginx_conf_path)
 			escaped_guess = Regexp.new(conf_dir_include.gsub(/\*/,"\\*"))
-			
+			File.open(nginx_conf_path, "r+") do |f|
+				updated = f.readlines.map do |l|
+					if %r{#{escaped_guess}} =~ l
+						l.gsub(/^[ \t]*#/,"")
+					else
+						l
+					end
+				end * "\n"
+				f.write(updated)
+			end
+		end
+		
+		def set_local_nginx_app_conf!(content)
+			public_key_file_path = "#{local_nginx_cert_path}.public.key.crt"
+			private_key_file_path = "#{local_nginx_cert_path}.private.key.pem"
+			content.gsub!("<listen>",8080 ssl)
+			content.gsub!("<ssl_public_key>",public_key_file_path)
+			content.gsub!("<ssl_private_key>",private_key_file_path)
+		end
+
+		def set_deployed_nginx_app_conf!(content)
+			content.gsub!("<listen>","[::]:443 ssl")
+			content.gsub!("<ssl_public_key>",remote_public_key)
+			content.gsub!("<ssl_private_key>",remote_private_key)
+			content.gsub!("#ssl_trusted_certificate", "ssl_trusted_certificate")
+		end
+
+		def update_nginx_conf(app_conf_path)
+			def copy_and_update_nginx_template(app_conf_path)
+				FileUtils.cp("#{@egg.templates_src}/nginix_template.conf", app_conf_path)
+				File.open(nginx_conf_path, "r+") do |f|
+					content = f.read
+					content.gsub!(
+						"<CLIENT_DEST>",
+						File.join(@egg.web_root, @egg.client_dest)
+					)
+					content.gsub!("<SERVER_NAME>", domain_name)
+					content.gsub!("<API_PORT>", @egg.api_port)
+					if @egg.is_local?
+						set_local_nginx_app_conf!(content)
+					else
+						set_deployed_nginx_app_conf!(content)
+					end
+					f.write(content)
+				end
+			end
+		end
+
+		def restart_nginx
+			case Gem::Platform::local.os
+			when Enums::BoxOSes::MACOS
+				system("nginx -s reload", exception: true)
+			when Enums::BoxOSes::LINUX
+				if system("systemctl is-active --quiet nginx")
+					system("systemctl restart nginx", exception: true)
+				else
+					system("systemctl enable nginx", exception: true)
+					system("systemctl start nginx", exception: true)
+				end
+			else
+				raise "Restarting server not configured for #{Gem::Platform::local.os}"
+			end
 		end
 
 		def setup_nginx_confs
@@ -438,6 +473,9 @@ module SaladPrep
 			conf_dir = get_abs_path_from_nginx_include(conf_dir_include)
 			setup_ssl_cert_nginx
 			enable_nginx_include(conf_dir_include, nginx_conf_path)
+			update_nginx_conf("#{conf_dir}/#{@egg.app}.conf")
+			FileUtils.rm_f(File.join(conf_dir, "default"))
+			restart_nginx
 		end
 
 	end

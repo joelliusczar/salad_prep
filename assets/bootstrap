@@ -120,4 +120,13 @@ git clone https://github.com/rbenv/ruby-build.git \
 
 rbenv install 3.3.5 &&
 
-rbenv local 3.3.5
+rbenv local 3.3.5 &&
+
+git clone https://github.com/joelliusczar/salad_prep.git\
+	salad_prep &&
+
+cd salad_prep &&
+
+gem build  salad_prep.gemspec -o salad_prep.gem &&
+
+gem install ./salad_prep.gem

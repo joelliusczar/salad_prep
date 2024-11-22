@@ -1,12 +1,16 @@
-require_relative "./enums"
+require_relative "../enums/enums"
 
 module SaladPrep
-	module BoxBox
+	class BoxBox
+
+		def initialize(egg)
+			@egg = egg
+		end
 
 		def self.which(cmd)
 			ENV["PATH"].split(FILE::PATH_SEPARATOR).filter_map do |folder|
 				path = "#{folder}/#{cmd}"
-				File.executable?(path) && 
+				File.executable?(path)
 			end
 		end
 
@@ -36,7 +40,6 @@ module SaladPrep
 						spawn("yes", out: r)
 						r.close
 						system(
-							"sudo", "-p", "Pass required for pacman install: "
 							"pacman", "-S", pkg,
 							in: w,
 							exception: true
@@ -44,9 +47,8 @@ module SaladPrep
 					end
 				elsif is_installed(PackageManagers.APTGET)
 					system(
-						"sudo", "-p", "Pass required for apt-get install: "
 						"DEBIAN_FRONTEND=noninteractive", "apt-get", "-y",
-						"install", pkg
+						"install", pkg,
 						exception: true
 					)
 				end
@@ -62,5 +64,44 @@ module SaladPrep
 				end
 			end
 		end
+
+		def self.update_pkg_mgr
+			case Gem::Platform::local.os
+			when BoxOSes.LINUX
+				if is_installed(PackageManagers.APTGET)
+					system("apt-get update", exception: true)
+				end
+			when BoxOSes.MACOS
+				if ! system("brew --version 2>/dev/null")
+					#-f = -fail - fails quietly, i.e. no error page ...I think?
+					#-s = -silent - don\'t show any sort of loading bar or such
+					#-S = -show-error - idk
+					#-L = -location - if page gets redirect, try again at new location
+					url = File.join(
+						"https://raw.githubusercontent.com",
+						"/Homebrew/install/HEAD/install.sh"
+					)
+					
+					script = <<~CALL
+						/bin/bash -c "$(curl -fsSL \
+							#{url})"
+					CALL
+					system(script, exception: true)
+				end
+			else
+				raise "OS is not setup"
+			end
+		end
+
+		def update_env_path
+			path_segment = File.join(
+				@egg.app_root,
+				@egg.bin_dir
+			)
+			unless ENV["PATH"].include?(path_segment)
+
+			end
+		end
+
 	end
 end

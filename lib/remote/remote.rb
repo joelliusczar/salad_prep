@@ -2,11 +2,12 @@ require "resolv"
 require "open3"
 require "tempfile"
 require "fileutils"
-require_relative "../egg/egg"
-require_relative "../strink/strink"
-require_relative "../brick_stack/brick_stack"
-require_relative "../resorcerer/resorcerer"
 require_relative "../box_box/box_box"
+require_relative "../brick_stack/brick_stack"
+require_relative "../egg/egg"
+require_relative "../resorcerer/resorcerer"
+require_relative "../strink/strink"
+require_relative "./tiny_remote"
 
 module SaladPrep
 
@@ -14,47 +15,26 @@ module SaladPrep
 		INSTALL = "install"
 		API = "api"
 		CLIENT = "client"
+		UPDATE_TOOLS = "update_tools"
 	end
 
-	class Remote
+	class Remote < TinyRemote
 		def initialize (
-			ipAddress,
-			idFile,
-			egg,
-			brick_stack
+			api_launcher:,
+			client_launcher:,
+			brick_stack:,
+			**rest
 		)
-			if ! File.file?(idFile)
-				raise "id file doesn't exist: #{idFile}"
-			end
-
-			unless ipAddress =~ Resolv::IPv6::Regex || ipAddress =~ Resolv::IPv6::Regex
-				raise "invalid ip address: #{ipAddress}"
-			end
-			@ipAddress = ipAddress
-			@idFile = idFile
-			@egg = egg
-		end
-
-		def env_setup_script()
-			<<~SCRIPT
-			export PB_SECRET='#{@egg.pb_secret}'
-			export PB_API_KEY='#{@egg.pb_api_key}'
-			export #{@egg.env_prefix}_AUTH_SECRET_KEY='#{@egg.api_auth_key}'
-			export #{@egg.env_prefix}_NAMESPACE_UUID='#{@egg.namespace_uuid}'
-			export #{@egg.env_prefix}_DATABASE_NAME='#{@egg.project_name_snake}_db'
-			export #{@egg.env_prefix}_DB_PASS_SETUP='#{@egg.db_setup_key}'
-			export #{@egg.env_prefix}_DB_PASS_OWNER='#{@egg.db_owner_key}'
-			export #{@egg.env_prefix}_DB_PASS_API='#{@egg.api_db_user_key}'
-			export #{@egg.env_prefix}_DB_PASS_JANITOR='#{@egg.janitor_db_user_key}'
-			export #{@egg.env_prefix}_API_LOG_LEVEL='#{@egg.api_log_level}'
-			SCRIPT
+			super(**rest)
+			@api_launcher = api_launcher
+			@client_launcher = client_launcher
 		end
 
 		def ruby_script
 			"raise 'Remote Script Not implemented'"
 		end
 
-		def deploy()
+		def deploy
 
 			if ! Strink::empty_s(`git status --porcelain`)
 				puts(
@@ -94,12 +74,12 @@ module SaladPrep
 				puts(file.read)
 			end
 			# stdout_s, stderr_s, status = Open3.capture3(
-			# 	"ssh -i #{@idFile} 'root@#{@ipAddress}' ls"
+			# 	"ssh -i #{@id_file} 'root@#{@ip_address}' ls"
 			# )
 			# puts("here #{status}")
 			# puts(stderr_s.read)
 			res = Open3.popen3(
-				"ssh -i #{@idFile} 'root@#{@ipAddress}' ls"
+				"ssh -i #{@id_file} 'root@#{@ip_address}' ls"
 			) do |i, o, e, t|
 				print("a?")
 				i.puts 'ls'
@@ -118,7 +98,7 @@ module SaladPrep
 				t.value
 			end
 			print(res)
-			# if ! system("ssh -i #{@idFile} 'root@#{@ipAddress}'")
+			# if ! system("ssh -i #{@id_file} 'root@#{@ip_address}'")
 			# 	puts("failed")
 			# end
 		end
@@ -130,7 +110,9 @@ module SaladPrep
 		def remote_setup_path(setup_lvl)
 			case setup_lvl
 			when SetupLvls.API
-				
+				@api_launcher.startup_api
+			when SetupLvls.CLIENT
+				@client_launcher.setup_client
 			end
 		end
 
@@ -160,7 +142,7 @@ module SaladPrep
 				Dir.chdir(@egg.project_name_snake) do
 					if current_branch != "main"
 						system(
-							"git", "checkout", "-t" , "origin/#{current_branch}"
+							"git", "checkout", "-t" , "origin/#{current_branch}",
 							exception: true
 						)
 					end

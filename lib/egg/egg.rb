@@ -2,7 +2,7 @@ require "fileutils"
 require "securerandom"
 require_relative "../strink/strink"
 require_relative "../file_herder/file_herder"
-require_relative "../box_box/enums"
+require_relative "../enums/enums"
 
 module SaladPrep
 	class Egg
@@ -23,7 +23,8 @@ module SaladPrep
 			app_root: nil,
 			web_root: nil,
 			test_flag: false,
-			content_dir: "content"
+			content_dir: "content",
+			api_port: 8033
 		)
 			if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ env_prefix)
 				raise "env prefix is using an illegal form. "
@@ -40,6 +41,7 @@ module SaladPrep
 			@test_root = "#{repo_path}/test_trash"
 			@build_dir = "builds"
 			@content_dir = content_dir
+			@api_port = api_port
 		end
 
 		def app_root
@@ -75,8 +77,12 @@ module SaladPrep
 			Strink::to_snake(@project_name_0)
 		end
 
-		def app_trunk
+		def app
 			project_name_snake
+		end
+
+		def app_trunk
+			app
 		end
 
 		def repo_path
@@ -103,6 +109,10 @@ module SaladPrep
 			else
 				"#{@url_base}.#{@tld}"
 			end
+		end
+
+		def full_url
+			"https://#{domain_name}"
 		end
 
 		def is_local?
@@ -168,6 +178,14 @@ module SaladPrep
 			)
 		end
 
+		def ssh_id_file
+			env_find(
+				"#{@env_prefix}_SERVER_KEY_FILE",
+				/SERVER_KEY_FILE=(.+)/,
+				checkLocal=false
+			)
+		end
+
 		def run_test_block
 			@test_flag = true
 			yield
@@ -207,7 +225,15 @@ module SaladPrep
 		end
 
 		def api_dest
-			"api/#{project_name_snake}"
+			"api/#{app}"
+		end
+
+		def client_src
+			"#{repo_path}/src/client"
+		end
+
+		def client_dest
+			"client/#{app}"
 		end
 
 		def server_env_check_recommended
