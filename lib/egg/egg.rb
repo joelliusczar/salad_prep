@@ -85,6 +85,10 @@ module SaladPrep
 			app
 		end
 
+		def file_prefix
+			@env_prefix.downcase
+		end
+
 		def repo_path
 			if ! Strink::empty_s?(@local_repo_path)
 				return @local_repo_path

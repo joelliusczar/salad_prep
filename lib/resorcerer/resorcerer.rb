@@ -15,6 +15,10 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}bootstrap")
 		end
 
+		def self.ruby_template
+			open_text("#{ASSETS_DIR}ruby_template.rb")
+		end
+
 	end
 
 end

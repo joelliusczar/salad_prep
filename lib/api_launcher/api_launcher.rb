@@ -5,7 +5,7 @@ require_relative "../file_herder/file_herder"
 module SaladPrep
 	class APILauncher
 
-		def initialize(egg, dbass, w_spoon current_user)
+		def initialize(egg, dbass, w_spoon, current_user)
 			@egg = egg
 			@dbass = dbass
 			@w_spoon = w_spoon
@@ -28,8 +28,6 @@ module SaladPrep
 				@current_user
 			)
 		end
-
-
 
 		def setup_api
 			clean_up_running_processes

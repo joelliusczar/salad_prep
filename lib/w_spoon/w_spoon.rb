@@ -299,7 +299,7 @@ module SaladPrep
 			common_name,
 			domain,
 			public_key_file_path,
-			private_key_file_path,
+			private_key_file_path
 		)
 			Tempfile.create do |file|
 				file.write(File.open(openssl_default_conf).read)
@@ -385,9 +385,9 @@ module SaladPrep
 			else
 				public_key_file_path = "#{remote_public_key}"
 				private_key_file_path = "#{remote_private_key}"
-				if ! File.file?(public_key_file_path) 
-					|| !File?.file?(private_key_file_path)
-					|| is_cert_expired(File.open(public_key_file_path).read)
+				if ! File.file?(public_key_file_path) \
+					|| !File?.file?(private_key_file_path)\
+					|| is_cert_expired(File.open(public_key_file_path).read)\
 					|| force_replace
 				then
 					puts("downloading new certs")
@@ -418,7 +418,7 @@ module SaladPrep
 		def set_local_nginx_app_conf!(content)
 			public_key_file_path = "#{local_nginx_cert_path}.public.key.crt"
 			private_key_file_path = "#{local_nginx_cert_path}.private.key.pem"
-			content.gsub!("<listen>",8080 ssl)
+			content.gsub!("<listen>","8080 ssl")
 			content.gsub!("<ssl_public_key>",public_key_file_path)
 			content.gsub!("<ssl_private_key>",private_key_file_path)
 		end

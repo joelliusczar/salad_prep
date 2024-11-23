@@ -9,7 +9,7 @@ module SaladPrep
 			py_activate = File.join(
 				@egg.app_root, 
 				@egg.app_trunk, 
-				@egg.py_env,
+				@egg.file_prefix,
 				"bin",
 				"activate"
 			)
