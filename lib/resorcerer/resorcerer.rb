@@ -19,6 +19,10 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}ruby_template.rb")
 		end
 
+		def self.nginx_template
+			open_text("#{ASSETS_DIR}nginx_template.conf")
+		end
+
 	end
 
 end

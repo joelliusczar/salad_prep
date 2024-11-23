@@ -6,6 +6,8 @@ Gem::Specification.new do |s|
 	s.authors = ["Joel Pridgen"]
 	s.files = [
 		"assets/bootstrap",
+		"assets/nginx_evil.conf",
+		"assets/nginx_template.conf",
 		"assets/ruby_template.rb",
 		"lib/api_launcher/api_launcher.rb",
 		"lib/api_launcher/py_api_launcher.rb",

@@ -11,8 +11,9 @@ require_relative "../strink/strink"
 module SaladPrep
 	class WSpoon
 
-		def initialize(egg)
+		def initialize(egg, resourcerer)
 			@egg = egg
+			@resourcerer = resourcerer
 		end
 
 		def get_nginx_value(key = "conf-path")
@@ -432,9 +433,8 @@ module SaladPrep
 
 		def update_nginx_conf(app_conf_path)
 			def copy_and_update_nginx_template(app_conf_path)
-				FileUtils.cp("#{@egg.templates_src}/nginix_template.conf", app_conf_path)
-				File.open(nginx_conf_path, "r+") do |f|
-					content = f.read
+				File.open(nginx_conf_path, "w") do |f|
+					content = @resourcerer::nginx_template
 					content.gsub!(
 						"<CLIENT_DEST>",
 						File.join(@egg.web_root, @egg.client_dest)
