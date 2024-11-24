@@ -2,7 +2,7 @@ require_relative "../file_herder/file_herder"
 
 class TestHoncho
 
-	def initialize(egg, dbass, brick_stack)
+	def initialize(egg:, dbass:, brick_stack:)
 		@egg = egg
 		@dbass = dbass
 		@brick_stack = brick_stack
