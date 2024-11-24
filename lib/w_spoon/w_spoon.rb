@@ -160,6 +160,7 @@ module SaladPrep
 					"/etc/ssl/certs/ca-certificates.crt"
 				)
 			else
+				raise "OS not configured"
 			end
 		end
 

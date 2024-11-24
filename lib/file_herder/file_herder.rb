@@ -48,7 +48,7 @@ module SaladPrep
 			return results
 		end
 
-		def self.copy_dir(src_dir, dest_dir, current_user)
+		def self.copy_dir(src_dir, dest_dir)
 			puts("copying from #{src_dir} to #{dest_dir}")
 			if ! are_paths_allowed("#{src_dir}/.",dest_dir)
 				raise "src_dir: #{src_dir} or dest_dir:#{dest_dir} have errors"

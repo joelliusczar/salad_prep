@@ -23,9 +23,9 @@ module SaladPrep
 			api_launcher:,
 			client_launcher:,
 			brick_stack:,
-			egg:,
+			**rest
 		)
-			@egg = egg
+			super(**rest)
 			@api_launcher = api_launcher
 			@client_launcher = client_launcher
 		end

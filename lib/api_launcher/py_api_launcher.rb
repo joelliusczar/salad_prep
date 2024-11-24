@@ -1,8 +1,21 @@
+require "FileUtils"
 require_relative "./api_launcher"
+require_relative "../monty/monty"
 
 module SaladPrep
 	class PyApiLauncher < ApiLauncher
 
+		def initialize(monty:, **rest)
+			super(**rest)
+			@monty = monty
+		end
+
+
+		def copy_support_files
+			super
+			@monty.sync_requirement_list
+			@monty.create_py_env_in_app_trunk
+		end
 
 		def startup_api(skip_setup:false)
 			super(skip_setup: skip_setup)
@@ -13,7 +26,7 @@ module SaladPrep
 				"bin",
 				"activate"
 			)
-			app_dir = File.join(@egg.web_root, @egg.api_dest)
+			app_dir = File.join(@egg.web_root, @egg.api_dest_suffix)
 			unless File.exists?(py_activate)
 				raise "#{py_activate} is not valid"
 			end

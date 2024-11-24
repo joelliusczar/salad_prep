@@ -36,6 +36,7 @@ module SaladPrep
 			@env_prefix = env_prefix
 			@url_base = url_base
 			@tld = tld
+			@bin_dir = bin_dir
 			@app_root = Strink::empty_s?(app_root) ? ENV["HOME"] : app_root
 			@test_flag = test_flag
 			@test_root = "#{repo_path}/test_trash"
@@ -208,6 +209,18 @@ module SaladPrep
 			"#{get_localhost_ssh_dir}/#{get_debug_cert_name}"
 		end
 
+		def lib
+			"engine"
+		end
+
+		def lib_import
+			project_name_snake
+		end
+
+		def lib_src
+			"#{repo_path}/src/#{lib}"
+		end
+
 		def templates_src
 			"#{repo_path}/templates"
 		end
@@ -228,7 +241,11 @@ module SaladPrep
 			"#{app_trunk}/config"
 		end
 
-		def api_dest
+		def api_src
+			"#{repo_path}/src/api"
+		end
+
+		def api_dest_suffix
 			"api/#{app}"
 		end
 
