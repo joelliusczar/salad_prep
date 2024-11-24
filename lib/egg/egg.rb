@@ -2,7 +2,7 @@ require "fileutils"
 require "securerandom"
 require_relative "../strink/strink"
 require_relative "../file_herder/file_herder"
-require_relative "../enums/enums"
+require_relative "../box_box/enums"
 
 module SaladPrep
 	class Egg

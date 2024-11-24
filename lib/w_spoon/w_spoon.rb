@@ -4,7 +4,7 @@ require 'json'
 require 'net/http'
 require "open3"
 require "tempfile"
-require_relative "../enums/enums"
+require_relative "../box_box/enums"
 require_relative "../egg/egg"
 require_relative "../strink/strink"
 

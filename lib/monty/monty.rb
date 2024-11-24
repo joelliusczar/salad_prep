@@ -1,7 +1,7 @@
 require "fileutils"
 require_relative "../arg_checker/arg_checker"
 require_relative "../box_box/box_box"
-require_relative "../enums/enums"
+require_relative "../box_box/enums"
 require_relative "../file_herder/file_herder"
 require_relative "../strink/strink"
 

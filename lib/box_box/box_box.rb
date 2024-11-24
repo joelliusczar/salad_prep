@@ -1,4 +1,4 @@
-require_relative "../enums/enums"
+require_relative "./enums"
 
 module SaladPrep
 	class BoxBox
@@ -20,13 +20,13 @@ module SaladPrep
 
 		def self.get_package_manager
 			case Gem::Platform::local.os
-			when BoxOSes.LINUX
+			when Enums::BoxOSes::LINUX
 				if is_installed(PackageManagers.PACMAN)
-					PackageManagers.PACMAN
+					Enums::PackageManagers::PACMAN
 				elsif is_installed(PackageManagers.APTGET)
 					PackageManagers.APTGET
 				end
-			when BoxOSes.MACOS
+			when Enums::BoxOSes::MACOS
 				PackageManagers.HOMEBREW
 			end
 		end
@@ -34,7 +34,7 @@ module SaladPrep
 		def self.install_package(pkg)
 			puts("attempt to install #{pkg}")
 			case Gem::Platform::local.os
-			when BoxOSes.LINUX
+			when Enums::BoxOSes::LINUX
 				if is_installed(PackageManagers.PACMAN)
 					IO.pipe do |r, w|
 						spawn("yes", out: r)
@@ -52,7 +52,7 @@ module SaladPrep
 						exception: true
 					)
 				end
-			when BoxOSes.MACOS
+			when Enums::BoxOSes::MACOS
 				IO.pipe do |r, w|
 					spawn("yes", out: r)
 					r.close
@@ -67,11 +67,11 @@ module SaladPrep
 
 		def self.update_pkg_mgr
 			case Gem::Platform::local.os
-			when BoxOSes.LINUX
+			when Enums::BoxOSes::LINUX
 				if is_installed(PackageManagers.APTGET)
 					system("apt-get update", exception: true)
 				end
-			when BoxOSes.MACOS
+			when Enums::BoxOSes::MACOS
 				if ! system("brew --version 2>/dev/null")
 					#-f = -fail - fails quietly, i.e. no error page ...I think?
 					#-s = -silent - don\'t show any sort of loading bar or such

@@ -2,7 +2,7 @@
 setup_lvl = "<%= setup_lvl %>"
 current_branch = "<%= current_branch %>"
 
-raise "This section should only be run remotely" unless remote.is_ssh?
+raise "This section should only be run remotely" unless far_port.is_ssh?
 
 raise "missing keys on server" unless egg.server_env_check
 
@@ -29,4 +29,4 @@ Dir.chdir(File.join(egg.app_root, egg.build_dir)) do
 	end
 end
 
-remote.remote_setup_path(setup_lvl)
+far_port.remote_setup_path(setup_lvl)
