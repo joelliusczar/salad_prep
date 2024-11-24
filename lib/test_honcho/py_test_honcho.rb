@@ -1,4 +1,5 @@
 require "fileutils"
+require_relative "../arg_checker/arg_checker"
 require_relative "./test_honcho"
 
 module SaladPrep
@@ -43,8 +44,21 @@ module SaladPrep
 					"bin",
 					"activate"
 				)
-				api_key = @egg.api_auth_key
-				
+
+				ArgChecker.path(py_activate)
+				script = <<~CALL
+					. '#{py_activate}'
+					pytest -s
+				CALL
+				Dir.chdir(File.join(@egg.lib_src, "tests")) do 
+					system({
+						"#{@egg.env_prefix}_AUTH_SECRET_KEY" => @egg.api_auth_key,
+						"PYTHONPATH" => "#{@egg.lib_src}:#{@egg.lib_src}/api"
+						}, 
+						script,
+						exception: true
+					)
+				end
 			end
 		end
 
