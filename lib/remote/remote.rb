@@ -41,7 +41,7 @@ module SaladPrep
 				end
 			end
 
-			system("git fetch")``
+			system("git fetch")
 
 			if system("git rev-parse @` != `git rev-parse @{u}")
 				puts("remote branch may not have latest set of commits")
