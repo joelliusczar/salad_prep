@@ -1,4 +1,4 @@
-require "FileUtils"
+require "Fileutils"
 require_relative "./api_launcher"
 require_relative "../monty/monty"
 
