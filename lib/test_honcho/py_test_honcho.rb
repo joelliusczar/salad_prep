@@ -5,7 +5,7 @@ require_relative "./test_honcho"
 module SaladPrep
 	class PyTestHoncho < TestHoncho
 
-		def initialize(monty: **rest)
+		def initialize(monty:, **rest)
 			super(**rest)
 			@monty = monty
 		end
