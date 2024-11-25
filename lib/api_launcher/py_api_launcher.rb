@@ -3,7 +3,7 @@ require_relative "./api_launcher"
 require_relative "../monty/monty"
 
 module SaladPrep
-	class PyApiLauncher < ApiLauncher
+	class PyAPILauncher < APILauncher
 
 		def initialize(monty:, **rest)
 			super(**rest)
