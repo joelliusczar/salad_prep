@@ -2,7 +2,7 @@ module SaladPrep
 	module Canary
 
 		def self.version
-			gemspec = File.absolute_path('../salad_prep.gemspec')
+			gemspec = File.expand_path("../../../salad_prep.gemspec",__FILE__)
 			Gem::Specification.load(gemspec).version
 		end
 
