@@ -2,24 +2,26 @@
 setup_lvl = "<%= setup_lvl %>"
 current_branch = "<%= current_branch %>"
 
-raise "This section should only be run remotely" unless far_port.is_ssh?
+if ! Provincial.far_port.is_ssh?
+	raise "This section should only be run remotely"
+end
 
-raise "missing keys on server" unless egg.server_env_check
+raise "missing keys on server" unless Provincial.egg.server_env_check
 
-brick_stack.create_install_directory
+Provincial.brick_stack.create_install_directory
 
 if ! system("git --version", out: File::NULL, err: File::NULL)
 	BoxBox::install_package("git")
 end
 
-FileUtils.rm_rf(egg.repo_path)
+FileUtils.rm_rf(Provincial.egg.repo_path)
 
-Dir.chdir(File.join(egg.app_root, egg.build_dir)) do 
+Dir.chdir(File.join(Provincial.egg.app_root, Provincial.egg.build_dir)) do 
 	system(
-		"git", "clone", egg.repo_url, egg.project_name_snake,
+		"git", "clone", Provincial.egg.repo_url, Provincial.egg.project_name_snake,
 		exception: true
 	)
-	Dir.chdir(egg.project_name_snake) do
+	Dir.chdir(Provincial.egg.project_name_snake) do
 		if current_branch != "main"
 			system(
 				"git", "checkout", "-t" , "origin/#{current_branch}",
@@ -29,4 +31,4 @@ Dir.chdir(File.join(egg.app_root, egg.build_dir)) do
 	end
 end
 
-far_port.remote_setup_path(setup_lvl)
+Provincial.far_port.remote_setup_path(setup_lvl)
