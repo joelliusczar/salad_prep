@@ -12,14 +12,10 @@ module SaladPrep
 
 	class Remote < TinyRemote
 		def initialize (
-			api_launcher:,
-			client_launcher:,
 			test_honcho:,
 			**rest
 		)
 			super(**rest)
-			@api_launcher = api_launcher
-			@client_launcher = client_launcher
 			@test_honcho = test_honcho
 		end
 

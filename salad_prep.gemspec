@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.2.19"
+	s.version = "0.2.20"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -33,4 +33,5 @@ Gem::Specification.new do |s|
 	s.homepage = "https://github.com/joelliusczar/salad_prep"
 	s.required_ruby_version = ">= 3.3.0"
 	s.license = "MIT"
+	s.add_dependency 'base64'
 end
