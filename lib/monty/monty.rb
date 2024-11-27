@@ -23,7 +23,7 @@ module SaladPrep
 
 		def py_env_activate_path
 			File.join(
-					py_env_path
+					py_env_path,
 					"bin",
 					"activate"
 				)
