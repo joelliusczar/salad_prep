@@ -95,11 +95,17 @@ module SaladPrep
 			py_env_dir = File.join(env_root, "#{@egg.file_prefix}_env")
 			ArgChecker.path(py_env_dir)
 			ArgChecker.path(requirements_path)
-			system("#{@egg.env_prefix}-python", "-m", py_env_dir, exception: true)
+			#this is to make some of my newer than checks work
+			FileUtils.touch(py_env_dir)
+			system(
+				"#{@egg.env_prefix}-python",
+				"-m",
+				"virtualenv",
+				py_env_dir,
+				exception: true
+			)
 			script = <<~CALL
 				. `#{py_env_dir}/bin/activate` &&
-				#this is to make some of my newer than checks work
-				touch `#{py_env_dir}` &&
 				# #python_env
 				# use regular python command rather mc-python
 				# because mc-python still points to the homebrew location
