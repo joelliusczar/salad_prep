@@ -10,7 +10,7 @@ module SaladPrep
 		attr_reader :project_name_0,
 			:local_repo_path, :test_flag,
 			:env_prefix, :content_dir,
-			:repo_url, :url_base
+			:repo_url, :url_base, :test_root
 
 		def initialize (
 			project_name_0:,
@@ -128,8 +128,8 @@ module SaladPrep
 			"#{app_root}/keys/#{project_name_snake}"
 		end
 
-		def env_find (key, keyRegex, checkLocal=true)
-			if ! Strink::empty_s?(ENV[key]) && !(is_local? && checkLocal)
+		def env_find (key, keyRegex, prefer_keys_file=true)
+			if ! Strink::empty_s?(ENV[key]) && !(is_local? && prefer_keys_file)
 				return ENV[key]
 			end
 			File.open(key_file, "r") do |file|
@@ -139,36 +139,64 @@ module SaladPrep
 			end
 		end
 
-		def pb_secret
-			env_find("PB_SECRET", /PB_SECRET=(\w+)/)
+		def pb_secret(prefer_keys_file: true)
+			env_find(
+				"PB_SECRET",
+				/PB_SECRET=(\w+)/,
+				prefer_keys_file
+			)
 		end
 
-		def pb_api_key
-			env_find("PB_API_KEY", /PB_API_KEY=(\w+)/)
+		def pb_api_key(prefer_keys_file: true)
+			env_find(
+				"PB_API_KEY",
+				/PB_API_KEY=(\w+)/,
+				prefer_keys_file
+			)
 		end
 
-		def api_auth_key
-			env_find("#{@env_prefix}_AUTH_SECRET_KEY", /AUTH_SECRET_KEY=(\w+)/)
+		def api_auth_key(prefer_keys_file: true)
+			env_find(
+				"#{@env_prefix}_AUTH_SECRET_KEY",
+				/AUTH_SECRET_KEY=(\w+)/,
+				prefer_keys_file
+			)
 		end
 
 		def namespace_uuid
 			env_find("#{@env_prefix}_NAMESPACE_UUID", /NAMESPACE_UUID=([\w\-]+)/)
 		end
 
-		def db_setup_key
-			env_find("#{@env_prefix}_DB_PASS_SETUP", /DB_PASS_SETUP=(\w+)/ )
+		def db_setup_key(prefer_keys_file: true)
+			env_find(
+				"#{@env_prefix}_DB_PASS_SETUP",
+				/DB_PASS_SETUP=(\w+)/,
+				prefer_keys_file
+			)
 		end
 
-		def db_owner_key
-			env_find("#{@env_prefix}_DB_PASS_OWNER", /DB_PASS_OWNER=(\w+)/)
+		def db_owner_key(prefer_keys_file: true)
+			env_find(
+				"#{@env_prefix}_DB_PASS_OWNER",
+				/DB_PASS_OWNER=(\w+)/,
+				prefer_keys_file
+			)
 		end
  
-		def api_db_user_key
-			env_find("#{@env_prefix}_DB_PASS_API", /DB_PASS_API=(\w+)/)
+		def api_db_user_key(prefer_keys_file: true)
+			env_find(
+				"#{@env_prefix}_DB_PASS_API",
+				/DB_PASS_API=(\w+)/,
+				prefer_keys_file
+			)
 		end
 
-		def janitor_db_user_key
-			env_find("#{@env_prefix}_DB_PASS_JANITOR", /DB_PASS_JANITOR=(\w+)/)
+		def janitor_db_user_key(prefer_keys_file: true)
+			env_find(
+				"#{@env_prefix}_DB_PASS_JANITOR",
+				/DB_PASS_JANITOR=(\w+)/,
+				prefer_keys_file
+			)
 		end
 
 		def api_log_level
@@ -286,6 +314,31 @@ module SaladPrep
 
 		def bin_dir(abs: true)
 			abs_suffix(@bin_dir, abs)
+		end
+
+		def env_hash(prefer_keys_file: true)
+			{
+				"PB_SECRET" =>
+					@egg.pb_secret.
+				"PB_API_KEY" =>
+					@egg.pb_api_key,
+				"#{@egg.env_prefix}_AUTH_SECRET_KEY" => 
+					@egg.api_auth_key(prefer_keys_file),
+				"#{@egg.env_prefix}_NAMESPACE_UUID" => 
+					@egg.namespace_uuid,
+				"#{@egg.env_prefix}_DATABASE_NAME" => 
+					"#{@egg.project_name_snake}_db",
+				"#{@egg.env_prefix}_DB_PASS_SETUP" => 
+					@egg.db_setup_key(prefer_keys_file),
+				"#{@egg.env_prefix}_DB_PASS_OWNER" => 
+					@egg.db_owner_key(prefer_keys_file),
+				"#{@egg.env_prefix}_DB_PASS_API" => 
+					@egg.api_db_user_key(prefer_keys_file),
+				"#{@egg.env_prefix}_DB_PASS_JANITOR" => 
+					@egg.janitor_db_user_key(prefer_keys_file),
+				"#{@egg.env_prefix}_API_LOG_LEVEL" => 
+					@egg.api_log_level,
+			}
 		end
 
 		def server_env_check_recommended

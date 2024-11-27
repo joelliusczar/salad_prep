@@ -32,64 +32,22 @@ module SaladPrep
 		end
 
 		def env_api_content
-			env_file_src = "#{@egg.templates_src}/.env_api"
-			if !FileHerder::is_path_allowed(env_file_src)
-				raise "env_file_src file path has potential errors: #{env_file_src}"
+			content = ""
+			@egg.env_hash(prefer_keys_file: false).each_pair do |key, value|
+				content << "#{key}='#{value}'"
 			end
-			content = File.read(env_file_src)
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_CONTENT_DIR=).*\$},
-				"\1'#{@egg.content_dir}'"
-			)
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_TEMPLATES_DIR=).*\$},
-				"\1'#{@egg.template_dest(abs: false)}'"
-			)
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_SQL_SCRIPTS_DIR=).*\$},
-				"\1'#{@egg.sql_scripts_dest(abs:false)}'"
-			)
-			env_value = ENV["#{@env_prefix}_DB_PASS_SETUP"]
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_DB_PASS_SETUP=).*\$},
-				"\1'#{env_value}'"
-			)
+			content << "#{@egg.env_prefix}_CONTENT_DIR='#{@egg.content_dir}'"
 
-			env_value = ENV["#{@env_prefix}_DB_PASS_OWNER"]
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_DB_PASS_OWNER=).*\$},
-				"\1'#{env_value}'"
-			)
+			template_dest = @egg.template_dest(abs: false)
+			content << "#{@egg.env_prefix}_TEMPLATES_DIR='#{template_dest}'"
 
-			env_value = ENV["#{@env_prefix}_DB_PASS_API"]
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_DB_PASS_API=).*\$},
-				"\1'#{env_value}'"
-			)
+			sql_script_dest = @egg.sql_scripts_dest(abs: false)
+			content << "#{@egg.env_prefix}_SQL_SCRIPTS_DIR='#{sql_script_dest}'"
 
-			env_value = ENV["#{@env_prefix}_DB_PASS_JANITOR"]
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_DB_PASS_JANITOR=).*\$},
-				"\1'#{env_value}'"
-			)
-			
-			env_value = ENV["#{@env_prefix}_TEST_ROOT"]
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_TEST_ROOT=).*\$},
-				"\1'#{env_value}'"
-			)
+			sql_script_dest = @egg.sql_scripts_dest(abs: false)
+			content << "#{@egg.env_prefix}_SQL_SCRIPTS_DIR='#{sql_script_dest}'"
 
-			env_value = ENV["#{@env_prefix}_NAMESPACE_UUID"]
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_NAMESPACE_UUID=).*\$},
-				"\1'#{env_value}'"
-			)
-			
-			env_value = ENV["#{@env_prefix}_API_LOG_LEVEL"]
-			content.gsub!(
-				%r{^(#{@egg.env_prefix}_API_LOG_LEVEL=).*\$},
-				"\1'#{env_value}'"
-			)
+			content << "#{@egg.env_prefix}_TEST_ROOT='#{@egg.test_root}'"
 		end
 
 		def setup_env_api_file
