@@ -25,7 +25,7 @@ module SaladPrep
 
 		def deploy(setup_lvl, current_branch="main", skip_tests: false)
 
-			if ! Strink.empty_s(`git status --porcelain`)
+			if ! Strink.empty_s?(`git status --porcelain`)
 				puts(
 					"There are uncommited changes that will not be apart of the deploy"
 				)
