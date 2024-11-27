@@ -100,15 +100,15 @@ module SaladPrep
 			py_env_dir = File.join(env_root, "#{@egg.file_prefix}")
 			ArgChecker.path(py_env_dir)
 			ArgChecker.path(requirements_path)
-			#this is to make some of my newer than checks work
-			FileUtils.touch(py_env_dir)
 			system(
 				python_command,
 				"-m",
 				"virtualenv",
 				py_env_dir,
 				exception: true
-			)
+				)
+			#this is to make some of my newer than checks work
+			FileUtils.touch(py_env_dir)
 			script = <<~CALL
 				. '#{py_env_dir}/bin/activate' &&
 				# #python_env
