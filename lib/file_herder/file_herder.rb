@@ -1,4 +1,4 @@
-require "etc"
+require "fileutils"
 require_relative "../strink/strink.rb"
 
 module SaladPrep
