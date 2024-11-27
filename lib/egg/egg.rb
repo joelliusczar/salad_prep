@@ -217,8 +217,12 @@ module SaladPrep
 			project_name_snake
 		end
 
+		def src
+			"#{repo_path}/src"
+		end
+
 		def lib_src
-			"#{repo_path}/src/#{lib}"
+			"#{src}/#{lib}"
 		end
 
 		def templates_src

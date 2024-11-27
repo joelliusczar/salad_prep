@@ -40,10 +40,10 @@ module SaladPrep
 					. '#{py_activate}'
 					pytest -s
 				CALL
-				Dir.chdir(File.join(@egg.lib_src, "tests")) do 
+				Dir.chdir(File.join(@egg.src, "tests")) do 
 					system({
 						"#{@egg.env_prefix}_AUTH_SECRET_KEY" => @egg.api_auth_key,
-						"PYTHONPATH" => "#{@egg.lib_src}:#{@egg.lib_src}/api"
+						"PYTHONPATH" => "#{@egg.src}:#{@egg.src}/api"
 						}, 
 						script,
 						exception: true
