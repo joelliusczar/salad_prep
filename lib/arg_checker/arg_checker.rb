@@ -1,7 +1,7 @@
 module SaladPrep
 	module ArgChecker
 
-		def eself.nv_prefix(value)
+		def self.env_prefix(value)
 			if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ @env_prefix)
 				raise "env prefix is using an illegal form. "
 					"Please use begin with letter and only use alphanumeric "
