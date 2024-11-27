@@ -13,7 +13,7 @@ module SaladPrep
 	class Remote < TinyRemote
 		def initialize (
 			egg,
-			test_honcho,
+			test_honcho
 		)
 			super(egg)
 			@test_honcho = test_honcho
