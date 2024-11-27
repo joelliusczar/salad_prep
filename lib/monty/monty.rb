@@ -105,11 +105,11 @@ module SaladPrep
 				exception: true
 			)
 			script = <<~CALL
-				. `#{py_env_dir}/bin/activate` &&
+				. '#{py_env_dir}/bin/activate' &&
 				# #python_env
 				# use regular python command rather mc-python
 				# because mc-python still points to the homebrew location
-				python -m pip install -r '#{requirements_path}' &&
+				python -m pip install -r '#{requirements_path}'
 			CALL
 			system(script, exception: true)
 		end
