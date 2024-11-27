@@ -55,7 +55,7 @@ module SaladPrep
 			end
 			empty_dir(dest_dir)
 			FileUtils.cp_r(src_dir, dest_dir, verbose:true)
-			puts("done copying dir from ${src_dir} to ${dest_dir}")
+			puts("done copying dir from #{src_dir} to #{dest_dir}")
 		end
 	end
 end

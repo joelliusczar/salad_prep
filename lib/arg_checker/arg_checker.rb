@@ -11,7 +11,7 @@ module SaladPrep
 
 		def self.path(value)
 			if ! (/^['"``]+/ =~ value)
-				raise "segment is using illegal characters"
+				raise "path #{value} is using illegal characters"
 			end
 		end
  
