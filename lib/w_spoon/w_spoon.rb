@@ -438,7 +438,7 @@ module SaladPrep
 					content = @resourcerer::nginx_template
 					content.gsub!(
 						"<CLIENT_DEST>",
-						File.join(@egg.web_root, @egg.client_dest)
+						@egg.client_dest
 					)
 					content.gsub!("<SERVER_NAME>", domain_name)
 					content.gsub!("<API_PORT>", @egg.api_port)

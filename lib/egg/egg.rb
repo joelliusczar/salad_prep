@@ -225,36 +225,55 @@ module SaladPrep
 			"#{repo_path}/templates"
 		end
 
-		def template_dest_suffix
-			"#{app_trunk}/templates"
+		def abs_suffix(suffix, abs=true)
+			if abs
+				return File.join(app_root, suffix)
+			end
+			return suffix
+		end
+
+		def abs_suffix_web(suffix, abs=true)
+			if abs
+				return File.join(web_root, suffix)
+			end
+			return suffix
+		end
+
+		def template_dest(abs:true)
+			suffix = File.join(app_trunk, "templates")
+			abs_suffix(suffix, abs)
 		end
 
 		def sql_scripts_src
 			"#{repo_path}/sql_scripts"
 		end
 
-		def sql_scripts_dest_suffix
-			"#{app_trunk}/sql_scripts"
+		def sql_scripts_dest(abs: true)
+			suffix = File.join(app_trunk, "sql_scripts")
+			abs_suffix(suffix, abs)
 		end
 
-		def config_dir
-			"#{app_trunk}/config"
+		def config_dir(abs: true)
+			suffix = File.join(app_trunk, "config")
+			abs_suffix(suffix, abs)
 		end
 
 		def api_src
 			"#{repo_path}/src/api"
 		end
 
-		def api_dest_suffix
-			"api/#{app}"
+		def api_dest(abs: true)
+			suffix = File.join("api", app)
+			abs_suffix_web(suffix, abs)
 		end
 
 		def client_src
 			"#{repo_path}/src/client"
 		end
 
-		def client_dest
-			"client/#{app}"
+		def client_dest(abs: true)
+			suffix = File.join("client", app)
+			abs_suffix_web(suffix, abs)
 		end
 
 		def server_env_check_recommended

@@ -8,7 +8,7 @@ module SaladPrep
 		end
 
 		def setup_client()
-			FileHerder::empty_dir(File.join(@egg.web_root, @egg.client_dest))
+			FileHerder::empty_dir(@egg.client_dest)
 			script = <<~CALL
 					if [ -z "$NVM_DIR" ]; then
 						export NVM_DIR="$HOME"/.nvm
@@ -24,7 +24,7 @@ module SaladPrep
 			CALL
 			FileUtils.cp_r(
 				File.join(@egg.client_src, "build/"),
-				File.join(@egg.web_root, @egg.client_dest)
+				@egg.client_dest
 			)
 		end
 

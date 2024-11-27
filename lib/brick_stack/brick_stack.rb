@@ -43,11 +43,11 @@ module SaladPrep
 			)
 			content.gsub!(
 				%r{^(#{@egg.env_prefix}_TEMPLATES_DIR=).*\$},
-				"\1'#{@egg.template_dest_suffix}'"
+				"\1'#{@egg.template_dest(abs: false)}'"
 			)
 			content.gsub!(
 				%r{^(#{@egg.env_prefix}_SQL_SCRIPTS_DIR=).*\$},
-				"\1'#{@egg.sql_scripts_dest_suffix}'"
+				"\1'#{@egg.sql_scripts_dest(abs:false)}'"
 			)
 			env_value = ENV["#{@env_prefix}_DB_PASS_SETUP"]
 			content.gsub!(

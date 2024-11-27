@@ -12,8 +12,8 @@ module SaladPrep
 		end
 
 		def setup_api_dir
-			unless File.directory?(File.join(@egg.web_root, @egg.api_dest_suffix))
-				FileUtils.mkdir_p(File.join(@egg.web_root, @egg.api_dest_suffix))
+			unless File.directory?(@egg.api_dest)
+				FileUtils.mkdir_p(@egg.api_dest)
 			end
 		end
 
@@ -26,14 +26,14 @@ module SaladPrep
 		def copy_api_files
 			FileHerder::copy_dir(
 				@egg.api_src, 
-				File.join(@egg.web_root, @egg.api_dest_suffix)
+				@egg.api_dest
 			)
 		end
 
 		def copy_support_files
 			FileHerder::copy_dir(
 				@egg.templates_src, 
-				File.join(@egg.app_root, @egg.template_dest_suffix)
+				@egg.template_dest
 			)
 		end
 
