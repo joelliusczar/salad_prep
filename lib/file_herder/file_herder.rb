@@ -54,7 +54,7 @@ module SaladPrep
 				raise "src_dir: #{src_dir} or dest_dir:#{dest_dir} have errors"
 			end
 			empty_dir(dest_dir)
-			FileUtils.cp_r(src_dir, dest_dir, verbose:true)
+			FileUtils.cp_r("#{src_dir}/.", dest_dir, verbose:true)
 			puts("done copying dir from #{src_dir} to #{dest_dir}")
 		end
 	end
