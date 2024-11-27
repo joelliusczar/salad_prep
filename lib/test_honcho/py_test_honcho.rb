@@ -24,7 +24,7 @@ module SaladPrep
 			)
 			if 
 				! FileUtils.uptodate?(py_env_path, src_files)\
-				|| ! FileUtils.uptodate?(py_env_dir, [requirements_src])\
+				|| ! FileUtils.uptodate?(py_env_path, [requirements_src])\
 			then
 				@monty.create_py_env_in_app_trunk
 			end
