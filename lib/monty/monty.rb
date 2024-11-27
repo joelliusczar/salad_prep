@@ -97,7 +97,7 @@ module SaladPrep
 			if Strink.empty_s?(env_root)
 				env_root = File.join(@egg.app_root, @egg.app_trunk)
 			end
-			py_env_dir = File.join(env_root, "#{@egg.file_prefix}_env")
+			py_env_dir = File.join(env_root, "#{@egg.file_prefix}")
 			ArgChecker.path(py_env_dir)
 			ArgChecker.path(requirements_path)
 			#this is to make some of my newer than checks work

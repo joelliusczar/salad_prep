@@ -8,7 +8,7 @@ module SaladPrep
 	class Egg
 
 		attr_reader :project_name_0,
-			:local_repo_path, :test_flag,
+			:local_repo_path, :test_flags,
 			:env_prefix, :content_dir,
 			:repo_url, :url_base, :test_root
 
@@ -22,7 +22,6 @@ module SaladPrep
 			bin_dir: ".local/bin",
 			app_root: nil,
 			web_root: nil,
-			test_flag: false,
 			content_dir: "content",
 			api_port: 8033
 		)
@@ -38,7 +37,7 @@ module SaladPrep
 			@tld = tld
 			@bin_dir = bin_dir
 			@app_root = Strink::empty_s?(app_root) ? ENV["HOME"] : app_root
-			@test_flag = test_flag
+			@test_flags = 0
 			@test_root = "#{repo_path}/test_trash"
 			@build_dir = "builds"
 			@content_dir = content_dir
@@ -46,14 +45,14 @@ module SaladPrep
 		end
 
 		def app_root
-			if @test_flag
+			if @test_flags > 0
 				return @test_root
 			end
 			return @app_root
 		end
 
 		def web_root
-			if @test_flag
+			if @test_flags > 0
 				return @test_root
 			end
 			case Gem::Platform::local.os
@@ -220,9 +219,9 @@ module SaladPrep
 		end
 
 		def run_test_block
-			@test_flag = true
+			@test_flags +=1
 			yield
-			@test_flag = false
+			@test_flags -= 1
 		end
 
 		def get_localhost_ssh_dir
