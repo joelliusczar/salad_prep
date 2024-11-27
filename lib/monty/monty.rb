@@ -43,8 +43,7 @@ module SaladPrep
 		end
 
 		def link_app_python_if_not_linked
-			ArgChecker.env_prefix(@egg.env_prefix)
-			unless system("#{@egg.env_prefix}-python -V 2>/dev/null")
+			unless system("#{python_command} -V 2>/dev/null")
 				bin_dir = @egg.bin_dir
 				unless File.directory?(bin_dir)
 					FileUtils.mkdir_p(bin_dir)
@@ -66,10 +65,16 @@ module SaladPrep
 			end
 		end
 
+		def python_command
+			env_prefix = @egg.env_prefix.dup
+			ArgChecker.env_prefix(env_prefix)
+			"#{env_prefix}-python".downcase
+		end
+
 		def python_version
-			ArgChecker.env_prefix(@egg.env_prefix)
+			
 			if 
-				system("#{@egg.env_prefix}-python -V >/dev/null 2>&1") \
+				system("#{python_command} -V >/dev/null 2>&1") \
 				&& Strink.empty_s?(ENV["VIRTUAL_ENV"])\
 			then
 				`#{@egg.env_prefix}-python -V`[/\d+\.\d+\.\d+/].split(".")
@@ -98,7 +103,7 @@ module SaladPrep
 			#this is to make some of my newer than checks work
 			FileUtils.touch(py_env_dir)
 			system(
-				"#{@egg.env_prefix}-python",
+				python_command,
 				"-m",
 				"virtualenv",
 				py_env_dir,
@@ -108,7 +113,7 @@ module SaladPrep
 				. '#{py_env_dir}/bin/activate' &&
 				# #python_env
 				# use regular python command rather mc-python
-				# because mc-python still points to the homebrew location
+				# because #{python_command} still points to the homebrew location
 				python -m pip install -r '#{requirements_path}'
 			CALL
 			system(script, exception: true)

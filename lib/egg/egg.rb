@@ -87,7 +87,7 @@ module SaladPrep
 		end
 
 		def file_prefix
-			@env_prefix.downcase
+			@env_prefix.downcase + "_env"
 		end
 
 		def repo_path
