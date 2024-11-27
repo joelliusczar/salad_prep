@@ -319,13 +319,13 @@ module SaladPrep
 		def env_hash(prefer_keys_file: true)
 			{
 				"PB_SECRET" =>
-					pb_secret(prefer_keys_file),
+					pb_secret(prefer_keys_file: prefer_keys_file),
 
 				"PB_API_KEY" =>
-					pb_api_key(prefer_keys_file),
+					pb_api_key(prefer_keys_file: prefer_keys_file),
 
 				"#{env_prefix}_AUTH_SECRET_KEY" => 
-					api_auth_key(prefer_keys_file),
+					api_auth_key(prefer_keys_file: prefer_keys_file),
 
 				"#{env_prefix}_NAMESPACE_UUID" => 
 					namespace_uuid,
@@ -334,16 +334,16 @@ module SaladPrep
 					"#{project_name_snake}_db",
 
 				"#{env_prefix}_DB_PASS_SETUP" => 
-					db_setup_key(prefer_keys_file),
+					db_setup_key(prefer_keys_file: prefer_keys_file),
 
 				"#{env_prefix}_DB_PASS_OWNER" => 
-					db_owner_key(prefer_keys_file),
+					db_owner_key(prefer_keys_file: prefer_keys_file),
 
 				"#{env_prefix}_DB_PASS_API" => 
-					api_db_user_key(prefer_keys_file),
+					api_db_user_key(prefer_keys_file: prefer_keys_file),
 
 				"#{env_prefix}_DB_PASS_JANITOR" => 
-					janitor_db_user_key(prefer_keys_file),
+					janitor_db_user_key(prefer_keys_file: prefer_keys_file),
 
 				"#{env_prefix}_API_LOG_LEVEL" => 
 					api_log_level
