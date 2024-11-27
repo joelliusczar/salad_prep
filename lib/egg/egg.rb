@@ -337,7 +337,7 @@ module SaladPrep
 				"#{@egg.env_prefix}_DB_PASS_JANITOR" => 
 					@egg.janitor_db_user_key(prefer_keys_file),
 				"#{@egg.env_prefix}_API_LOG_LEVEL" => 
-					@egg.api_log_level,
+					@egg.api_log_level
 			}
 		end
 
