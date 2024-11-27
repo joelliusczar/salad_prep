@@ -8,7 +8,7 @@ module SaladPrep
 		end
 
 		def self.which(cmd)
-			ENV["PATH"].split(FILE::PATH_SEPARATOR).filter_map do |folder|
+			ENV["PATH"].split(File::PATH_SEPARATOR).filter_map do |folder|
 				path = "#{folder}/#{cmd}"
 				File.executable?(path)
 			end
