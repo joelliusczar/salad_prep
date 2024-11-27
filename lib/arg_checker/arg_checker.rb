@@ -2,7 +2,7 @@ module SaladPrep
 	module ArgChecker
 
 		def self.env_prefix(value)
-			if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ @env_prefix)
+			if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ value)
 				raise "env prefix is using an illegal form. "
 					"Please use begin with letter and only use alphanumeric "
 					"for rest with a max length of 6"
@@ -10,7 +10,7 @@ module SaladPrep
 		end
 
 		def self.path(value)
-			if ! (/^['"``]+/ =~ @env_prefix)
+			if ! (/^['"``]+/ =~ value)
 				raise "segment is using illegal characters"
 			end
 		end
