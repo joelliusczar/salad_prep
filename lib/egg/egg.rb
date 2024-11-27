@@ -319,34 +319,34 @@ module SaladPrep
 		def env_hash(prefer_keys_file: true)
 			{
 				"PB_SECRET" =>
-					@egg.pb_secret,
+					pb_secret(prefer_keys_file),
 
 				"PB_API_KEY" =>
-					@egg.pb_api_key,
+					pb_api_key(prefer_keys_file),
 
-				"#{@egg.env_prefix}_AUTH_SECRET_KEY" => 
-					@egg.api_auth_key(prefer_keys_file),
+				"#{env_prefix}_AUTH_SECRET_KEY" => 
+					api_auth_key(prefer_keys_file),
 
-				"#{@egg.env_prefix}_NAMESPACE_UUID" => 
-					@egg.namespace_uuid,
-					
-				"#{@egg.env_prefix}_DATABASE_NAME" => 
-					"#{@egg.project_name_snake}_db",
-					
-				"#{@egg.env_prefix}_DB_PASS_SETUP" => 
-					@egg.db_setup_key(prefer_keys_file),
-					
-				"#{@egg.env_prefix}_DB_PASS_OWNER" => 
-					@egg.db_owner_key(prefer_keys_file),
-					
-				"#{@egg.env_prefix}_DB_PASS_API" => 
-					@egg.api_db_user_key(prefer_keys_file),
-					
-				"#{@egg.env_prefix}_DB_PASS_JANITOR" => 
-					@egg.janitor_db_user_key(prefer_keys_file),
-					
-				"#{@egg.env_prefix}_API_LOG_LEVEL" => 
-					@egg.api_log_level
+				"#{env_prefix}_NAMESPACE_UUID" => 
+					namespace_uuid,
+
+				"#{env_prefix}_DATABASE_NAME" => 
+					"#{project_name_snake}_db",
+
+				"#{env_prefix}_DB_PASS_SETUP" => 
+					db_setup_key(prefer_keys_file),
+
+				"#{env_prefix}_DB_PASS_OWNER" => 
+					db_owner_key(prefer_keys_file),
+
+				"#{env_prefix}_DB_PASS_API" => 
+					api_db_user_key(prefer_keys_file),
+
+				"#{env_prefix}_DB_PASS_JANITOR" => 
+					janitor_db_user_key(prefer_keys_file),
+
+				"#{env_prefix}_API_LOG_LEVEL" => 
+					api_log_level
 			}
 		end
 
