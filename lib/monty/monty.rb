@@ -92,7 +92,7 @@ module SaladPrep
 			if Strink.empty_s?(env_root)
 				env_root = File.join(@egg.app_root, @egg.app_trunk)
 			end
-			py_env_dir = File.join(env_root, @egg.file_prefix)
+			py_env_dir = File.join(env_root, "#{@egg.file_prefix}_env")
 			ArgChecker.path(py_env_dir)
 			ArgChecker.path(requirements_path)
 			system("#{@egg.env_prefix}-python", "-m", py_env_dir, exception: true)
