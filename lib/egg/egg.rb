@@ -103,8 +103,8 @@ module SaladPrep
 
 		def is_current_dir_repo? (dir)
 			return false unless File.file?("#{dir}/README.md")
-			return false unless File.exists?("#{dir}/src")
-			return false unless File.exists?("#{dir}/test_trash")
+			return false unless File.exist?("#{dir}/src")
+			return false unless File.exist?("#{dir}/test_trash")
 		end
 
 		def domain_name(port: nil)

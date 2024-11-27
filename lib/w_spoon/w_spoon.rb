@@ -40,7 +40,7 @@ module SaladPrep
 				sites_folder_path =  File.dirname(nginx_conf_path)
 				abs_path = File.join(sites_folder_path, conf_dir)
 				unless File.directory?(abs_path)
-					if File.exists?(abs_path)
+					if File.exist?(abs_path)
 						raise "#{absPath} is a file, not a directory"
 					end
 

@@ -27,10 +27,10 @@ module SaladPrep
 				"activate"
 			)
 			app_dir = File.join(@egg.web_root, @egg.api_dest_suffix)
-			unless File.exists?(py_activate)
+			unless File.exist?(py_activate)
 				raise "#{py_activate} is not valid"
 			end
-			unless File.exists?(app_dir)
+			unless File.exist?(app_dir)
 				raise "#{app_dir} is not valid"
 			end
 			unless @egg.port.is_a?(Integer)

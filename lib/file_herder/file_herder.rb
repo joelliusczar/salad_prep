@@ -41,7 +41,7 @@ module SaladPrep
 				raise "#{dir_replacera} has some potential errors."
 			end
 			result = true
-			if File.exists?(dir_replacera)
+			if File.exist?(dir_replacera)
 				results = rm_contents_if_filled(dir_replacera)
 			end
 			puts("Done replacing #{dir_replacera}")
