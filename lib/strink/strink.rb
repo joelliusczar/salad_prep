@@ -18,6 +18,7 @@ module SaladPrep
 						|(?<=[A-Za-z])(?=[^A-Za-z])
 					/x
 				)
+				.map(&:strip)
 				.join("_")
 				.delete("^a-zA-Z0-9 _-")
 				.tr(" -","_")
