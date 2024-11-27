@@ -94,11 +94,7 @@ module SaladPrep
 		end
 
 		def update_env_path
-			path_segment = File.join(
-				@egg.app_root,
-				@egg.bin_dir
-			)
-			unless ENV["PATH"].include?(path_segment)
+			unless ENV["PATH"].include?(@egg.bin_dir)
 
 			end
 		end

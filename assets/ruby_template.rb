@@ -16,7 +16,7 @@ end
 
 FileUtils.rm_rf(Provincial.egg.repo_path)
 
-Dir.chdir(File.join(Provincial.egg.app_root, Provincial.egg.build_dir)) do 
+Dir.chdir(Provincial.egg.build_dir) do 
 	system(
 		"git", "clone", Provincial.egg.repo_url, Provincial.egg.project_name_snake,
 		exception: true

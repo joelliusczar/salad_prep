@@ -12,11 +12,7 @@ module SaladPrep
 
 		def setup_unit_test_env
 			super
-			py_env_path = File.join(
-				@egg.app_root,
-				@egg.app_trunk,
-				@egg.file_prefix
-			)
+			py_env_path = @monty.py_env_path
 			src_files = Dir.glob(
 				"**/*",
 				File::FNM_DOTMATCH,
@@ -37,13 +33,7 @@ module SaladPrep
 		def run_unit_tests
 			@egg.run_test_block do
 				setup_unit_test_env
-				py_activate = File.join(
-					@egg.app_root, 
-					@egg.app_trunk, 
-					@egg.file_prefix,
-					"bin",
-					"activate"
-				)
+				py_activate = @monty.py_env_activate_path
 
 				ArgChecker.path(py_activate)
 				script = <<~CALL

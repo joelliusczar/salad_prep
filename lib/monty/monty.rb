@@ -13,6 +13,22 @@ module SaladPrep
 			@version = version
 		end
 
+		def py_env_path
+			File.join(
+				@egg.app_root,
+				@egg.app_trunk,
+				@egg.file_prefix
+			)
+		end
+
+		def py_env_activate_path
+			File.join(
+					py_env_path
+					"bin",
+					"activate"
+				)
+		end
+
 		def sync_requirement_list
 			requirements_src = File.join(@egg.repo_path, "requirements.txt")
 
@@ -29,7 +45,7 @@ module SaladPrep
 		def link_app_python_if_not_linked
 			ArgChecker.env_prefix(@egg.env_prefix)
 			unless system("#{@egg.env_prefix}-python -V 2>/dev/null")
-				bin_dir = File.join(@egg.app_root, @egg.bin_dir)
+				bin_dir = @egg.bin_dir
 				unless File.directory?(bin_dir)
 					FileUtils.mkdir_p(bin_dir)
 				end

@@ -8,8 +8,8 @@ module SaladPrep
 	class Egg
 
 		attr_reader :project_name_0,
-			:local_repo_path, :bin_dir, :test_flag,
-			:env_prefix, :content_dir, :build_dir,
+			:local_repo_path, :test_flag,
+			:env_prefix, :content_dir,
 			:repo_url, :url_base
 
 		def initialize (
@@ -274,6 +274,14 @@ module SaladPrep
 		def client_dest(abs: true)
 			suffix = File.join("client", app)
 			abs_suffix_web(suffix, abs)
+		end
+
+		def build_dir(abs: true)
+			abs_suffix(@build_dir, abs)
+		end
+
+		def bin_dir(abs: true)
+			abs_suffix(@bin_dir, abs)
 		end
 
 		def server_env_check_recommended
