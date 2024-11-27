@@ -10,7 +10,7 @@ module SaladPrep
 		def self.which(cmd)
 			ENV["PATH"].split(File::PATH_SEPARATOR).filter_map do |folder|
 				path = "#{folder}/#{cmd}"
-				File.executable?(path)
+				File.executable?(path) ? path : nil
 			end
 		end
 
