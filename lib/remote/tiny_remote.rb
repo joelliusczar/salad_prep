@@ -1,19 +1,13 @@
 module SaladPrep
 	class TinyRemote
-		def initialize (
-			ip_address:,
-			id_file:,
-			egg:
-		)
-			if ! File.file?(id_file)
-				raise "id file doesn't exist: #{id_file}"
+		def initialize (egg)
+			if ! File.file?(egg.ssh_id_file)
+				raise "id file doesn't exist: #{egg.ssh_id_file}"
 			end
 
-			unless ip_address =~ Resolv::IPv6::Regex || ip_address =~ Resolv::IPv6::Regex
-				raise "invalid ip address: #{ip_address}"
+			unless egg.ssh_address =~ Resolv::IPv6::Regex || egg.ssh_address =~ Resolv::IPv6::Regex
+				raise "invalid ip address: #{egg.ssh_address}"
 			end
-			@ip_address = ip_address
-			@id_file = id_file
 			@egg = egg
 		end
 
@@ -36,7 +30,7 @@ module SaladPrep
 			exec(
 				"ssh",
 				"-ti",
-				@id_file,
+				@egg.ssh_id_file,
 				"root@#{@egg.ssh_address}",
 				env_setup_script,
 				"bash",
@@ -45,7 +39,14 @@ module SaladPrep
 		end
 
 		def toot_check
-			system("ssh -i #{@id_file} 'toot@#{@ip_address}' -oBatchMode=yes true")
+			system(
+				"ssh",
+			 "-i",
+			 @egg.ssh_id_file,
+			 "toot@#{@egg.ssh_address}",
+			 "-oBatchMode=yes",
+			 "true"
+			)
 		end
 
 		def setup_toot
