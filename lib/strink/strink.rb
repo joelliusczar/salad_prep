@@ -4,7 +4,7 @@ module SaladPrep
 		LOW = :low
 		UP = :up
 
-		redefine Object do
+		refine Object do
 			def zero?
 				return true if self.nil?
 				if self.respond_to?(:empty?)
@@ -14,7 +14,7 @@ module SaladPrep
 			end
 		end
 
-		redefine String do
+		refine String do
 			def to_snake(project_name, casing = nil)
 				casing = casing ? casing.to_sym() : nil
 		
