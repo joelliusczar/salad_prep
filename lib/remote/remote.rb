@@ -26,7 +26,7 @@ module SaladPrep
 
 		def deploy(setup_lvl, current_branch="main", skip_tests: false)
 			@egg.load_env
-			
+
 			if ! `git status --porcelain`.zero?
 				puts(
 					"There are uncommited changes that will not be apart of the deploy"
@@ -66,7 +66,10 @@ module SaladPrep
 					SCRIPT
 				)
 				file.rewind
-				system("ssh -i #{@id_file} 'root@#{@ip_address}' bash -s", in: file)
+				system(
+					"ssh -i #{@egg.ssh_id_file} 'root@#{@egg.ssh_address}' bash -s",
+					in: file
+				)
 			end
 	
 		end
