@@ -109,10 +109,10 @@ case $(uname) in
 esac
 
 echo '##### rbenv #####'
-if rbenv -v >/dev/null; then
+if ! rbenv -v >/dev/null; then
 	git clone https://github.com/rbenv/rbenv.git "$HOME"/.rbenv &&
 	"$HOME"/.rbenv/bin/rbenv init
-end || exit
+fi || exit
 
 echo '##### ruby-build #####'
 git clone https://github.com/rbenv/ruby-build.git \
