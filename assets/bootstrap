@@ -108,20 +108,22 @@ case $(uname) in
 	(*) ;;
 esac
 
+echo '##### rbenv #####'
 if rbenv -v >/dev/null; then
 	git clone https://github.com/rbenv/rbenv.git "$HOME"/.rbenv &&
 	"$HOME"/.rbenv/bin/rbenv init
 end || exit
 
-exec bash
-
+echo '##### ruby-build #####'
 git clone https://github.com/rbenv/ruby-build.git \
 	"$(rbenv root)"/plugins/ruby-build &&
 
+echo '##### rbenv install ruby #####'
 rbenv install 3.3.5 &&
 
 rbenv local 3.3.5 &&
 
+echo '##### clone salad prep #####'
 git clone https://github.com/joelliusczar/salad_prep.git\
 	salad_prep &&
 
