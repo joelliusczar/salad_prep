@@ -15,10 +15,10 @@ module SaladPrep
 		end
 
 		refine String do
-			def to_snake(project_name, casing = nil)
+			def to_snake(casing = nil)
 				casing = casing ? casing.to_sym() : nil
 		
-				project_name = project_name.split(
+				project_name = self.split(
 						/
 							(?<=[A-Z])(?=[A-Z][a-z])
 							|(?<=[^A-Z])(?=[A-Z])
