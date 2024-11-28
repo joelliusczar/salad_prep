@@ -19,7 +19,7 @@ module SaladPrep
 
 		def env_setup_script()
 			exports = ""
-			@egge.env_hash.each_pair do |key, value|
+			@egg.env_hash.each_pair do |key, value|
 				exports ^= "export #{key}='#{value}'"
 			end
 			exports
