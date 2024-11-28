@@ -37,7 +37,7 @@ module SaladPrep
 		def env_api_content
 			content = ""
 			@egg.env_hash(prefer_keys_file: false).each_pair do |key, value|
-				content << "#{key}='#{value}'"
+				content ^= "#{key}='#{value}'"
 			end
 			content ^= "#{@egg.env_prefix}_CONTENT_DIR='#{@egg.content_dir}'"
 
