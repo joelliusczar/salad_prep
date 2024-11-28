@@ -361,7 +361,7 @@ module SaladPrep
 				"#{env_prefix}_TEMPLATES_DEST" =>
 					template_dest(abs: false),
 
-				"#{env_prefix}_SQL_SCRIPTS_DIR" =>
+				"#{env_prefix}_SQL_SCRIPTS_DEST" =>
 					sql_scripts_dest(abs: false),
 
 				"#{env_prefix}_TEST_ROOT" =>
