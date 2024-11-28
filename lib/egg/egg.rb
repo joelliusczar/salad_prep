@@ -222,8 +222,10 @@ module SaladPrep
 
 		def run_test_block
 			@test_flags +=1
+			load_env
 			yield
 			@test_flags -= 1
+			load_env if @test_flags == 0
 		end
 
 		def get_localhost_ssh_dir
@@ -376,7 +378,6 @@ module SaladPrep
 			end
 			ENV["#{env_prefix}_APP_ROOT"] = @app_root
 			ENV["__TEST_FLAG__"] = @test_flags > 0 ? "true" : ""
-			ENV[""]
 		end
 
 		def server_env_check_recommended
