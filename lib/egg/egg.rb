@@ -351,6 +351,31 @@ module SaladPrep
 			}
 		end
 
+		def local_env_hash
+			{
+				**env_hash(prefer_keys_file: false),
+
+				"#{@egg.env_prefix}_CONTENT_DIR" =>
+					@egg.content_dir,
+				
+				"#{@egg.env_prefix}_TEMPLATES_DIR" =>
+					@egg.template_dest(abs: false),
+
+				"#{@egg.env_prefix}_SQL_SCRIPTS_DIR" =>
+					@egg.sql_scripts_dest(abs: false),
+
+				"#{@egg.env_prefix}_TEST_ROOT" =>
+					@egg.test_root
+			}
+
+		end
+
+		def load_env
+			@egg.local_env_hash.each_pair do |key, value|
+				ENV[key] = value
+			end
+		end
+
 		def server_env_check_recommended
 			if ENV["#{@env_prefix}_DB_PASS_SETUP"].zero?
 				puts("environmental var #{@env_prefix}_DB_PASS_SETUP} not set in keys")

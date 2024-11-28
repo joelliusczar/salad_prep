@@ -36,21 +36,10 @@ module SaladPrep
 
 		def env_api_content
 			content = ""
-			@egg.env_hash(prefer_keys_file: false).each_pair do |key, value|
+			@egg.local_env_hash.each_pair do |key, value|
 				content ^= "#{key}='#{value}'"
 			end
-			content ^= "#{@egg.env_prefix}_CONTENT_DIR='#{@egg.content_dir}'"
-
-			template_dest = @egg.template_dest(abs: false)
-			content ^= "#{@egg.env_prefix}_TEMPLATES_DIR='#{template_dest}'"
-
-			sql_script_dest = @egg.sql_scripts_dest(abs: false)
-			content ^= "#{@egg.env_prefix}_SQL_SCRIPTS_DIR='#{sql_script_dest}'"
-
-			sql_script_dest = @egg.sql_scripts_dest(abs: false)
-			content ^= "#{@egg.env_prefix}_SQL_SCRIPTS_DIR='#{sql_script_dest}'"
-
-			content ^= "#{@egg.env_prefix}_TEST_ROOT='#{@egg.test_root}'"
+			content
 		end
 
 		def setup_env_api_file

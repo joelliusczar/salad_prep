@@ -25,7 +25,8 @@ module SaladPrep
 		end
 
 		def deploy(setup_lvl, current_branch="main", skip_tests: false)
-
+			@egg.load_env
+			
 			if ! `git status --porcelain`.zero?
 				puts(
 					"There are uncommited changes that will not be apart of the deploy"
