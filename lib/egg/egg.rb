@@ -355,17 +355,17 @@ module SaladPrep
 			{
 				**env_hash(prefer_keys_file: false),
 
-				"#{@egg.env_prefix}_CONTENT_DIR" =>
-					@egg.content_dir,
+				"#{env_prefix}_CONTENT_DIR" =>
+					content_dir,
 				
-				"#{@egg.env_prefix}_TEMPLATES_DIR" =>
-					@egg.template_dest(abs: false),
+				"#{env_prefix}_TEMPLATES_DIR" =>
+					template_dest(abs: false),
 
-				"#{@egg.env_prefix}_SQL_SCRIPTS_DIR" =>
-					@egg.sql_scripts_dest(abs: false),
+				"#{env_prefix}_SQL_SCRIPTS_DIR" =>
+					sql_scripts_dest(abs: false),
 
-				"#{@egg.env_prefix}_TEST_ROOT" =>
-					@egg.test_root
+				"#{env_prefix}_TEST_ROOT" =>
+					test_root
 			}
 
 		end
