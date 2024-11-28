@@ -358,7 +358,7 @@ module SaladPrep
 				"#{env_prefix}_CONTENT_DIR" =>
 					content_dir,
 				
-				"#{env_prefix}_TEMPLATES_DIR" =>
+				"#{env_prefix}_TEMPLATES_DEST" =>
 					template_dest(abs: false),
 
 				"#{env_prefix}_SQL_SCRIPTS_DIR" =>
@@ -374,6 +374,8 @@ module SaladPrep
 			local_env_hash.each_pair do |key, value|
 				ENV[key] = value
 			end
+			ENV["#{env_prefix}_APP_ROOT"] = @app_root
+
 		end
 
 		def server_env_check_recommended
