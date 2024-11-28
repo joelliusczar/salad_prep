@@ -371,7 +371,7 @@ module SaladPrep
 		end
 
 		def load_env
-			@egg.local_env_hash.each_pair do |key, value|
+			local_env_hash.each_pair do |key, value|
 				ENV[key] = value
 			end
 		end
