@@ -5,6 +5,8 @@ require_relative "../file_herder/file_herder"
 require_relative "../box_box/enums"
 
 module SaladPrep
+	using Strink
+
 	class Egg
 
 		attr_reader :project_name_0,
@@ -36,7 +38,7 @@ module SaladPrep
 			@url_base = url_base
 			@tld = tld
 			@bin_dir = bin_dir
-			@app_root = Strink::empty_s?(app_root) ? ENV["HOME"] : app_root
+			@app_root = app_root.zero? ? ENV["HOME"] : app_root
 			@test_flags = 0
 			@test_root = "#{repo_path}/test_trash"
 			@build_dir = "builds"
@@ -57,13 +59,13 @@ module SaladPrep
 			end
 			case Gem::Platform::local.os
 			when BoxOSes.LINUX
-				unless Strink::empty_s?(@web_root)
+				unless @web_root.zero?
 					"/srv"
 				else
 					@web_root
 				end
 			when BoxOSes.MACOS
-				unless Strink::empty_s?(@web_root)
+				unless @web_root.zero?
 					"/Library/WebServer"
 				else
 					@web_root
@@ -74,7 +76,7 @@ module SaladPrep
 		end
 
 		def project_name_snake
-			Strink::to_snake(@project_name_0)
+			@project_name_0.to_snake
 		end
 
 		def app
@@ -90,7 +92,7 @@ module SaladPrep
 		end
 
 		def repo_path
-			if ! Strink::empty_s?(@local_repo_path)
+			if ! @local_repo_path.zero?
 				return @local_repo_path
 			elsif is_current_dir_repo(Dir.pwd)
 				return Dir.pwd
@@ -108,7 +110,7 @@ module SaladPrep
 
 		def domain_name(port: nil)
 			if is_local?
-				port = Strink::empty_s?(port) ? "" : ":#{port}"
+				port = port.zero? ? "" : ":#{port}"
 				"#{@url_base}-local.#{@tld}#{port}"
 			else
 				"#{@url_base}.#{@tld}"
@@ -128,7 +130,7 @@ module SaladPrep
 		end
 
 		def env_find (key, keyRegex, prefer_keys_file=true)
-			if ! Strink::empty_s?(ENV[key]) && !(is_local? && prefer_keys_file)
+			if ! ENV[key].zero? && !(is_local? && prefer_keys_file)
 				return ENV[key]
 			end
 			File.open(key_file, "r") do |file|
@@ -350,17 +352,17 @@ module SaladPrep
 		end
 
 		def server_env_check_recommended
-			if Strink::empty_s?(ENV["#{@env_prefix}_DB_PASS_SETUP"])
+			if ENV["#{@env_prefix}_DB_PASS_SETUP"].zero?
 				puts("environmental var #{@env_prefix}_DB_PASS_SETUP} not set in keys")
 			end
-			if Strink::empty_s?(ENV["#{@env_prefix}_DB_PASS_SETUP"])
+			if ENV["#{@env_prefix}_DB_PASS_SETUP"].zero?
 				puts("environmental var #{@env_prefix}_DB_PASS_SETUP} not set in keys")
 			end
 		end
 
 		def server_env_check_required
 			result = true
-			if Strink::empty_s?(repo_path)
+			if repo_path.zero?
 				result = false
 
 			end

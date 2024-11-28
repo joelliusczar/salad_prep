@@ -9,6 +9,7 @@ require_relative "../resorcerer/resorcerer"
 require_relative "../strink/strink"
 
 module SaladPrep
+	using Strink
 
 	class Remote < TinyRemote
 		def initialize (
@@ -25,7 +26,7 @@ module SaladPrep
 
 		def deploy(setup_lvl, current_branch="main", skip_tests: false)
 
-			if ! Strink.empty_s?(`git status --porcelain`)
+			if ! `git status --porcelain`.zero?
 				puts(
 					"There are uncommited changes that will not be apart of the deploy"
 				)

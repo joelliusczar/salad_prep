@@ -1,5 +1,4 @@
 require "fileutils"
-require_relative "../strink/strink.rb"
 
 module SaladPrep
 	module FileHerder

@@ -6,6 +6,8 @@ require_relative "../file_herder/file_herder"
 require_relative "../strink/strink"
 
 module SaladPrep
+	using Strink
+
 	class Monty
 
 		def initialize(egg, version = "3.9")
@@ -75,7 +77,7 @@ module SaladPrep
 			
 			if 
 				system("#{python_command} -V >/dev/null 2>&1") \
-				&& Strink.empty_s?(ENV["VIRTUAL_ENV"])\
+				&& ENV["VIRTUAL_ENV"].zero?\
 			then
 				`#{@egg.env_prefix}-python -V`[/\d+\.\d+\.\d+/].split(".")
 			elsif system("python3 -V >/dev/null 2>&1")
@@ -94,7 +96,7 @@ module SaladPrep
 				@egg.app_trunk,
 				"requirements.txt"
 			)
-			if Strink.empty_s?(env_root)
+			if env_root.zero?
 				env_root = File.join(@egg.app_root, @egg.app_trunk)
 			end
 			py_env_dir = File.join(env_root, "#{@egg.file_prefix}")

@@ -2,6 +2,8 @@ require_relative "./enums"
 require_relative "../strink/strink"
 
 module SaladPrep
+	using Strink
+
 	class FarPort
 		def initialize (
 			egg:,
@@ -14,7 +16,7 @@ module SaladPrep
 		end
 
 		def is_ssh?
-			! Strink.empty_s?(ENV["SSH_CONNECTION"])
+			! ENV["SSH_CONNECTION"].zero?
 		end
 
 		def remote_setup_path(setup_lvl)

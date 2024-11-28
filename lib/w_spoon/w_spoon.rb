@@ -9,6 +9,8 @@ require_relative "../egg/egg"
 require_relative "../strink/strink"
 
 module SaladPrep
+	using Strink
+
 	class WSpoon
 
 		def initialize(egg, resourcerer)
@@ -208,7 +210,7 @@ module SaladPrep
 				certs_matching_name(common_name).each do |cert|
 					if is_cert_expired(cert)
 						cert_dir="/usr/local/share/ca-certificates"
-						if Strink::empty_s?(cert_name)
+						if cert_name.zero?
 							cert_name = common_name
 						end
 						FileUtils.rm(Dir.glob("#{cert_dir}/#{cert_name}*.crt"))

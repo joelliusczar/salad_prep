@@ -1,4 +1,8 @@
+require_relative "../strink/strink"
+
 module SaladPrep
+	using Strink
+
 	class TinyRemote
 		def initialize (egg)
 			if ! File.file?(egg.ssh_id_file)
@@ -16,7 +20,7 @@ module SaladPrep
 		def env_setup_script()
 			exports = ""
 			@egge.env_hash.each_pair do |key, value|
-				exports << "export #{key}='#{value}'"
+				exports ^= "export #{key}='#{value}'"
 			end
 			exports
 		end
