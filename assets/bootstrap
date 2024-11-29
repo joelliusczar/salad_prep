@@ -3,6 +3,8 @@ if [ -z "$SSH_CONNECTION" ]; then
 	exit
 fi
 
+. "$HOME"/.profile
+
 install_package() (
 	pkgName="$1"
 	echo "Try to install --${pkgName}--"
