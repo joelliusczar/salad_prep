@@ -94,7 +94,7 @@ module SaladPrep
 		def repo_path
 			if ! @local_repo_path.zero?
 				return @local_repo_path
-			elsif is_current_dir_repo(Dir.pwd)
+			elsif is_current_dir_repo?(Dir.pwd)
 				return Dir.pwd
 			else
 				return "#{ENV['HOME']}/#{@build_dir}/#{project_name_snake}"
