@@ -132,11 +132,12 @@ if ! asdf plugin list | grep 'ruby' >/dev/null; then
 	asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
 fi &&
 
+echo '##### asdf install ruby #####'
 if ! asdf list ruby 3.3.5 2>&1 >/dev/null; then
 	asdf install ruby 3.3.5
 fi &&
 
-
+echo '##### asdf set local ruby version #####'
 asdf local ruby 3.3.5 &&
 
 
