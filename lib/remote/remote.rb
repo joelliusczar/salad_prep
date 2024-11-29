@@ -73,9 +73,11 @@ module SaladPrep
 				file.write(Resorcerer::bootstrap)
 				file.write(
 					<<~SCRIPT
+
 						ruby <<EOF
 							#{ruby_script(setup_lvl, current_branch)}
 						EOF
+						
 					SCRIPT
 				)
 				file.rewind
