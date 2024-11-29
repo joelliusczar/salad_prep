@@ -108,20 +108,32 @@ case $(uname) in
 	(*) ;;
 esac
 
-echo '##### rbenv #####'
-if ! rbenv -v >/dev/null; then
-	git clone https://github.com/rbenv/rbenv.git "$HOME"/.rbenv &&
-	"$HOME"/.rbenv/bin/rbenv init
-fi || exit
+echo '##### asdf #####'
+if ! asdf version>/dev/null; then
+	git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1 &&
+fi &&
 
-echo '##### ruby-build #####'
-git clone https://github.com/rbenv/ruby-build.git \
-	"$(rbenv root)"/plugins/ruby-build &&
+if ! grep  -F'export ASDF_DIR="$HOME/.asdf"' "$HOME"/.profile >/dev/null; then
+	echo 'export ASDF_DIR="$HOME/.asdf"' >> "$HOME"/.profile
+fi &&
 
-echo '##### rbenv install ruby #####'
-rbenv install 3.3.5 &&
+if ! grep -F '. "$HOME/.asdf/asdf.sh"' "$HOME"/.profile >/dev/null; then
+	echo '. "$HOME/.asdf/asdf.sh"' >> "$HOME"/.profile
+fi &&
 
-rbenv local 3.3.5 &&
+. "$HOME"/.profile &&
+
+if ! asdf plugin | grep 'ruby' >/dev/null; then
+	asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
+fi &&
+
+if ! asdf list ruby 3.3.5 2>%1 >/dev/null; then
+	asdf install ruby 3.3.5
+fi &&
+
+
+
+asdf local ruby 3.3.5 &&
 
 echo '##### clone salad prep #####'
 git clone https://github.com/joelliusczar/salad_prep.git\
