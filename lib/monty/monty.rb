@@ -129,9 +129,9 @@ module SaladPrep
 			File.join(
 				env_root,
 				@egg.file_prefix,
-				@egg.lib,
 				"python#{version[0]}.#{version[1]}",
-				"site-packages"
+				"site-packages",
+				@egg.lib_import
 			)
 		end
 
@@ -140,7 +140,7 @@ module SaladPrep
 			env_root = File.join(@egg.app_root, @egg.app_trunk)
 			FileHerder.copy_dir(
 				@egg.lib_src,
-				File.join(libs_dest_dir(env_root), @egg.lib_import)
+				libs_dest_dir(env_root) 
 			)
 
 		end
