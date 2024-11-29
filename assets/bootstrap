@@ -133,13 +133,12 @@ if ! asdf plugin list | grep 'ruby' >/dev/null; then
 fi &&
 
 echo '##### asdf install ruby #####'
-if ! asdf list ruby 3.3.5 2>&1 >/dev/null; then
+if ! asdf list ruby 3.3.5 >/dev/null 2>&1; then
 	asdf install ruby 3.3.5
 fi &&
 
-echo '##### asdf set local ruby version #####'
+echo '##### asdf set local ruby version #####' &&
 asdf local ruby 3.3.5 &&
-
 
 
 echo '##### clone salad prep #####' &&
