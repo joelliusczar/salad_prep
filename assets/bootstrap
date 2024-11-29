@@ -128,7 +128,7 @@ fi &&
 . "$HOME"/.profile &&
 
 echo '##### asdf ruby plugin #####'
-if ! asdf plugin | grep 'ruby' >/dev/null; then
+if ! asdf plugin list | grep 'ruby' >/dev/null; then
 	asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
 fi &&
 
