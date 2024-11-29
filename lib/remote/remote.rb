@@ -2,6 +2,7 @@ require "resolv"
 require "open3"
 require "tempfile"
 require "fileutils"
+require "erb"
 require_relative "../box_box/box_box"
 require_relative "../egg/egg"
 require_relative "./tiny_remote"
@@ -24,7 +25,12 @@ module SaladPrep
 			"raise 'Remote Script Not implemented'"
 		end
 
-		def deploy(setup_lvl, current_branch="main", skip_tests: false)
+		def deploy(
+			setup_lvl,
+			current_branch:"main",
+			skip_tests: false,
+			update_salad_prep: false
+		)
 			@egg.load_env
 
 			if ! `git status --porcelain`.zero?
@@ -55,7 +61,13 @@ module SaladPrep
 				@test_honcho.run_unit_tests
 			end
 
+			templateContent = Resorcerer::bootstrap
+			template = ERB.new(templateContent, trim_mode:"<>")
+			templateResult = template.result_with_hash({
+				update_salad_prep: update_salad_prep ? "true" : ""
+			})
 			Tempfile.create do |file|
+
 				file.write(env_setup_script())
 				file.write(Resorcerer::bootstrap)
 				file.write(

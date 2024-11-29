@@ -4,6 +4,7 @@ if [ -z "$SSH_CONNECTION" ]; then
 fi
 
 . "$HOME"/.profile
+update_salad_prep='<%= update_salad_prep %>'
 
 install_package() (
 	pkgName="$1"
@@ -137,12 +138,18 @@ fi &&
 
 asdf local ruby 3.3.5 &&
 
-echo '##### clone salad prep #####'
-git clone https://github.com/joelliusczar/salad_prep.git\
-	salad_prep &&
+if [ -n "$update_salad_prep" ]; then
 
-cd salad_prep &&
+	echo '##### clone salad prep #####'
+	git clone https://github.com/joelliusczar/salad_prep.git\
+		salad_prep &&
 
-gem build  salad_prep.gemspec -o salad_prep.gem &&
+	cd ./salad_prep &&
 
-gem install ./salad_prep.gem
+	gem build  salad_prep.gemspec -o salad_prep.gem &&
+
+	cd .. &&
+
+	gem install ./salad_prep/salad_prep.gem
+
+fi
