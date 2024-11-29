@@ -132,7 +132,7 @@ if ! asdf plugin | grep 'ruby' >/dev/null; then
 	asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
 fi &&
 
-if ! asdf list ruby 3.3.5 2>%1 >/dev/null; then
+if ! asdf list ruby 3.3.5 2>&1 >/dev/null; then
 	asdf install ruby 3.3.5
 fi &&
 
