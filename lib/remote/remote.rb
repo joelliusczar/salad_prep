@@ -29,7 +29,8 @@ module SaladPrep
 			setup_lvl,
 			current_branch:"main",
 			skip_tests: false,
-			update_salad_prep: false
+			update_salad_prep: false,
+			print_script: false,
 		)
 			@egg.load_env
 
@@ -78,6 +79,10 @@ module SaladPrep
 					SCRIPT
 				)
 				file.rewind
+				if print_script
+					print(file.read)
+					file.rewind
+				end
 				system(
 					"ssh -i #{@egg.ssh_id_file} 'root@#{@egg.ssh_address}' bash -s",
 					in: file

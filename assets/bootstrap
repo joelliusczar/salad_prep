@@ -112,7 +112,7 @@ case $(uname) in
 esac
 
 echo '##### asdf #####' &&
-if ! asdf version>/dev/null; then
+if ! asdf version >/dev/null; then
 	git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
 fi &&
 
@@ -156,3 +156,5 @@ if [ -n "$update_salad_prep" ]; then
 	gem install ./salad_prep/salad_prep.gem
 
 fi
+
+echo 'The end'
