@@ -30,7 +30,7 @@ module SaladPrep
 			current_branch:"main",
 			skip_tests: false,
 			update_salad_prep: false,
-			print_script: false,
+			print_script: false
 		)
 			@egg.load_env
 
