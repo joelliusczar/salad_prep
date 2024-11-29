@@ -142,7 +142,7 @@ asdf local ruby 3.3.5 &&
 
 
 echo '##### clone salad prep #####' &&
-if [ -n "$update_salad_prep" ]; then
+if [ -n "$update_salad_prep" ] || ! gem list | grep 'salad_prep' >/dev/null; then
 
 	git clone https://github.com/joelliusczar/salad_prep.git\
 		salad_prep &&

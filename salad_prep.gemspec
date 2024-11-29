@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.5.28"
+	s.version = "0.5.29"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
 		"assets/ruby_template.rb",
 		"lib/api_launcher/api_launcher.rb",
 		"lib/api_launcher/py_api_launcher.rb",
+		"lib/arg_checker/arg_checker.rb",
 		"lib/box_box/box_box.rb",
 		"lib/box_box/enums.rb",
 		"lib/brick_stack/brick_stack.rb",
@@ -19,6 +20,7 @@ Gem::Specification.new do |s|
 		"lib/dbass/dbass.rb",
 		"lib/egg/egg.rb",
 		"lib/file_herder/file_herder.rb",
+		"lib/monty/monty.rb",
 		"lib/remote/enums.rb",
 		"lib/remote/far_port.rb",
 		"lib/remote/remote.rb",
