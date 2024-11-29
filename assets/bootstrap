@@ -153,7 +153,9 @@ if [ -n "$update_salad_prep" ] || ! gem list | grep 'salad_prep' >/dev/null; the
 
 	cd .. &&
 
-	gem install ./salad_prep/salad_prep.gem
+	gem install ./salad_prep/salad_prep.gem &&
+
+	rm -r salad_prep
 
 fi
 
