@@ -116,7 +116,8 @@ if ! asdf version>/dev/null; then
 	git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.14.1
 fi &&
 
-if ! grep  -F'export ASDF_DIR="$HOME/.asdf"' "$HOME"/.profile >/dev/null; then
+echo '##### .profile edits #####' &&
+if ! grep  -F 'export ASDF_DIR="$HOME/.asdf"' "$HOME"/.profile >/dev/null; then
 	echo 'export ASDF_DIR="$HOME/.asdf"' >> "$HOME"/.profile
 fi &&
 
@@ -126,6 +127,7 @@ fi &&
 
 . "$HOME"/.profile &&
 
+echo '##### asdf ruby plugin #####'
 if ! asdf plugin | grep 'ruby' >/dev/null; then
 	asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
 fi &&
@@ -135,18 +137,19 @@ if ! asdf list ruby 3.3.5 2>%1 >/dev/null; then
 fi &&
 
 
-
 asdf local ruby 3.3.5 &&
 
+
+
+echo '##### clone salad prep #####' &&
 if [ -n "$update_salad_prep" ]; then
 
-	echo '##### clone salad prep #####'
 	git clone https://github.com/joelliusczar/salad_prep.git\
 		salad_prep &&
 
 	cd ./salad_prep &&
 
-	gem build  salad_prep.gemspec -o salad_prep.gem &&
+	gem build salad_prep.gemspec -o salad_prep.gem &&
 
 	cd .. &&
 
