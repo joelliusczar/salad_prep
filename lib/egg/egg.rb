@@ -397,7 +397,7 @@ module SaladPrep
 			result = []
 			result.push("repo_url") if repo_url.zero?
 			result.push("local_repo_path") if @local_repo_path.zero?
-			result.push("domain_name") if domain_name(prefer_keys_file: false).zero?
+			result.push("domain_name") if domain_name.zero?
 
 			result.push("pb_secret") if pb_secret(prefer_keys_file: false).zero?
 			result.push("pb_api_key") if pb_api_key(prefer_keys_file: false).zero?
@@ -451,7 +451,7 @@ module SaladPrep
 			result = []
 			result.push("repo_url") if repo_url.zero?
 			result.push("local_repo_path") if @local_repo_path.zero?
-			result.push("domain_name") if domain_name(prefer_keys_file: false).zero?
+			result.push("domain_name") if domain_name.zero?
 
 			result.push("pb_secret") if pb_secret(prefer_keys_file: false).zero?
 			result.push("pb_api_key") if pb_api_key(prefer_keys_file: false).zero?
