@@ -11,22 +11,6 @@ module SaladPrep
 			@egg = egg
 		end
 
-		def generate_initial_keys_file
-			if ! File.file? (@egg.key_file)
-				File.open(@egg.key_file, "w") do |file|
-					file.puts("PB_SECRET=")
-					file.puts("PB_API_KEY=")
-					file.puts("AUTH_SECRET_KEY=#{SecureRandom.alphanumeric(32)}")
-					file.puts("SERVER_SSH_ADDRESS=root@")
-					file.puts("SERVER_KEY_FILE=")
-					file.puts("DB_PASS_API=#{SecureRandom.alphanumeric(32)}")
-					file.puts("DB_PASS_OWNER=#{SecureRandom.alphanumeric(32)}")
-					file.puts("DB_PASS_SETUP=#{SecureRandom.alphanumeric(32)}")
-					file.puts("NAMESPACE_UUID=#{SecureRandom.uuid}")
-				end
-			end
-		end
-
 		def setup_app_directories
 			FileUtils.mkdir_p("#{@egg.app_root}/#{@egg.app_trunk}")
 			FileUtils.mkdir_p("#{@egg.app_root}/keys")

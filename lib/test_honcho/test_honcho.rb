@@ -14,7 +14,6 @@ module SaladPrep
 			@egg.run_test_block do 
 				publicKeyFile="#{@egg.get_debug_cert_path}.public.key.crt"
 				@brick_stack.setup_app_directories
-				@brick_stack.generate_initial_keys_file
 				FileHerder.copy_dir(@egg.templates_src, @egg.template_dest)
 				@dbass.replace_sql_scripts
 				@brick_stack.setup_env_api_file
