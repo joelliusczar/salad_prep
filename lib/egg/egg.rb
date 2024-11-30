@@ -40,6 +40,7 @@ module SaladPrep
 			@tld = tld
 			@bin_dir = bin_dir
 			@app_root = app_root.zero? ? ENV["HOME"] : app_root
+			@web_root = web_root
 			@test_flags = 0
 			@test_root = "#{repo_path}/test_trash"
 			@build_dir = "builds"
@@ -60,13 +61,13 @@ module SaladPrep
 			end
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
-				unless @web_root.zero?
+				if @web_root.zero?
 					"/srv"
 				else
 					@web_root
 				end
 			when Enums::BoxOSes::MACOS
-				unless @web_root.zero?
+				if @web_root.zero?
 					"/Library/WebServer"
 				else
 					@web_root
