@@ -16,11 +16,11 @@ module SaladPrep
 
 		def initialize (
 			project_name_0:,
-			local_repo_path:,
 			repo_url:,
 			env_prefix:,
 			url_base:,
 			tld:,
+			local_repo_path: nil,
 			bin_dir: ".local/bin",
 			app_root: nil,
 			web_root: nil,
@@ -396,7 +396,7 @@ module SaladPrep
 		def server_env_check_required
 			result = []
 			result.push("repo_url") if repo_url.zero?
-			result.push("local_repo_path") if @local_repo_path.zero?
+			result.push("local_repo_path") if repo_path.zero?
 			result.push("domain_name") if domain_name.zero?
 
 			result.push("pb_secret") if pb_secret(prefer_keys_file: false).zero?
