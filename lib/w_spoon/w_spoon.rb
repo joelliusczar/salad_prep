@@ -390,7 +390,7 @@ module SaladPrep
 				public_key_file_path = "#{remote_public_key}"
 				private_key_file_path = "#{remote_private_key}"
 				if ! File.file?(public_key_file_path) \
-					|| !File?.file?(private_key_file_path)\
+					|| !File.file?(private_key_file_path)\
 					|| is_cert_expired(File.open(public_key_file_path).read)\
 					|| force_replace
 				then
