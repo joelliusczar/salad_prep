@@ -414,7 +414,9 @@ module SaladPrep
 					else
 						l
 					end
-				end * "\n"
+				end * ""
+				f.truncate(0)
+				f.rewind
 				f.write(updated)
 			end
 		end
