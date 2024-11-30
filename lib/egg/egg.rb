@@ -12,7 +12,7 @@ module SaladPrep
 		attr_reader :project_name_0,
 			:local_repo_path, :test_flags,
 			:env_prefix, :content_dir,
-			:repo_url, :url_base, :test_root
+			:repo_url, :url_base, :test_root, :api_port
 
 		def initialize (
 			project_name_0:,
