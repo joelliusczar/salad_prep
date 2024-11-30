@@ -95,7 +95,7 @@ module SaladPrep
 
 		def update_env_path
 			unless ENV["PATH"].include?(@egg.bin_dir)
-
+				ENV["PATH"] << ":#{@egg.bin_dir}"
 			end
 		end
 

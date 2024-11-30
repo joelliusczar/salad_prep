@@ -90,6 +90,7 @@ module SaladPrep
 		end
 
 		def create_py_env_in_dir(env_root=nil)
+			BoxBox.update_env_path
 			link_app_python_if_not_linked
 			requirements_path = File.join(
 				@egg.app_root,
