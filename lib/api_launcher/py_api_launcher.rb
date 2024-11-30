@@ -37,7 +37,7 @@ module SaladPrep
 				raise "#{@egg.api_port} is not valid"
 			end
 			script = <<~CALL
-				. #{py_activate}/bin/activate
+				. #{py_activate}
 				uvicorn --app-dir #{app_dir} \
 				--root-path /api/v1 \
 				--host 0.0.0.0 \
