@@ -95,7 +95,7 @@ module SaladPrep
 
 		def self.path_append(segment)
 			unless ENV["PATH"].include?(segment)
-				ENV["PATH"] << ":#{segment}"
+				ENV["PATH"] = ENV["PATH"] + ":#{segment}"
 			end
 		end
 
