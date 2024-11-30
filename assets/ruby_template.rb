@@ -19,8 +19,6 @@ if required_env_vars.any?
 	raise required_env_vars.join("\n")
 end
 
-raise "missing keys on server" unless Provincial.egg.server_env_check
-
 Provincial.brick_stack.create_install_directory
 
 if ! system("git --version", out: File::NULL, err: File::NULL)
