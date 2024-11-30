@@ -33,6 +33,7 @@ module SaladPrep
 					"for rest with a max length of 6"
 			end
 			@project_name_0 = project_name_0
+			@repo_url = repo_url
 			@local_repo_path = local_repo_path
 			@env_prefix = env_prefix
 			@url_base = url_base

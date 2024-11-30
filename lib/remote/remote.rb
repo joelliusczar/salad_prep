@@ -83,7 +83,7 @@ module SaladPrep
 			Tempfile.create do |file|
 
 				file.write(env_setup_script)
-				file.write(Resorcerer::bootstrap)
+				file.write(templateResult)
 				file.write(
 					<<~SCRIPT
 
