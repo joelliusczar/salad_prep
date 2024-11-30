@@ -130,6 +130,7 @@ module SaladPrep
 			File.join(
 				env_root,
 				@egg.file_prefix,
+				"lib",
 				"python#{version[0]}.#{version[1]}",
 				"site-packages",
 				@egg.lib_import
