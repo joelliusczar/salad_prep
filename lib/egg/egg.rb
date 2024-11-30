@@ -404,8 +404,7 @@ module SaladPrep
 
 			result.push("api_auth_key") \
 				if api_auth_key(prefer_keys_file: false).zero?
-			result.push("namespace_uuid") \
-				if namespace_uuid(prefer_keys_file: false).zero?
+			result.push("namespace_uuid") if namespace_uuid.zero?
 
 			result.push("api_db_user_key") \
 				if api_db_user_key(prefer_keys_file: false).zero?
@@ -457,8 +456,7 @@ module SaladPrep
 			result.push("pb_api_key") if pb_api_key(prefer_keys_file: false).zero?
 
 			result.push("api_auth_key") if api_auth_key(prefer_keys_file: false).zero?
-			result.push("namespace_uuid") \
-				if namespace_uuid(prefer_keys_file: false).zero?
+			result.push("namespace_uuid") if namespace_uuid.zero?
 
 			result.push("api_db_user_key") \
 				if api_db_user_key(prefer_keys_file: false).zero?
