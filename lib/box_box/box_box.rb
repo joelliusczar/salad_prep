@@ -93,9 +93,9 @@ module SaladPrep
 			end
 		end
 
-		def update_env_path
-			unless ENV["PATH"].include?(@egg.bin_dir)
-				ENV["PATH"] << ":#{@egg.bin_dir}"
+		def self.path_append(segment)
+			unless ENV["PATH"].include?(segment)
+				ENV["PATH"] << ":#{segment}"
 			end
 		end
 
