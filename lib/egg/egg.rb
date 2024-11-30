@@ -59,13 +59,13 @@ module SaladPrep
 				return @test_root
 			end
 			case Gem::Platform::local.os
-			when Enums::BoxOSes.LINUX
+			when Enums::BoxOSes::LINUX
 				unless @web_root.zero?
 					"/srv"
 				else
 					@web_root
 				end
-			when Enums::BoxOSes.MACOS
+			when Enums::BoxOSes::MACOS
 				unless @web_root.zero?
 					"/Library/WebServer"
 				else
