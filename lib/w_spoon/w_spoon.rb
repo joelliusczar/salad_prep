@@ -33,8 +33,8 @@ module SaladPrep
 
 		def get_abs_path_from_nginx_include(conf_dir_include)
 			conf_dir = conf_dir_include
-				.gsub(/include */)
-				.gsub(/\*; */)
+				.gsub(/include */, "")
+				.gsub(/\*; */,"")
 			if File.directory?(conf_dir)
 				return conf_dir
 			else
