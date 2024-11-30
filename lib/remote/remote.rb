@@ -2,7 +2,6 @@ require "resolv"
 require "open3"
 require "tempfile"
 require "fileutils"
-require "erb"
 require_relative "../box_box/box_box"
 require_relative "../egg/egg"
 require_relative "./tiny_remote"
@@ -75,15 +74,14 @@ module SaladPrep
 				@test_honcho.run_unit_tests
 			end
 
-			templateContent = Resorcerer::bootstrap
-			template = ERB.new(templateContent, trim_mode:"<>")
-			templateResult = template.result_with_hash({
-				update_salad_prep: update_salad_prep ? "true" : ""
-			})
+			bootstrap_content = Resorcerer::bootstrap_compile(
+				update_salad_prep: update_salad_prep
+			)
+
 			Tempfile.create do |file|
 
 				file.write(env_setup_script)
-				file.write(templateResult)
+				file.write(bootstrap_content)
 				file.write(
 					<<~SCRIPT
 
