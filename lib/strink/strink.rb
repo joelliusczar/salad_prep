@@ -12,6 +12,11 @@ module SaladPrep
 				end
 				return false
 			end
+
+			def populated?
+				! zero?
+			end
+
 		end
 
 		refine String do
@@ -42,7 +47,7 @@ module SaladPrep
 			end
 
 			def ^(other)
-				self + other + "\n"
+				self + "\n" + other
 			end
 
 		end

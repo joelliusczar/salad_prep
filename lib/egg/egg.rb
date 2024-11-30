@@ -130,7 +130,7 @@ module SaladPrep
 		end
 
 		def env_find (key, keyRegex, prefer_keys_file=true)
-			if ! ENV[key].zero? && !(is_local? && prefer_keys_file)
+			if ENV[key].populated? && !(is_local? && prefer_keys_file)
 				return ENV[key]
 			end
 			File.open(key_file, "r") do |file|
@@ -165,7 +165,10 @@ module SaladPrep
 		end
 
 		def namespace_uuid
-			env_find("#{@env_prefix}_NAMESPACE_UUID", /NAMESPACE_UUID=([\w\-]+)/)
+			env_find(
+				"#{@env_prefix}_NAMESPACE_UUID",
+				/NAMESPACE_UUID=([\w\-]+)/
+			)
 		end
 
 		def db_setup_key(prefer_keys_file: true)
@@ -326,6 +329,9 @@ module SaladPrep
 
 				"PB_API_KEY" =>
 					pb_api_key(prefer_keys_file: prefer_keys_file),
+				
+				"#{env_prefix}_REPO_URL" =>
+					repo_url,
 
 				"#{env_prefix}_AUTH_SECRET_KEY" => 
 					api_auth_key(prefer_keys_file: prefer_keys_file),
@@ -381,27 +387,85 @@ module SaladPrep
 		end
 
 		def server_env_check_recommended
-			if ENV["#{@env_prefix}_DB_PASS_SETUP"].zero?
-				puts("environmental var #{@env_prefix}_DB_PASS_SETUP} not set in keys")
-			end
-			if ENV["#{@env_prefix}_DB_PASS_SETUP"].zero?
-				puts("environmental var #{@env_prefix}_DB_PASS_SETUP} not set in keys")
-			end
+			result = []
+			result.push("db_setup_key") if db_setup_key.zero?
+			result.push("db_owner_key") if db_owner_key.zero?
+			result
 		end
 
 		def server_env_check_required
-			result = true
-			if repo_path.zero?
-				result = false
+			result = []
+			result.push("repo_url") if repo_url.zero?
+			result.push("local_repo_path") if @local_repo_path.zero?
+			result.push("domain_name") if domain_name(prefer_keys_file: false).zero?
 
-			end
+			result.push("pb_secret") if pb_secret(prefer_keys_file: false).zero?
+			result.push("pb_api_key") if pb_api_key(prefer_keys_file: false).zero?
+
+			result.push("api_auth_key") \
+				if api_auth_key(prefer_keys_file: false).zero?
+			result.push("namespace_uuid") \
+				if namespace_uuid(prefer_keys_file: false).zero?
+
+			result.push("api_db_user_key") \
+				if api_db_user_key(prefer_keys_file: false).zero?
+			result.push("janitor_db_user_key") \
+				if janitor_db_user_key(prefer_keys_file: false).zero?
+			result
 		end
 
-		def server_env_check
-			puts("checking environment vars on server")
-			server_env_check_recommended
-			server_env_check_required
+		def deployment_env_check_recommended
+			result = []
+			result.push("db_setup_key") if db_setup_key.zero?
+			result.push("db_owner_key") if db_owner_key.zero?
+			result.push("api_log_level") if api_log_level.zero?
+			result
+		end
+
+		def deployment_env_check_required
+			raise "key file not setup #{key_file}" if ! File.size?(key_file)
+			result = []
+			result.push("ssh_id_file") if ssh_id_file.zero?
+			result.push("ssh_address") if ssh_address.zero?
+
+			result.push("pb_secret") if pb_secret.zero?
+			result.push("pb_api_key") if pb_api_key.zero?
+
+			result.push("api_auth_key") if api_auth_key.zero?
+			result.push("namespace_uuid") if namespace_uuid.zero?
+
+			result.push("api_db_user_key") if api_db_user_key.zero?
+			result.push("janitor_db_user_key") if janitor_db_user_key.zero?
+			result
 		end
  
+		def dev_env_check_recommended
+			result = []
+			result.push("repo_url") if repo_url.zero?
+			result.push("db_setup_key") if db_setup_key.zero?
+			result.push("db_owner_key") if db_owner_key.zero?
+			result
+		end
+
+		def dev_env_check_required
+			result = []
+			result.push("repo_url") if repo_url.zero?
+			result.push("local_repo_path") if @local_repo_path.zero?
+			result.push("domain_name") if domain_name(prefer_keys_file: false).zero?
+
+			result.push("pb_secret") if pb_secret(prefer_keys_file: false).zero?
+			result.push("pb_api_key") if pb_api_key(prefer_keys_file: false).zero?
+
+			result.push("api_auth_key") if api_auth_key(prefer_keys_file: false).zero?
+			result.push("namespace_uuid") \
+				if namespace_uuid(prefer_keys_file: false).zero?
+
+			result.push("api_db_user_key") \
+				if api_db_user_key(prefer_keys_file: false).zero?
+			result.push("janitor_db_user_key") \
+				if janitor_db_user_key(prefer_keys_file: false).zero?
+			result
+		end
+
 	end
 end

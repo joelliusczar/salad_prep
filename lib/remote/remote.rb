@@ -34,6 +34,19 @@ module SaladPrep
 		)
 			@egg.load_env
 
+			puts("Deployment environmental variable check")
+			@egg.deployment_env_check_recommended.each do |e|
+				puts("Recomended var #{e} not set")
+			end
+			
+			required_env_vars = @egg.deployment_env_check_required.map do |e|
+				"Required var #{e} not set"
+			end
+
+			if required_env_vars.any?
+				raise required_env_vars.join("\n")
+			end
+
 			if ! `git status --porcelain`.zero?
 				puts(
 					"There are uncommited changes that will not be apart of the deploy"
@@ -77,7 +90,7 @@ module SaladPrep
 						ruby <<EOF
 							#{ruby_script(setup_lvl, current_branch)}
 						EOF
-						
+
 					SCRIPT
 				)
 				file.rewind

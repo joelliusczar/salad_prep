@@ -6,6 +6,19 @@ if ! Provincial.far_port.is_ssh?
 	raise "This section should only be run remotely"
 end
 
+puts("Server environmental variable check")
+Provincial.egg.server_env_check_recommended.each do |e|
+	puts("Recomended var #{e} not set")
+end
+
+required_env_vars = Provincial.egg.server_env_check_required.map do |e|
+	"Required var #{e} not set"
+end
+
+if required_env_vars.any?
+	raise required_env_vars.join("\n")
+end
+
 raise "missing keys on server" unless Provincial.egg.server_env_check
 
 Provincial.brick_stack.create_install_directory
