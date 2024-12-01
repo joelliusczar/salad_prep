@@ -23,7 +23,7 @@ module SaladPrep
 					#install packages
 					npm --prefix '#{@egg.client_src}' i &&
 					#build code (transpile it)
-					npm run --prefix '#{@egg.client_src}' build &&
+					npm run --prefix '#{@egg.client_src}' build
 			CALL
 			system(script, exception: true)
 			FileUtils.cp_r(
