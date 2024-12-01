@@ -376,7 +376,7 @@ module SaladPrep
 
 				"#{env_prefix}_API_LOG_LEVEL" => 
 					api_log_level
-			}
+			}.reject {|k, v| v.zero? }
 		end
 
 		def local_env_hash
