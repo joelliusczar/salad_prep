@@ -45,7 +45,7 @@ module SaladPrep
 				--port #{@egg.api_port} \
 				"index:app"
 			CALL
-			pid = spawn(script. in: File::NULL, out: api_out, err: api_out)
+			pid = spawn(script, in: File::NULL, out: api_out, err: api_out)
 			Process.detach(pid)
 			puts(
 				"Server base is #{Dir.pwd}. Look there for api.out and the log file"
