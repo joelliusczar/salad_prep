@@ -80,15 +80,13 @@ module SaladPrep
 
 			Tempfile.create do |file|
 
-				file.write(env_setup_script)
-				file.write(bootstrap_content)
-				file.write(
+				file.puts(env_setup_script)
+				file.puts(bootstrap_content)
+				file.puts(
 					<<~SCRIPT
-
 						ruby <<EOF
 							#{ruby_script(setup_lvl, current_branch)}
 						EOF
-
 					SCRIPT
 				)
 				file.rewind
