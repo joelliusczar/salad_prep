@@ -436,7 +436,7 @@ module SaladPrep
 			content.gsub!("#ssl_trusted_certificate", "ssl_trusted_certificate")
 		end
 
-		def In update_nginx_conf(app_conf_path)
+		def update_nginx_conf(app_conf_path)
 			File.open(app_conf_path, "w") do |f|
 				content = @resourcerer::nginx_template
 				content.gsub!(
