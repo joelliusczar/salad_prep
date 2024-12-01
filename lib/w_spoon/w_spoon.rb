@@ -436,7 +436,7 @@ module SaladPrep
 			content.gsub!("#ssl_trusted_certificate", "ssl_trusted_certificate")
 		end
 
-		def update_nginx_conf(app_conf_path)
+		def In update_nginx_conf(app_conf_path)
 			File.open(app_conf_path, "w") do |f|
 				content = @resourcerer::nginx_template
 				content.gsub!(
@@ -444,7 +444,7 @@ module SaladPrep
 					@egg.client_dest
 				)
 				content.gsub!("<SERVER_NAME>", @egg.domain_name)
-				content.gsub!("<API_PORT>", @egg.api_port)
+				content.gsub!("<API_PORT>", @egg.api_port.to_s)
 				if @egg.is_local?
 					set_local_nginx_app_conf!(content)
 				else
