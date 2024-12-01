@@ -36,15 +36,16 @@ module SaladPrep
 			unless @egg.api_port.is_a?(Integer)
 				raise "#{@egg.api_port} is not valid"
 			end
+			api_out = File.open("api.out", "a")
 			script = <<~CALL
 				. #{py_activate}
 				uvicorn --app-dir #{app_dir} \
 				--root-path /api/v1 \
 				--host 0.0.0.0 \
 				--port #{@egg.api_port} \
-				"index:app" </dev/null >api.out 2>&1
+				"index:app"
 			CALL
-			pid = spawn(script)
+			pid = spawn(script. in: File::NULL, out: api_out, err: api_out)
 			Process.detach(pid)
 			puts(
 				"Server base is #{Dir.pwd}. Look there for api.out and the log file"
