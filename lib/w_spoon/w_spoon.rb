@@ -433,7 +433,6 @@ module SaladPrep
 			content.gsub!("<listen>","[::]:443 ssl")
 			content.gsub!("<ssl_public_key>",remote_public_key)
 			content.gsub!("<ssl_private_key>",remote_private_key)
-			content.gsub!("#ssl_trusted_certificate", "ssl_trusted_certificate")
 		end
 
 		def update_nginx_conf(app_conf_path)
