@@ -437,22 +437,20 @@ module SaladPrep
 		end
 
 		def update_nginx_conf(app_conf_path)
-			def copy_and_update_nginx_template(app_conf_path)
-				File.open(nginx_conf_path, "w") do |f|
-					content = @resourcerer::nginx_template
-					content.gsub!(
-						"<CLIENT_DEST>",
-						@egg.client_dest
-					)
-					content.gsub!("<SERVER_NAME>", domain_name)
-					content.gsub!("<API_PORT>", @egg.api_port)
-					if @egg.is_local?
-						set_local_nginx_app_conf!(content)
-					else
-						set_deployed_nginx_app_conf!(content)
-					end
-					f.write(content)
+			File.open(app_conf_path, "w") do |f|
+				content = @resourcerer::nginx_template
+				content.gsub!(
+					"<CLIENT_DEST>",
+					@egg.client_dest
+				)
+				content.gsub!("<SERVER_NAME>", domain_name)
+				content.gsub!("<API_PORT>", @egg.api_port)
+				if @egg.is_local?
+					set_local_nginx_app_conf!(content)
+				else
+					set_deployed_nginx_app_conf!(content)
 				end
+				f.write(content)
 			end
 		end
 
