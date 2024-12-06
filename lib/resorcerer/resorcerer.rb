@@ -40,6 +40,10 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}nginx_template.conf")
 		end
 
+		def self.nginx_evil_conf
+			open_text("#{ASSETS_DIR}nginx_evil.conf")
+		end
+
 	end
 
 end

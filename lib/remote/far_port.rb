@@ -9,10 +9,12 @@ module SaladPrep
 			egg:,
 			api_launcher:,
 			client_launcher:
+			installer:
 		)
 			@egg = egg
 			@api_launcher = api_launcher
 			@client_launcher = client_launcher
+			@installer = installer
 		end
 
 		def is_ssh?
@@ -25,6 +27,8 @@ module SaladPrep
 				@api_launcher.startup_api
 			when Enums::SetupLvls::CLIENT
 				@client_launcher.setup_client
+			when Enums::SetupLvls::INSTALL
+				@installer.install_dependencies
 			else
 				if block_given?
 					yield

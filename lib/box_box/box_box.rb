@@ -17,11 +17,18 @@ module SaladPrep
 			end
 		end
 
+		def self.uses_aptget?
+			which(Enums::PackageManagers::APTGET).any?
+		end
+
 		def self.is_installed?(pkg)
+			system(pkg, "--version", out: File::NULL, err: File::NULL) ||
+			system(pkg, "-v", out: File::NULL, err: File::NULL) ||
+			system(pkg, "-V", out: File::NULL, err: File::NULL) ||
 			which(pkg).any? ||
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
-				if which(Enums::PackageManagers::APTGET).any?
+				if uses_aptget?
 					system("dpkg", "-s", pkg, out: File::NULL, err: File::NULL)
 				else
 					raise "Non-debian distros not configured"
@@ -122,9 +129,23 @@ module SaladPrep
 		end
 
 		def self.path_append(segment)
-			unless ENV["PATH"].include?(segment)
-				ENV["PATH"] = ENV["PATH"] + ":#{segment}"
+			profile = File.join(
+				ENV["HOME"],
+				".profile"
+			)
+			File.open(profile, "r+") do |file|
+				content = file.read
+				if ! content =~ /PATH=.*:#{Regex.quote(segment)(?::.)*}/
+					current_path = ENV["PATH"]
+					file.write("PATH=#{current_path}:#{segment}")
+				end
 			end
+			`. "$HOME"/.profile >/dev/null 2>&1 && env`
+				.split("\n")
+				.each do |e|
+					pair = e.split("=")
+					ENV[pair[0]] = pair[1]
+				end
 		end
 
 		def self.run_and_get(cmds, in_s:nil, exception: false)

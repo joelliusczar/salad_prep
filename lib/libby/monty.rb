@@ -12,6 +12,8 @@ module SaladPrep
 
 	class Monty < Libby
 
+		attr_reader :version
+
 		def initialize(
 			egg,
 			version:"3.9",
@@ -62,12 +64,12 @@ module SaladPrep
 				when Enums::BoxOSes::MACOS
 					FileUtils.ln_sf(
 						BoxBox.which("python@#{@version}").first,
-						File.join(bin_dir, "#{@egg.env_prefix}-python")
+						File.join(bin_dir, python_command)
 					)
 				when Enums::BoxOSes::LINUX
 					FileUtils.ln_sf(
 						BoxBox.which("python3").first,
-						File.join(bin_dir, "#{@egg.env_prefix}-python")
+						File.join(bin_dir, python_command)
 					)
 				else
 					raise "OS not configured for link_app_python_if_not_linked"
@@ -94,6 +96,12 @@ module SaladPrep
 			else
 				raise "No python version found"
 			end
+		end
+
+		def is_installed_version_good?
+			min_version = @version.split(".").take(2).map(&:to_i)
+			installed_version = python_version.take(2).map(&:to_i)
+			(installed_version <=> min_version) > -1
 		end
 
 		def create_py_env_in_dir(env_root=nil)
