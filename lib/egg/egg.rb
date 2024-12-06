@@ -29,7 +29,7 @@ module SaladPrep
 			content_dir: "content",
 			api_port: 8033,
 			test_port: 8032,
-			api_version: "v1",
+			api_version: "v1"
 		)
 			if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ env_prefix)
 				raise "env prefix is using an illegal form. "
