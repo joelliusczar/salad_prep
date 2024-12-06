@@ -84,6 +84,12 @@ module SaladPrep
 			end
 		end
 
+		def self.python_full(egg, monty)
+			python(egg, monty)
+			python_pip(egg, monty)
+			python_virtualenv(monty)
+		end
+
 		def self.nodejs()
 			if ! `asdf plugin list`.include?("nodejs")
 				system(
