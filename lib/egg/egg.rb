@@ -378,7 +378,7 @@ module SaladPrep
 					namespace_uuid,
 
 				"#{env_prefix}_DATABASE_NAME" => 
-					db_name
+					db_name,
 
 				"#{env_prefix}_DB_PASS_SETUP" => 
 					db_setup_key(prefer_keys_file: prefer_keys_file),
@@ -393,7 +393,7 @@ module SaladPrep
 					janitor_db_user_key(prefer_keys_file: prefer_keys_file),
 
 				"#{env_prefix}_API_LOG_LEVEL" => 
-					api_log_level
+					api_log_level,
 
 				"#{env_prefix}_API_VERSION" =>
 					api_version
