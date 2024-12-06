@@ -9,7 +9,7 @@ module SaladPrep
 		def hash_index_dir(input_dir)
 			Enumerator.new do |yielder|
 				Dir.glob("**/*",File::FNM_DOTMATCH, base: input_dir)
-				.sort_by { |e| e } do |file|
+				.sort_by { |e| e }.each do |file|
 					script_name = file.split(".")[-2]
 					next if script_name.zero?
 					enum_name = script_name
