@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.6.26"
+	s.version = "0.7.0"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -18,9 +18,13 @@ Gem::Specification.new do |s|
 		"lib/canary/canary.rb",
 		"lib/client_launcher/client_launcher.rb",
 		"lib/dbass/dbass.rb",
+		"lib/dbass/enums.rb",
+		"lib/dbass/myass_root.rb",
+		"lib/dbass/myass.rb",
 		"lib/egg/egg.rb",
 		"lib/file_herder/file_herder.rb",
-		"lib/monty/monty.rb",
+		"lib/libby/libby.rb",
+		"lib/libby/monty.rb",
 		"lib/remote/enums.rb",
 		"lib/remote/far_port.rb",
 		"lib/remote/remote.rb",
@@ -37,4 +41,5 @@ Gem::Specification.new do |s|
 	s.license = "MIT"
 	s.add_dependency "base64", "~> 0.2"
 	s.add_dependency "ostruct", "~> 0.6" #this must be used internally?
+	s.add_dependency "ruby-mysql", "~> 4.1"
 end

@@ -56,5 +56,17 @@ module SaladPrep
 			FileUtils.cp_r("#{src_dir}/.", dest_dir, verbose:true)
 			puts("done copying dir from #{src_dir} to #{dest_dir}")
 		end
+
+		def self.update_in_place(file_path)
+			File.open(file_path, "r+") do |f|
+				updated = f.readlines.map do |l|
+					yield l
+				end * ""
+				f.truncate(0)
+				f.rewind
+				f.write(updated)
+			end
+		end
+
 	end
 end

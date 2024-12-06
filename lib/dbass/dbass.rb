@@ -11,6 +11,16 @@ module SaladPrep
 		end
 
 		def setup_db
+			raise "teardown_db not implemented"
 		end
+
+		def teardown_db
+			raise "teardown_db not implemented"
+		end
+
+		def start_db_service
+			raise "start_db_service not implemented"
+		end
+
 	end
 end

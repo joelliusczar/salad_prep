@@ -26,7 +26,11 @@ module SaladPrep
 			when Enums::SetupLvls::CLIENT
 				@client_launcher.setup_client
 			else
-				raise "Setup path not configured"
+				if block_given?
+					yield
+				else
+					raise "Setup path not configured"
+				end
 			end
 		end
 

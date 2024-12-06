@@ -11,13 +11,14 @@ module SaladPrep
 		def setup_client()
 			ArgChecker.path(@egg.client_dest)
 			ArgChecker.path(@egg.full_url)
+			ArgChecker.api_version(@egg.api_version)
 			FileHerder::empty_dir(@egg.client_dest)
 			script = <<~CALL
 					if [ -z "$NVM_DIR" ]; then
 						export NVM_DIR="$HOME"/.nvm
 						[ -s "$NVM_DIR"/nvm.sh ] && \. "$NVM_DIR"/nvm.sh  # This loads nvm
 					fi &&
-					export VITE_API_VERSION=v1 &&
+					export VITE_API_VERSION=#{@egg.api_version} &&
 					export VITE_BASE_ADDRESS="#{@egg.full_url}" &&
 					#set up react then copy
 					#install packages

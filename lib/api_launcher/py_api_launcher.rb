@@ -1,6 +1,7 @@
 require "fileutils"
 require_relative "./api_launcher"
-require_relative "../monty/monty"
+require_relative "../libby/monty"
+require_relative "../arg_checker/arg_checker"
 
 module SaladPrep
 	class PyAPILauncher < APILauncher
@@ -36,11 +37,12 @@ module SaladPrep
 			unless @egg.api_port.is_a?(Integer)
 				raise "#{@egg.api_port} is not valid"
 			end
+			ArgChecker.api_version(@egg.api_version)
 			api_out = File.open("api.out", "a")
 			script = <<~CALL
 				. #{py_activate}
 				uvicorn --app-dir #{app_dir} \
-				--root-path /api/v1 \
+				--root-path /api/#{@egg.api_version} \
 				--host 0.0.0.0 \
 				--port #{@egg.api_port} \
 				"index:app"

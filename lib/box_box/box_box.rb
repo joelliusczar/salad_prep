@@ -1,6 +1,9 @@
 require_relative "./enums"
+require_relative "../strink/strink"
 
 module SaladPrep
+	using Strink
+
 	class BoxBox
 
 		def initialize(egg)
@@ -14,20 +17,30 @@ module SaladPrep
 			end
 		end
 
-		def self.is_installed(cmd)
-			which(cmd).any?
+		def self.is_installed?(pkg)
+			which(pkg).any? ||
+			case Gem::Platform::local.os
+			when Enums::BoxOSes::LINUX
+				if which(Enums::PackageManagers::APTGET).any?
+					system("dpkg", "-s", pkg, out: File::NULL, err: File::NULL)
+				else
+					raise "Non-debian distros not configured"
+				end
+			when Enums::BoxOSes::MACOS
+				raise "Mac not configured"
+			end
 		end
 
 		def self.get_package_manager
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
-				if is_installed(PackageManagers.PACMAN)
+				if is_installed(Enums::PackageManagers::PACMAN)
 					Enums::PackageManagers::PACMAN
-				elsif is_installed(PackageManagers.APTGET)
-					PackageManagers.APTGET
+				elsif is_installed(Enums::PackageManagers::APTGET)
+					Enums::PackageManagers::APTGET
 				end
 			when Enums::BoxOSes::MACOS
-				PackageManagers.HOMEBREW
+				Enums::PackageManagers::HOMEBREW
 			end
 		end
 
@@ -65,6 +78,12 @@ module SaladPrep
 			end
 		end
 
+		def self.install_if_missing(pkg)
+			if ! BoxBox.is_installed?(pkg)
+				BoxBox.install_package(pkg)
+			end
+		end
+
 		def self.update_pkg_mgr
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
@@ -93,9 +112,56 @@ module SaladPrep
 			end
 		end
 
+		def self.restart_service(service)
+			if system("systemctl", "is-active", --"quiet", service)
+				system("systemctl", "restart", service, exception: true)
+			else
+				system("systemctl", "enable", service, exception: true)
+				system("systemctl", "start", service, exception: true)
+			end
+		end
+
 		def self.path_append(segment)
 			unless ENV["PATH"].include?(segment)
 				ENV["PATH"] = ENV["PATH"] + ":#{segment}"
+			end
+		end
+
+		def self.run_and_get(cmds, in_s:nil, exception: false)
+			result = IO.popen(
+				cmds,
+				"r+"
+			) do |p|
+				if in_s.populated?
+					p.write(in_s)
+				end
+				p.close_write
+				output = p.read
+			end
+			if exception && ! $?.success?
+				raise "#{cmds[0]} failed with exit code #{$?.exitstatus}"
+			end
+		end
+
+		def self.kill_process_using_port(port)
+			if system("ss -V", out: File::NULL, err: File::NULL)
+				procId = run_and_get(
+					["ss", "-lpn", "sport = :#{port}"],
+					exception: true
+				)
+				if procId.populated?
+					Process.kill(15, procId)
+				end
+			elsif system("lsof -v", out: File::NULL, err: File::NULL)
+				procId = run_and_get(
+					["lsof", "-i", ":#{port}"],
+					exception: true
+				).split("\n")[1].split[1]
+				if procId.populated?
+					Process.kill(15, procId)
+				end
+			else
+				raise "Script not wired up to be able to kill process at port: #{port}"
 			end
 		end
 

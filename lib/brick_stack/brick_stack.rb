@@ -41,6 +41,9 @@ module SaladPrep
 			FileUtils.mkdir_p(@egg.repo_path)
 		end
 
+		def sync_utility_scripts
+		end
+
 	end
 
 end

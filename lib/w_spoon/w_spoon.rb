@@ -4,6 +4,7 @@ require 'json'
 require 'net/http'
 require "open3"
 require "tempfile"
+require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
 require_relative "../egg/egg"
 require_relative "../strink/strink"
@@ -79,6 +80,14 @@ module SaladPrep
 
 		def local_nginx_cert_path
 			File.join(localhost_ssh_dir, local_nginx_cert_name)
+		end
+
+		def get_debug_cert_name
+			"#{@egg.project_name_snake}_localhost_debug"
+		end
+
+		def debug_cert_path
+			File.join(localhost_ssh_dir, get_debug_cert_name)
 		end
 
 		def keychain_osx
@@ -193,7 +202,7 @@ module SaladPrep
 			status.exitstatus == 0 ? false : true
 		end
 
-		def clean_up_invalid_cert(common_name, cert_name)
+		def clean_up_invalid_cert(common_name, cert_name = nil)
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::MACOS
 				certs_matching_name(common_name).each do |cert|
@@ -404,6 +413,31 @@ module SaladPrep
 			end
 		end
 
+		def setup_client_env_debug
+			env_file = File.join(@gg.client_src, ".env.local")
+			File.open(env_file, "w") do |f|
+				f.puts("VITE_API_VERSION=#{@egg.api_version}")
+				f.puts("VITE_BASE_ADDRESS=https://localhost:#{@egg.test_port}")
+				#VITE_SSL_PUBLIC, and SSL_KEY_FILE are used by create-react-app
+				#when calling `npm start`
+				f.puts("VITE_SSL_PUBLIC=#{debug_cert_path}.public.key.crt")
+				f.puts("VITE_SSL_PRIVATE=#{debug_cert_path}.private.key.pem")
+			end
+		end
+
+		def setup_ssl_cert_local_debug
+			public_key_file_path = "#{debug_cert_path}.public.key.crt"
+			private_key_file_path = "#{debug_cert_path}.private.key.pem"
+			clean_up_invalid_cert("#{@egg.app}-localhost")
+			setup_ssl_cert_local(
+				"#{@egg.app}-localhost",
+				"localhost",
+				public_key_file_path,
+				private_key_file_path
+			)
+			set_firefox_cert_policy(public_key_file_path)
+			setup_client_env_debug
+		end
 		
 		def enable_nginx_include(conf_dir_include, nginx_conf_path)
 			escaped_guess = Regexp.new(conf_dir_include.gsub(/\*/,"\\*"))
@@ -435,7 +469,7 @@ module SaladPrep
 			content.gsub!("<ssl_private_key>",remote_private_key)
 		end
 
-		def update_nginx_conf(app_conf_path)
+		def update_nginx_conf(app_conf_path, port)
 			File.open(app_conf_path, "w") do |f|
 				content = @resourcerer::nginx_template
 				content.gsub!(
@@ -443,7 +477,8 @@ module SaladPrep
 					@egg.client_dest
 				)
 				content.gsub!("<SERVER_NAME>", @egg.domain_name)
-				content.gsub!("<API_PORT>", @egg.api_port.to_s)
+				content.gsub!("<API_PORT>", port)
+				content.gsub!("<API_VERSION>", @egg.api_version)
 				if @egg.is_local?
 					set_local_nginx_app_conf!(content)
 				else
@@ -458,26 +493,38 @@ module SaladPrep
 			when Enums::BoxOSes::MACOS
 				system("nginx -s reload", exception: true)
 			when Enums::BoxOSes::LINUX
-				if system("systemctl is-active --quiet nginx")
-					system("systemctl restart nginx", exception: true)
-				else
-					system("systemctl enable nginx", exception: true)
-					system("systemctl start nginx", exception: true)
-				end
+				BoxBox.restart_service("nginx")
 			else
 				raise "Restarting server not configured for #{Gem::Platform::local.os}"
 			end
 		end
 
-		def setup_nginx_confs
+		def refresh_certs
+			setup_ssl_cert_nginx
+			restart_nginx
+		end
+
+		def setup_nginx_confs(port)
 			nginx_conf_path = get_nginx_value
 			conf_dir_include = get_nginx_conf_dir_include(nginx_conf_path)
 			conf_dir = get_abs_path_from_nginx_include(conf_dir_include)
 			setup_ssl_cert_nginx
 			enable_nginx_include(conf_dir_include, nginx_conf_path)
-			update_nginx_conf("#{conf_dir}/#{@egg.app}.conf")
+			update_nginx_conf("#{conf_dir}/#{@egg.app}.conf", port)
 			FileUtils.rm_f(File.join(conf_dir, "default"))
 			restart_nginx
+		end
+
+		def startup_nginx_for_debug
+			setup_nginx_confs(@egg.test_port.to_s)
+			restart_nginx
+		end
+
+		def nginx_conf_location
+			nginx_conf_path = get_nginx_value
+			conf_dir_include = get_nginx_conf_dir_include(nginx_conf_path)
+			conf_dir = get_abs_path_from_nginx_include(conf_dir_include)
+			"#{conf_dir}/#{@egg.app}.conf"
 		end
 
 	end

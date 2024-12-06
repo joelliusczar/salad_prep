@@ -37,6 +37,16 @@ module SaladPrep
 			)
 		end
 
+		def connect_sftp_root
+			exec(
+				"sftp",
+				"-6",
+				"-i",
+				@egg.ssh_id_file,
+				"root@#{@egg.ssh_address}",
+			)
+		end
+
 		def toot_check
 			system(
 				"ssh",

@@ -12,7 +12,8 @@ module SaladPrep
 		attr_reader :project_name_0,
 			:local_repo_path, :test_flags,
 			:env_prefix, :content_dir,
-			:repo_url, :url_base, :test_root, :api_port
+			:repo_url, :url_base, :test_root, :api_port,
+			:test_port, :api_version, :db_owner_name
 
 		def initialize (
 			project_name_0:,
@@ -20,12 +21,15 @@ module SaladPrep
 			env_prefix:,
 			url_base:,
 			tld:,
+			db_owner_name:,
 			local_repo_path: nil,
-			bin_dir: ".local/bin",
+			bin_parent_dir: ".local",
 			app_root: nil,
 			web_root: nil,
 			content_dir: "content",
-			api_port: 8033
+			api_port: 8033,
+			test_port: 8032,
+			api_version: "v1",
 		)
 			if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ env_prefix)
 				raise "env prefix is using an illegal form. "
@@ -38,7 +42,7 @@ module SaladPrep
 			@env_prefix = env_prefix
 			@url_base = url_base
 			@tld = tld
-			@bin_dir = bin_dir
+			@bin_parent_dir = bin_parent_dir
 			@app_root = app_root.zero? ? ENV["HOME"] : app_root
 			@web_root = web_root
 			@test_flags = 0
@@ -46,6 +50,8 @@ module SaladPrep
 			@build_dir = "builds"
 			@content_dir = content_dir
 			@api_port = api_port
+			@test_port = test_port
+			@api_version = api_version
 		end
 
 		def app_root
@@ -209,6 +215,10 @@ module SaladPrep
 			ENV["#{env_prefix}_API_LOG_LEVEL"]
 		end
 
+		def db_name
+			"#{project_name_snake}_db"
+		end
+
 		def ssh_address
 			env_find(
 				"#{@env_prefix}_SERVER_SSH_ADDRESS",
@@ -238,6 +248,9 @@ module SaladPrep
 					file.puts("DB_PASS_OWNER=#{SecureRandom.alphanumeric(32)}")
 					file.puts("DB_PASS_SETUP=#{SecureRandom.alphanumeric(32)}")
 					file.puts("NAMESPACE_UUID=#{SecureRandom.uuid}")
+					if block_given?
+						yield file
+					end
 				end
 			end
 		end
@@ -279,10 +292,6 @@ module SaladPrep
 			"#{src}/#{lib}"
 		end
 
-		def templates_src
-			"#{repo_path}/templates"
-		end
-
 		def abs_suffix(suffix, abs=true)
 			if abs
 				return File.join(app_root, suffix)
@@ -295,6 +304,10 @@ module SaladPrep
 				return File.join(web_root, suffix)
 			end
 			return suffix
+		end
+
+		def templates_src
+			"#{repo_path}/templates"
 		end
 
 		def template_dest(abs:true)
@@ -338,8 +351,13 @@ module SaladPrep
 			abs_suffix(@build_dir, abs)
 		end
 
+		def bin_parent_dir(abs: true)
+			abs_suffix(@bin_parent_dir, abs)
+		end
+
+
 		def bin_dir(abs: true)
-			abs_suffix(@bin_dir, abs)
+			File.join(bin_parent_dir(abs: abs), "bin")
 		end
 
 		def env_hash(prefer_keys_file: true)
@@ -360,7 +378,7 @@ module SaladPrep
 					namespace_uuid,
 
 				"#{env_prefix}_DATABASE_NAME" => 
-					"#{project_name_snake}_db",
+					db_name
 
 				"#{env_prefix}_DB_PASS_SETUP" => 
 					db_setup_key(prefer_keys_file: prefer_keys_file),
@@ -376,6 +394,9 @@ module SaladPrep
 
 				"#{env_prefix}_API_LOG_LEVEL" => 
 					api_log_level
+
+				"#{env_prefix}_API_VERSION" =>
+					api_version
 			}.reject {|k, v| v.zero? }
 		end
 
@@ -435,6 +456,8 @@ module SaladPrep
 
 		def deployment_env_check_recommended
 			result = []
+			result.push("local_repo_path") \
+				if ENV["#{env_prefix}_LOCAL_REPO_DIR"].zero?
 			result.push("db_setup_key") if db_setup_key.zero?
 			result.push("db_owner_key") if db_owner_key.zero?
 			result.push("api_log_level") if api_log_level.zero?
@@ -444,6 +467,8 @@ module SaladPrep
 		def deployment_env_check_required
 			raise "key file not setup #{key_file}" if ! File.size?(key_file)
 			result = []
+			result.push("repo_url") if repo_url.zero?
+			result.push("domain_name") if domain_name.zero?
 			result.push("ssh_id_file") if ssh_id_file.zero?
 			result.push("ssh_address") if ssh_address.zero?
 

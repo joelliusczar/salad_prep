@@ -1,18 +1,26 @@
 require "fileutils"
+require "tempfile"
 require_relative "../arg_checker/arg_checker"
 require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
 require_relative "../file_herder/file_herder"
+require_relative "./libby"
 require_relative "../strink/strink"
 
 module SaladPrep
 	using Strink
 
-	class Monty
+	class Monty < Libby
 
-		def initialize(egg, version = "3.9")
+		def initialize(
+			egg,
+			version:"3.9",
+			generated_file_dir: nil
+		)
 			@egg = egg
 			@version = version
+			raise "generated_file_dir is required" if generated_file_dir.zero?
+			@generated_file_dir = generated_file_dir
 		end
 
 		def py_env_path
@@ -74,7 +82,6 @@ module SaladPrep
 		end
 
 		def python_version
-			
 			if 
 				system("#{python_command} -V >/dev/null 2>&1") \
 				&& ENV["VIRTUAL_ENV"].zero?\
@@ -123,6 +130,27 @@ module SaladPrep
 		end
 
 		def regen_lib_supports
+			output_file = File.join(@generated_file_dir, "file_reference.py")
+			input_dir = @egg.sql_scripts_src
+			File.open(output_file, "w") do |out|
+				out.write("####### This file is generated. #######\n")
+				out.write("# edit regen_file_reference_file #\n")
+				out.write("# in mc_dev_ops.sh and rerun\n")
+				out.write("from enum import Enum\n\n")
+				out.write("class SqlScripts(Enum):\n")
+				hash_index_dir(input_dir).each do |file, enum_name, sha256_hash|
+					out.write(
+						'\t#{enum_name} = (\n\t\t\"#{file}\",\n\t\t\"#{sha256_hash}\"\n\t)\n'
+					)
+				end
+				out.write("\n\t@property\n")
+				out.write("\tdef file_name(self) -> str:\n")
+				out.write("\t\treturn self.value[0]\n\n")
+				out.write("\t@property\n")
+				out.write("\tdef checksum(self) -> str:\n")
+				out.write("\t\treturn self.value[1]\n")
+
+			end
 		end
 
 		def libs_dest_dir(env_root)
@@ -153,5 +181,34 @@ module SaladPrep
 			replace_lib_files
 		end
 
+		def install_py_env_if_needed
+			if ! File.exist?(py_env_activate_path)
+				sync_requirement_list
+				create_py_env_in_app_trunk
+			else
+				replace_lib_files
+			end
+		end
+
+		def activate_env
+			install_py_env_if_needed
+			activate = py_env_activate_path.dup
+			ArgChecker.path(activate)
+			exec(". '#{activate}'")
+		end
+
+		def start_python
+			install_py_env_if_needed
+			activate = py_env_activate_path.dup
+			ArgChecker.path(activate)
+			exec(". '#{activate}' && python")
+		end
+
+		def run_python_script(script)
+			install_py_env_if_needed
+			activate = py_env_activate_path.dup
+			ArgChecker.path(activate)
+			BoxBox.run_and_get(". '#{activate}' && python /dev/stdin", in_s: script)
+		end
 	end
 end
