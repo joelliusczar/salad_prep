@@ -44,7 +44,7 @@ module SaladPrep
 
 		def self.python_pip(egg, monty)
 			if ! system(
-				monty.python_command, "-m", "pip", "-V"
+				monty.python_command, "-m", "pip", "-V",
 				out: File::NULL, err: File::NULL
 			)
 			then
@@ -73,7 +73,7 @@ module SaladPrep
 
 		def self.python_virtualenv(monty)
 			if ! system(
-				monty.python_command, "-m", "virtualenv", "-version"
+				monty.python_command, "-m", "virtualenv", "-version",
 				out: File::NULL, err: File::NULL
 			)
 			then
