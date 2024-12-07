@@ -8,7 +8,7 @@ module SaladPrep
 		def initialize (
 			egg:,
 			api_launcher:,
-			client_launcher:
+			client_launcher:,
 			installer:
 		)
 			@egg = egg
