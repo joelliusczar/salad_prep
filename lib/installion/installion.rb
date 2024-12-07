@@ -1,6 +1,6 @@
 require "fileutils"
 require_relative "../box_box/box_box"
-require_relative "../box_box/enum"
+require_relative "../box_box/enums"
 require_relative "../dbass/myass_root"
 require_relative "../resorcerer/resorcerer"
 
