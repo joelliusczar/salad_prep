@@ -12,15 +12,15 @@ module SaladPrep
 
 	class Monty < Libby
 
-		attr_reader :version
+		attr_reader :min_version
 
 		def initialize(
 			egg,
-			version:"3.9",
+			min_version:"3.9",
 			generated_file_dir: nil
 		)
 			@egg = egg
-			@version = version
+			@min_version = min_version
 			raise "generated_file_dir is required" if generated_file_dir.zero?
 			@generated_file_dir = generated_file_dir
 		end
@@ -63,7 +63,7 @@ module SaladPrep
 				case Gem::Platform::local.os
 				when Enums::BoxOSes::MACOS
 					FileUtils.ln_sf(
-						BoxBox.which("python@#{@version}").first,
+						BoxBox.which("python@#{@min_version}").first,
 						File.join(bin_dir, python_command)
 					)
 				when Enums::BoxOSes::LINUX
@@ -99,7 +99,7 @@ module SaladPrep
 		end
 
 		def is_installed_version_good?
-			min_version = @version.split(".").take(2).map(&:to_i)
+			min_version = @min_version.split(".").take(2).map(&:to_i)
 			installed_version = python_version.take(2).map(&:to_i)
 			(installed_version <=> min_version) > -1
 		end
