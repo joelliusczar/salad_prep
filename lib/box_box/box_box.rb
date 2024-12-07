@@ -51,13 +51,13 @@ module SaladPrep
 			end
 		end
 
-		def self.install_package(pkg)
+		def self.install_package(pkg, input: "yes")
 			puts("attempt to install #{pkg}")
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
 				if is_installed(PackageManagers.PACMAN)
 					IO.pipe do |r, w|
-						spawn("yes", out: r)
+						spawn("yes", input, out: r)
 						r.close
 						system(
 							"pacman", "-S", pkg,
