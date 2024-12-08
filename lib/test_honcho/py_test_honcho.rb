@@ -37,7 +37,7 @@ module SaladPrep
 
 				ArgChecker.path(py_activate)
 				script = <<~CALL
-					. '#{py_activate}'
+					. '#{py_activate}' &&
 					pytest -s
 				CALL
 				Dir.chdir(File.join(@egg.src, "tests")) do 
