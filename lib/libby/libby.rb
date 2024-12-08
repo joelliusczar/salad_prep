@@ -1,6 +1,9 @@
 require 'digest'
+require_relative "../strink/strink"
 
 module SaladPrep
+	using Strink
+
 	class Libby
 
 		def regen_lib_supports
