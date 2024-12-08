@@ -27,6 +27,8 @@ module SaladPrep
 				|| ! FileUtils.uptodate?(py_env_path, [requirements_src])\
 			then
 				@monty.create_py_env_in_app_trunk
+			else
+				@log&.write("Skipping create_py_env_in_app_trunk")
 			end
 		end
 

@@ -6,6 +6,10 @@ module SaladPrep
 
 	class Libby
 
+		def initialize(log: nil)
+			@log = log
+		end
+
 		def regen_lib_supports
 		end
 

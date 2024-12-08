@@ -3,10 +3,11 @@ require_relative "../file_herder/file_herder"
 module SaladPrep
 	class TestHoncho
 	
-		def initialize(egg:, dbass:, brick_stack:)
+		def initialize(egg:, dbass:, brick_stack:, log: nil)
 			@egg = egg
 			@dbass = dbass
 			@brick_stack = brick_stack
+			@log = log
 		end
 	
 	
