@@ -151,7 +151,7 @@ module SaladPrep
 				out.write("class SqlScripts(Enum):\n")
 				hash_index_dir(input_dir).each do |file, enum_name, sha256_hash|
 					line =\
-						'\t#{enum_name} = (\n\t\t\"#{file}\",\n\t\t\"#{sha256_hash}\"\n\t)\n'
+						"\t#{enum_name} = (\n\t\t\"#{file}\",\n\t\t\"#{sha256_hash}\"\n\t)\n"
 					@log&.write(line)
 					out.write(line)
 				end
