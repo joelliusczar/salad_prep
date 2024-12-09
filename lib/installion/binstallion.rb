@@ -37,7 +37,7 @@ module SaladPrep
 				end
 			CODE
 			install_script(
-				"#{@egg.env_prefix}install_py_env_if_needed",
+				"#{@egg.env_prefix}_install_py_env_if_needed",
 				action_body
 			)
 		end

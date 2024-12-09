@@ -29,7 +29,7 @@ module SaladPrep
 
 		def self.rm_contents_if_filled(dir_emptira)
 			if ! is_dir_empty(dir_emptira)
-				FileUtils.rm_rf("#{dir_emptira}/")
+				FileUtils.rm_rf("#{dir_emptira}/*")
 			end
 			return true
 		end
