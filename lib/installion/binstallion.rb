@@ -29,7 +29,7 @@ module SaladPrep
 				"w"
 			).write(
 				Resorcerer.bin_wrapper_template_compile(
-					@template_context_path,
+					File.open(@template_context_path).read,
 					action_body
 				)
 			)
