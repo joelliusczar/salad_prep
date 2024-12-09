@@ -44,6 +44,18 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}nginx_evil.conf")
 		end
 
+		def self.bin_wrapper_template
+			open_text("#{ASSETS_DIR}bin_wrapper.rb")
+		end
+
+		def self.bin_wrapper_template_compile(context_body, action_body)
+			template = ERB.new(bin_wrapper_template, trim_mode:"<>")
+			template.result_with_hash({
+				context_body: context_body,
+				action_body: action_body
+			})
+		end
+
 	end
 
 end

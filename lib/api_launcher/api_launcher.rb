@@ -6,11 +6,10 @@ require_relative "../file_herder/file_herder"
 module SaladPrep
 	class APILauncher
 
-		def initialize(egg:, dbass:, w_spoon:, brick_stack:)
+		def initialize(egg:, dbass:, w_spoon:)
 			@egg = egg
 			@dbass = dbass
 			@w_spoon = w_spoon
-			@brick_stack = brick_stack
 		end
 
 		def setup_api_dir
@@ -40,7 +39,6 @@ module SaladPrep
 		def setup_api
 			clean_up_running_processes
 			setup_api_dir
-			@brick_stack.sync_utility_scripts
 			copy_api_files
 			copy_support_files
 			@dbass.setup_db

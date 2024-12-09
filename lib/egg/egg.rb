@@ -355,6 +355,9 @@ module SaladPrep
 			abs_suffix(@bin_parent_dir, abs)
 		end
 
+		def dev_ops_bin
+			abs_suffix(".{env_prefix}_bin", abs: true)
+		end
 
 		def bin_dir(abs: true)
 			File.join(bin_parent_dir(abs: abs), "bin")

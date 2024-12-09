@@ -28,7 +28,7 @@ module SaladPrep
 			then
 				@monty.create_py_env_in_app_trunk
 			else
-				@log&.write("Skipping create_py_env_in_app_trunk")
+				@log&.puts("Skipping create_py_env_in_app_trunk")
 			end
 		end
 

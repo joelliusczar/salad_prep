@@ -1,4 +1,5 @@
 require "fileutils"
+require_relative "../box_box/box_box"
 require_relative "../file_herder/file_herder"
 require_relative "../strink/strink"
 
@@ -39,9 +40,6 @@ module SaladPrep
 
 		def create_install_directory
 			FileUtils.mkdir_p(@egg.repo_path)
-		end
-
-		def sync_utility_scripts
 		end
 
 	end
