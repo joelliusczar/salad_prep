@@ -356,7 +356,7 @@ module SaladPrep
 		end
 
 		def dev_ops_bin
-			abs_suffix(".{env_prefix}_bin", abs: true)
+			abs_suffix(".#{env_prefix}_bin", abs: true)
 		end
 
 		def bin_dir(abs: true)
