@@ -36,7 +36,10 @@ module SaladPrep
 					Provincial.monty.install_py_env_if_needed
 				end
 			CODE
-			install_script("#{@egg.env_prefix}_bootstrap", action_body)
+			install_script(
+				"#{@egg.env_prefix}install_py_env_if_needed",
+				action_body
+			)
 		end
 
 	end

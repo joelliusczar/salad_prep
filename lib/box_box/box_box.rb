@@ -135,9 +135,9 @@ module SaladPrep
 			)
 			File.open(profile, "r+") do |file|
 				content = file.read
-				if ! (content =~ /PATH=(?:.*:)#{Regexp.quote(segment)}(?::.)*/)
+				if ! (content =~ /PATH=(?:.*:)'?#{Regexp.quote(segment)}'?(?::.)*/)
 					current_path = ENV["PATH"]
-					file.write("PATH=\"$PATH\":#{segment}")
+					file.write("PATH=\"$PATH\":'#{segment}'")
 				end
 			end
 			`. "$HOME"/.profile >/dev/null 2>&1 && env`
