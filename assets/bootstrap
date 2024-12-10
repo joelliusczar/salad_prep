@@ -12,11 +12,9 @@ install_package() (
 	case $(uname) in #()
 		(Linux*)
 			if which pacman >/dev/null 2>&1; then
-				yes | sudo -p 'Pass required for pacman install: ' \
-					pacman -S "$pkgName"
+				yes | pacman -S "$pkgName"
 			elif which apt-get >/dev/null 2>&1; then
-				sudo -p 'Pass required for apt-get install: ' \
-					DEBIAN_FRONTEND=noninteractive apt-get -y install "$pkgName"
+				DEBIAN_FRONTEND=noninteractive apt-get -y install "$pkgName"
 			fi
 			;; #()
 		(Darwin*)
@@ -49,6 +47,25 @@ get_pkg_mgr() {
 	esac
 	return 1
 }
+
+case $(uname) in
+	(Linux*)
+		if which apt-get >/dev/null 2>&1; then
+			apt-get update
+		fi
+		;;
+	(Darwin*)
+		if ! brew --version 2>/dev/null; then
+			#-f = -fail - fails quietly, i.e. no error page ...I think?
+			#-s = -silent - don\'t show any sort of loading bar or such
+			#-S = -show-error - idk
+			#-L = -location - if page gets redirect, try again at new location
+			/bin/bash -c "$(curl -fsSL \
+				https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+		fi
+		;;
+	(*) ;;
+esac
 
 pkgMgrChoice=$(get_pkg_mgr)
 
