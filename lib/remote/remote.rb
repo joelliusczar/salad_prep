@@ -84,7 +84,7 @@ module SaladPrep
 				file.puts(bootstrap_content)
 				file.puts(
 					<<~SCRIPT
-						ruby <<EOF
+						ruby <<'EOF'
 							#{ruby_script(setup_lvl, current_branch)}
 						EOF
 					SCRIPT
