@@ -29,7 +29,7 @@ module SaladPrep
 			current_branch:"main",
 			skip_tests: false,
 			update_salad_prep: false,
-			print_script: false
+			print_env: false
 		)
 			@egg.load_env
 
@@ -79,8 +79,8 @@ module SaladPrep
 			)
 
 			Tempfile.create do |file|
-
-				file.puts(env_setup_script)
+				env_exports = env_setup_script
+				file.puts(env_exports)
 				file.puts(bootstrap_content)
 				file.puts(
 					<<~SCRIPT
@@ -90,9 +90,8 @@ module SaladPrep
 					SCRIPT
 				)
 				file.rewind
-				if print_script
-					print(file.read)
-					file.rewind
+				if print_env
+					print(env_exports)
 				end
 				system(
 					"ssh -i #{@egg.ssh_id_file} 'root@#{@egg.ssh_address}' bash -s",
