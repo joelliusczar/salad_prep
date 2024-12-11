@@ -35,6 +35,9 @@ module SaladPrep
 				else
 					raise "OS is not configured for installing python"
 				end
+				unless File.directory?(egg.bin_dir)
+					FileUtils.mkdir_p(egg.bin_dir)
+				end
 				FileUtils.ln_sf(
 					BoxBox.which(python_to_link).first,
 					File.join(egg.bin_dir, monty.python_command)

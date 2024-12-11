@@ -32,8 +32,7 @@ module SaladPrep
 				@egg.ssh_id_file,
 				"root@#{@egg.ssh_address}",
 				env_setup_script,
-				"bash",
-				"-l"
+				"bash -l",
 			)
 		end
 
