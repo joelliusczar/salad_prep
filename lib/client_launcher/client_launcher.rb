@@ -14,7 +14,7 @@ module SaladPrep
 			ArgChecker.api_version(@egg.api_version)
 			FileHerder::empty_dir(@egg.client_dest)
 			script = <<~CALL
-					asdf local nodejs 22.12
+					asdf local nodejs 22.12.0
 					export VITE_API_VERSION=#{@egg.api_version} &&
 					export VITE_BASE_ADDRESS="#{@egg.full_url}" &&
 					#set up react then copy

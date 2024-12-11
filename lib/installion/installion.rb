@@ -97,7 +97,7 @@ module SaladPrep
 					exception: true
 				)
 				system(
-					"asdf", "install", "nodejs", "22.12",
+					"asdf", "install", "nodejs", "22.12.0",
 					exception: true
 				)
 			end
