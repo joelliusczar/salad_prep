@@ -42,6 +42,7 @@ module SaladPrep
 					BoxBox.which(python_to_link).first,
 					File.join(egg.bin_dir, monty.python_command)
 				)
+				BoxBox.path_append(egg.bin_dir)
 			end
 		end
 
