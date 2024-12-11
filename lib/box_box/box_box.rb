@@ -41,9 +41,9 @@ module SaladPrep
 		def self.get_package_manager
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
-				if is_installed(Enums::PackageManagers::PACMAN)
+				if is_installed?(Enums::PackageManagers::PACMAN)
 					Enums::PackageManagers::PACMAN
-				elsif is_installed(Enums::PackageManagers::APTGET)
+				elsif is_installed?(Enums::PackageManagers::APTGET)
 					Enums::PackageManagers::APTGET
 				end
 			when Enums::BoxOSes::MACOS
@@ -55,7 +55,7 @@ module SaladPrep
 			puts("attempt to install #{pkg}")
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
-				if is_installed(PackageManagers.PACMAN)
+				if is_installed?(PackageManagers.PACMAN)
 					IO.pipe do |r, w|
 						spawn("yes", input, out: r)
 						r.close
@@ -65,7 +65,7 @@ module SaladPrep
 							exception: true
 						)
 					end
-				elsif is_installed(PackageManagers.APTGET)
+				elsif is_installed?(PackageManagers.APTGET)
 					system(
 						"DEBIAN_FRONTEND=noninteractive", "apt-get", "-y",
 						"install", pkg,
@@ -94,7 +94,7 @@ module SaladPrep
 		def self.update_pkg_mgr
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
-				if is_installed(PackageManagers.APTGET)
+				if is_installed?(PackageManagers.APTGET)
 					system("apt-get update", exception: true)
 				end
 			when Enums::BoxOSes::MACOS

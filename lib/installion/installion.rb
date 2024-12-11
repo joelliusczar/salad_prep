@@ -20,14 +20,14 @@ module SaladPrep
 		end
 
 		def self.python(egg, monty)
-			if ! BoxBox.is_installed(monty.python_command) \
-				|| monty.is_installed_version_good
+			if ! BoxBox.is_installed?(monty.python_command) \
+				|| monty.is_installed_version_good?
 			then
 				python_to_link = "python3"
 				case Gem::Platform::local.os
 				when BoxBox::Enums::BoxOSes::LINUX
 					BoxBox.install_if_missing("python3")
-					if ! monty.is_installed_version_good
+					if ! monty.is_installed_version_good?
 						BoxBox.install_if_missing("python#{monty.version}")
 						python_to_link = "python#{monty.version}"
 					end
@@ -104,7 +104,7 @@ module SaladPrep
 		end
 
 		def self.mariadb(pass)
-			if ! BoxBox.is_installed("mariadb")
+			if ! BoxBox.is_installed?("mariadb")
 				case Gem::Platform::local.os
 				when BoxBox::Enums::BoxOSes::LINUX
 					if BoxBox.uses_aptget?
