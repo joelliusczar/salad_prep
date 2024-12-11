@@ -137,7 +137,7 @@ module SaladPrep
 			"#{app_root}/keys/#{project_name_snake}"
 		end
 
-		def env_find (key, keyRegex, prefer_keys_file=true)
+		def env_find (key, keyRegex, prefer_keys_file: true)
 			if ENV[key].populated? && !(is_local? && prefer_keys_file)
 				return ENV[key]
 			end
@@ -152,7 +152,7 @@ module SaladPrep
 			env_find(
 				"PB_SECRET",
 				/PB_SECRET=(\w+)/,
-				prefer_keys_file
+				prefer_keys_file:
 			)
 		end
 
@@ -160,7 +160,7 @@ module SaladPrep
 			env_find(
 				"PB_API_KEY",
 				/PB_API_KEY=(\w+)/,
-				prefer_keys_file
+				prefer_keys_file:
 			)
 		end
 
@@ -168,7 +168,7 @@ module SaladPrep
 			env_find(
 				"#{@env_prefix}_AUTH_SECRET_KEY",
 				/AUTH_SECRET_KEY=(\w+)/,
-				prefer_keys_file
+				prefer_keys_file:
 			)
 		end
 
@@ -183,7 +183,7 @@ module SaladPrep
 			env_find(
 				"#{@env_prefix}_DB_PASS_SETUP",
 				/DB_PASS_SETUP=(\w+)/,
-				prefer_keys_file
+				prefer_keys_file:
 			)
 		end
 
@@ -191,7 +191,7 @@ module SaladPrep
 			env_find(
 				"#{@env_prefix}_DB_PASS_OWNER",
 				/DB_PASS_OWNER=(\w+)/,
-				prefer_keys_file
+				prefer_keys_file:
 			)
 		end
  
@@ -199,7 +199,7 @@ module SaladPrep
 			env_find(
 				"#{@env_prefix}_DB_PASS_API",
 				/DB_PASS_API=(\w+)/,
-				prefer_keys_file
+				prefer_keys_file:
 			)
 		end
 
@@ -207,7 +207,7 @@ module SaladPrep
 			env_find(
 				"#{@env_prefix}_DB_PASS_JANITOR",
 				/DB_PASS_JANITOR=(\w+)/,
-				prefer_keys_file
+				prefer_keys_file:
 			)
 		end
 
@@ -223,7 +223,7 @@ module SaladPrep
 			env_find(
 				"#{@env_prefix}_SERVER_SSH_ADDRESS",
 				/SERVER_SSH_ADDRESS=root@([\w:]+)/,
-				checkLocal=false
+				prefer_keys_file: false
 			)
 		end
 
@@ -231,7 +231,7 @@ module SaladPrep
 			env_find(
 				"#{@env_prefix}_SERVER_KEY_FILE",
 				/SERVER_KEY_FILE=(.+)/,
-				checkLocal=false
+				prefer_keys_file: false
 			)
 		end
 
