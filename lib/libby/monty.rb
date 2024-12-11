@@ -90,7 +90,7 @@ module SaladPrep
 				system("#{python_command} -V >/dev/null 2>&1") \
 				&& ENV["VIRTUAL_ENV"].zero?\
 			then
-				`#{@egg.env_prefix}-python -V`[/\d+\.\d+\.\d+/].split(".")
+				`#{python_command} -V`[/\d+\.\d+\.\d+/].split(".")
 			elsif system("python3 -V >/dev/null 2>&1")
 				`python3 -V`[/\d+\.\d+\.\d+/].split(".")
 			elsif system("python -V >/dev/null 2>&1")
