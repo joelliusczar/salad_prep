@@ -72,16 +72,7 @@ module SaladPrep
 		end
 
 		def self.python_virtualenv(monty)
-			if ! system(
-				monty.python_command, "-m", "virtualenv", "-version",
-				out: File::NULL, err: File::NULL
-			)
-			then
-				system(
-					monty.python_command, "-m", "pip", "install", "--user", "virtualenv",
-					exception: true
-				)
-			end
+			BoxBox.install_if_missing("python3-virtualenv")
 		end
 
 		def self.python_full(egg, monty)
