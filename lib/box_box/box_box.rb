@@ -67,7 +67,8 @@ module SaladPrep
 					end
 				elsif is_installed?(Enums::PackageManagers::APTGET)
 					system(
-						"DEBIAN_FRONTEND=noninteractive", "apt-get", "-y",
+						{ "DEBIAN_FRONTEND" => "noninteractive"},
+						"apt-get", "-y",
 						"install", pkg,
 						exception: true
 					)
