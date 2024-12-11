@@ -22,7 +22,7 @@ end
 Provincial.brick_stack.create_install_directory
 
 if ! system("git --version", out: File::NULL, err: File::NULL)
-	BoxBox::install_package("git")
+	BoxBox.install_package("git")
 end
 
 FileUtils.rm_rf(Provincial.egg.repo_path)

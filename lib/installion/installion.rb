@@ -25,13 +25,13 @@ module SaladPrep
 			then
 				python_to_link = "python3"
 				case Gem::Platform::local.os
-				when BoxBox::Enums::BoxOSes::LINUX
+				when Enums::BoxOSes::LINUX
 					BoxBox.install_if_missing("python3")
 					if ! monty.is_installed_version_good?
 						BoxBox.install_if_missing("python#{monty.version}")
 						python_to_link = "python#{monty.version}"
 					end
-				when BoxBox::Enums::BoxOSes::MACOS
+				when Enums::BoxOSes::MACOS
 				else
 					raise "OS is not configured for installing python"
 				end
@@ -106,13 +106,13 @@ module SaladPrep
 		def self.mariadb(pass)
 			if ! BoxBox.is_installed?("mariadb")
 				case Gem::Platform::local.os
-				when BoxBox::Enums::BoxOSes::LINUX
+				when Enums::BoxOSes::LINUX
 					if BoxBox.uses_aptget?
 						BoxBox.install_package("mariadb-server")
 					else
 						raise "Distro is not configured for installing mariadb"
 					end
-				when BoxBox::Enums::BoxOSes::MACOS
+				when Enums::BoxOSes::MACOS
 					BoxBox.install_package("mariadb")
 				else
 					raise "OS is not configured for installing mariadb"
@@ -140,13 +140,13 @@ module SaladPrep
 
 		def self.nginx()
 			case Gem::Platform::local.os
-			when BoxBox::Enums::BoxOSes::LINUX
+			when Enums::BoxOSes::LINUX
 				if BoxBox.uses_aptget?
 					BoxBox.install_package("nginx-full")
 				else
 					raise "Distro is not configured for installing nginx"
 				end
-			when BoxBox::Enums::BoxOSes::MACOS
+			when Enums::BoxOSes::MACOS
 				BoxBox.install_if_missing("nginx")
 			else
 				raise "OS is not configured for installing nginx"
