@@ -69,10 +69,6 @@ module SaladPrep
 					system(monty.python_command, output_path, exception: true)
 				end
 			end
-			system(
-				monty.python_command, "-m", "pip", "install", "--upgrade", "pip",
-				exception: true
-			)
 		end
 
 		def self.python_virtualenv(monty)
