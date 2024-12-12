@@ -126,7 +126,7 @@ module SaladPrep
 				"virtualenv",
 				py_env_dir,
 				exception: true
-				)
+			)
 			#this is to make some of my newer than checks work
 			FileUtils.touch(py_env_dir)
 			script = <<~CALL
@@ -134,6 +134,7 @@ module SaladPrep
 				# #python_env
 				# use regular python command rather mc-python
 				# because #{python_command} still points to the homebrew location
+				python -m pip install setuptools
 				python -m pip install -r '#{requirements_path}'
 			CALL
 			system(script, exception: true)
