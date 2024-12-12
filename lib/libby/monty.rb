@@ -134,7 +134,8 @@ module SaladPrep
 				# #python_env
 				# use regular python command rather mc-python
 				# because #{python_command} still points to the homebrew location
-				python -m pip install setuptools
+				python -m ensurepip --upgrade
+				python -m pip install --upgrade setuptools
 				python -m pip install -r '#{requirements_path}'
 			CALL
 			system(script, exception: true)
