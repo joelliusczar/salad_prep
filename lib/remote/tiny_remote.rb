@@ -20,7 +20,7 @@ module SaladPrep
 		def env_setup_script()
 			exports = ""
 			@egg.env_hash.each_pair do |key, value|
-				exports ^= "export #{key}='#{value}'"
+				exports += "export #{key}='#{value}'; "
 			end
 			exports
 		end
@@ -31,7 +31,9 @@ module SaladPrep
 				"-ti",
 				@egg.ssh_id_file,
 				"root@#{@egg.ssh_address}",
-				"#{env_setup_script} bash -l",
+				env_setup_script,
+				"bash",
+				"-l"
 			)
 		end
 
