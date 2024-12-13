@@ -88,6 +88,14 @@ module SaladPrep
 			@conn.query("DROP DATABASE IF EXISTS #{db_name}")
 		end
 
+		def self.is_root_pass_set?
+			! system(
+				"mysql -u root -e 'SHOW DATABASES'",
+				out: File::NULL, 
+				err: File::NULL
+			)
+		end
+
 		def self.revoke_default_db_accounts
 			script = <<~SQL
 				mysql -u root -e \
@@ -100,6 +108,7 @@ module SaladPrep
 			pass = pass.dup
 			ArgChecker.path()
 			script = <<~SQL
+				mysql -u root -e \
 				SET PASSWORD FOR root@localhost = PASSWORD('#{pass}');
 			SQL
 			system(script, exception: true)

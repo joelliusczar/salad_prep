@@ -108,6 +108,8 @@ module SaladPrep
 				else
 					raise "OS is not configured for installing mariadb"
 				end
+			end
+			if ! MyAssRoot.is_root_pass_set?
 				MyAssRoot.revoke_default_db_accounts
 				MyAssRoot.set_db_root_initial_password(pass)
 			end
