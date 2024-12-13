@@ -90,7 +90,7 @@ module SaladPrep
 
 		def self.is_root_pass_set?
 			! system(
-				"mysql -u root -e 'SHOW DATABASES'",
+				"mysql -u root -e 'SHOW DATABASES';",
 				out: File::NULL, 
 				err: File::NULL
 			)
@@ -99,7 +99,7 @@ module SaladPrep
 		def self.revoke_default_db_accounts
 			script = <<~SQL
 				mysql -u root -e \
-				REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'mysql'@'localhost'
+				"REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'mysql'@'localhost';"
 			SQL
 			system(script, exception: true)
 		end
@@ -109,7 +109,7 @@ module SaladPrep
 			ArgChecker.path()
 			script = <<~SQL
 				mysql -u root -e \
-				SET PASSWORD FOR root@localhost = PASSWORD('#{pass}');
+				"SET PASSWORD FOR root@localhost = PASSWORD('#{pass}');"
 			SQL
 			system(script, exception: true)
 		end
