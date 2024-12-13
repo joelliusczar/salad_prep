@@ -17,7 +17,7 @@ module SaladPrep
 			Enumerator.new do |yielder|
 				Dir.glob("**/*",File::FNM_DOTMATCH, base: input_dir)
 				.sort_by { |e| e }.each do |file|
-					script_name = file.split(".")[-2]
+					script_name = file.split("/")[-1].split(".")[-2]
 					next if script_name.zero?
 					enum_name = script_name
 						.gsub(/[^[:alnum:]]/, "_")
