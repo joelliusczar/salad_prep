@@ -477,7 +477,7 @@ module SaladPrep
 					@egg.client_dest
 				)
 				content.gsub!("<SERVER_NAME>", @egg.domain_name)
-				content.gsub!("<API_PORT>", port)
+				content.gsub!("<API_PORT>", port.to_s)
 				content.gsub!("<API_VERSION>", @egg.api_version)
 				if @egg.is_local?
 					set_local_nginx_app_conf!(content)

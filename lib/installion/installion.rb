@@ -153,7 +153,7 @@ module SaladPrep
 				"#{egg.app}.conf"
 			)
 			if ! File.exist?(conf_path)
-				w_spoon.setup_nginx_confs(egg.api_port)
+				w_spoon.setup_nginx_confs(egg.api_port.to_s)
 				File.open(
 					File.join(conf_dir, "nginx_evil.conf"), "w"
 				).write(Resorcerer.nginx_evil_conf)
