@@ -34,7 +34,7 @@ module SaladPrep
 			@egg.load_env
 
 			if current_branch.zero?
-				current_branch = `git branch --show-current 2>/dev/null`
+				current_branch = `git branch --show-current 2>/dev/null`.trim
 			end
 
 			puts("Deployment environmental variable check")
