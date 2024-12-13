@@ -90,7 +90,7 @@ module SaladPrep
 
 		def self.revoke_default_db_accounts
 			script = <<~SQL
-				mysql -u root -e 
+				mysql -u root -e \
 				REVOKE ALL PRIVILEGES, GRANT OPTION FROM 'mysql'@'localhost'
 			SQL
 			system(script, exception: true)
