@@ -219,11 +219,15 @@ module SaladPrep
 			exec(". '#{activate}' && python")
 		end
 
-		def run_python_script(script)
+		def run_python_script(script, exception; true)
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
 			ArgChecker.path(activate)
-			BoxBox.run_and_get(". '#{activate}' && python /dev/stdin", in_s: script)
+			BoxBox.run_and_get("
+				. '#{activate}' && python /dev/stdin", 
+				in_s: script,
+				exception:
+			)
 		end
 	end
 end
