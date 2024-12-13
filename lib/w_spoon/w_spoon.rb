@@ -24,7 +24,7 @@ module SaladPrep
 			output.split.find{|a| a =~ /--#{key}/}[/.*=(.*)/, 1]
 		end
 
-		def get_nginx_conf_dir_include(nginx_conf_path)
+		def get_nginx_conf_dir_include(nginx_conf_path = get_nginx_value)
 			guesses = [
 				"include /etc/nginx/sites-enabled/*;",
 				"include servers/*;"
@@ -521,8 +521,7 @@ module SaladPrep
 		end
 
 		def nginx_conf_location
-			nginx_conf_path = get_nginx_value
-			conf_dir_include = get_nginx_conf_dir_include(nginx_conf_path)
+			conf_dir_include = get_nginx_conf_dir_include
 			conf_dir = get_abs_path_from_nginx_include(conf_dir_include)
 			"#{conf_dir}/#{@egg.app}.conf"
 		end

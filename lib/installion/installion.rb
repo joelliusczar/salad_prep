@@ -144,9 +144,9 @@ module SaladPrep
 			end
 		end
 
-		def self.nginx_extra(egg, w_spoon)
+		def self.nginx_and_setup(egg, w_spoon)
 			nginx
-			conf_dir_include = w_spoon.get_nginx_conf_dir_include(nginx_conf_path)
+			conf_dir_include = w_spoon.get_nginx_conf_dir_include
 			conf_dir = w_spoon.get_abs_path_from_nginx_include(conf_dir_include)
 			conf_path = File.join(
 				config_dir,
