@@ -26,12 +26,16 @@ module SaladPrep
 
 		def deploy(
 			setup_lvl,
-			current_branch:"main",
+			current_branch:nil,
 			skip_tests: false,
 			update_salad_prep: false,
 			print_env: false
 		)
 			@egg.load_env
+
+			if current_branch.zero?
+				current_branch = `git branch --show-current 2>/dev/null`
+			end
 
 			puts("Deployment environmental variable check")
 			@egg.deployment_env_check_recommended.each do |e|
