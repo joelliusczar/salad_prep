@@ -150,7 +150,7 @@ module SaladPrep
 			conf_dir = w_spoon.get_abs_path_from_nginx_include(conf_dir_include)
 			conf_path = File.join(
 				conf_dir,
-				"#{@egg.app}.conf"
+				"#{egg.app}.conf"
 			)
 			if ! File.exist?(conf_path)
 				w_spoon.setup_nginx_confs(egg.api_port)
