@@ -81,14 +81,16 @@ module SaladPrep
 			python_virtualenv(monty)
 		end
 
-		def self.nodejs()
+		def self.nodejs(node_version)
 			if ! `asdf plugin list`.include?("nodejs")
 				system(
 					"asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git",
 					exception: true
 				)
+			end
+			if ! system("asdf", "list", "nodejs", node_version)
 				system(
-					"asdf", "install", "nodejs", "22.12.0",
+					"asdf", "install", "nodejs", node_version,
 					exception: true
 				)
 			end
