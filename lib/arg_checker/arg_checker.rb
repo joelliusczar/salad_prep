@@ -12,9 +12,20 @@ module SaladPrep
 	
 			def api_version(value)
 				if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ value)
-					raise "api version is using an illegal form. "
-						"Please use begin with letter and only use alphanumeric "
-						"for rest with a max length of 6"
+					raise <<~MSG
+						api version is using an illegal form.
+						Please use begin with letter and only use alphanumeric 
+						for rest with a max length of 6
+					MSG
+				end
+			end
+
+			def pkg_version(value)
+				if ! (/\d+\.\d+(?:\.\d+)?/ =~ value)
+					raise <<~MSG
+						version is using an illegal form.
+						Please use numbers seperated by dots
+					MSG
 				end
 			end
 

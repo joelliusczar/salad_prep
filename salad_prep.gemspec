@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.9.46"
+	s.version = "0.10.0"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 		"lib/brick_stack/brick_stack.rb",
 		"lib/canary/canary.rb",
 		"lib/client_launcher/client_launcher.rb",
+		"lib/client_launcher/node_client_launcher.rb",
 		"lib/dbass/dbass.rb",
 		"lib/dbass/enums.rb",
 		"lib/dbass/myass_root.rb",
