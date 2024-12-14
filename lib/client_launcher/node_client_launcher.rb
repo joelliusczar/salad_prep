@@ -1,9 +1,10 @@
 require "fileutils"
+require_relative "./client_launcher"
 require_relative "../file_herder/file_herder"
 require_relative "../arg_checker/arg_checker"
 
 module SaladPrep
-	class NodeClientLauncher
+	class NodeClientLauncher < ClientLauncher
 		def initialize(egg, node_version:)
 			super(egg)
 			@node_version = node_version
