@@ -106,7 +106,7 @@ module SaladPrep
 
 		def self.set_db_root_initial_password(pass)
 			pass = pass.dup
-			ArgChecker.path()
+			ArgChecker.quote_check(pass)
 			script = <<~SQL
 				mysql -u root -e \
 				"SET PASSWORD FOR root@localhost = PASSWORD('#{pass}');"
