@@ -22,6 +22,7 @@ module SaladPrep
 		end
 
 		def remote_setup_path(setup_lvl)
+			@egg.load_env
 			case setup_lvl
 			when Enums::SetupLvls::API
 				@api_launcher.startup_api
