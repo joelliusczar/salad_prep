@@ -2,8 +2,11 @@ require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../file_herder/file_herder"
 require_relative "../resorcerer/resorcerer"
+require_relative "../strink/strink"
 
 module SaladPrep
+	using Strink
+
 	class Binstallion
 		def initialize(egg, template_context_path)
 			@egg = egg
