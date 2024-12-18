@@ -36,7 +36,7 @@ module SaladPrep
 				'-u',
 				@egg.db_owner_name,
 				"-p",
-				@egg.db_owner_key,
+				@egg.db_owner_key(prefer_keys_file: false),
 				@egg.db_name,
 				out: File.open(dest, "w"),
 				exception: true

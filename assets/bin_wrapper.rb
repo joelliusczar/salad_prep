@@ -17,12 +17,12 @@ actions_hash = {}
 
 args_hash = {}
 cmd = ARGV[0]
-ARGV.drop(1).each do |arg|
+ARGV.drop(1).each_with_index do |arg, idx|
 	if arg.include?("=")
 		split = arg.split("=")
 		args_hash[split[0].trim] = split[1].trim
 	else
-		args_hash[arg] = true
+		args_hash[idx] = arg
 	end
 end
 ARGV.clear

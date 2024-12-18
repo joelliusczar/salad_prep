@@ -28,7 +28,7 @@ module SaladPrep
 			end
 			file_path = File.join(
 				@egg.dev_ops_bin,
-				"#{@egg.env_prefix}_dev"
+				"#{@egg.env_prefix.downcase}_dev"
 			)
 			File.open(file_path, "w").write(
 				Resorcerer.bin_wrapper_template_compile(
@@ -44,6 +44,7 @@ module SaladPrep
 			yield backup_db
 			yield backup_remote_db
 			yield connect_root
+			yield empty_dir
 		end
 
 		def wrap_action(name, body)
@@ -116,6 +117,13 @@ module SaladPrep
 				Provincial.binstallion.install_bins
 			CODE
 			["refresh_bins", action_body]
+		end
+
+		def empty_dir
+			action_body = <<~CODE
+				FileHerder.empty_dir(arg_hash[0])
+			CODE
+			["empty_dir", action_body]
 		end
 
 	end
