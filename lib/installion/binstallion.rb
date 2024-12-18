@@ -121,7 +121,7 @@ module SaladPrep
 
 		def empty_dir
 			action_body = <<~CODE
-				FileHerder.empty_dir(arg_hash[0])
+				SaladPrep::FileHerder.empty_dir(arg_hash[0])
 			CODE
 			["empty_dir", action_body]
 		end
