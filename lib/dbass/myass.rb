@@ -1,3 +1,5 @@
+require "date"
+require "fileutils"
 require 'mysql'
 require_relative "../arg_checker/arg_checker"
 require_relative "./dbass"
@@ -21,6 +23,26 @@ module SaladPrep
 			end
 		end
 
+		def backup_db
+			FileUtils.mkdir_p(
+				File.join(@egg.app_root, "db_backup")
+			)
+			timestamp = Time.new.strftime("%Y%m%d_%H%M")
+			dest = File.join(
+				@egg.app_root, "db_backup", "#{timestamp}_backup.sql"
+			)
+			system(
+				"mysqldump",
+				'-u',
+				@egg.db_owner_name,
+				"-p",
+				@egg.db_owner_key,
+				@egg.db_name,
+				out: File.open(dest, "w"),
+				exception: true
+			)
+			dest
+		end
 
 	end
 end

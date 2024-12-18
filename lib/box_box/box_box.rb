@@ -163,6 +163,7 @@ module SaladPrep
 			if exception && ! $?.success?
 				raise "#{cmds[0]} failed with exit code #{$?.exitstatus}"
 			end
+			result
 		end
 
 		def self.kill_process_using_port(port)

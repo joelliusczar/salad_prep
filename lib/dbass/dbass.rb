@@ -22,5 +22,9 @@ module SaladPrep
 			raise "start_db_service not implemented"
 		end
 
+		def backup_db
+			raise "backup_db not implemented"
+		end
+
 	end
 end

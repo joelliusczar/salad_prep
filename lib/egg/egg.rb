@@ -9,12 +9,6 @@ module SaladPrep
 
 	class Egg
 
-		attr_reader :project_name_0,
-			:local_repo_path, :test_flags,
-			:env_prefix, :content_dir,
-			:repo_url, :url_base, :test_root, :api_port,
-			:test_port, :api_version, :db_owner_name
-
 		def initialize (
 			project_name_0:,
 			repo_url:,
@@ -54,16 +48,60 @@ module SaladPrep
 			@api_version = api_version
 		end
 
+
+		def abs_suffix(suffix, abs=true)
+			if abs
+				return File.join(app_root, suffix)
+			end
+			return suffix
+		end
+
+		def abs_suffix_web(suffix, abs=true)
+			if abs
+				return File.join(web_root, suffix)
+			end
+			return suffix
+		end
+
+		def env_find (key, keyRegex, prefer_keys_file: true)
+			if ENV[key].populated? && !(is_local? && prefer_keys_file)
+				return ENV[key]
+			end
+			File.open(key_file, "r") do |file|
+				file.each_line()
+					.filter_map {|e| e[keyRegex, 1]}
+					.first()
+			end
+		end
+
+		def is_current_dir_repo? (dir)
+			return false unless File.file?("#{dir}/README.md")
+			return false unless File.exist?("#{dir}/src")
+			return false unless File.exist?("#{dir}/test_trash")
+		end
+
+		def env_prefix
+			@env_prefix
+		end
+
+		def test_flags
+			@test_flags
+		end
+
+		def test_root
+			@test_root
+		end
+
 		def app_root
 			if @test_flags > 0
-				return @test_root
+				return test_root
 			end
 			return @app_root
 		end
 
 		def web_root
 			if @test_flags > 0
-				return @test_root
+				return test_root
 			end
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
@@ -83,8 +121,12 @@ module SaladPrep
 			end
 		end
 
+		def project_name_0
+			@project_name_0
+		end
+
 		def project_name_snake
-			@project_name_0.to_snake
+			project_name_0.to_snake
 		end
 
 		def app
@@ -99,6 +141,10 @@ module SaladPrep
 			@env_prefix.downcase + "_env"
 		end
 
+		def repo_url
+			@repo_url
+		end
+
 		def repo_path
 			if ! @local_repo_path.zero?
 				return @local_repo_path
@@ -107,26 +153,39 @@ module SaladPrep
 			else
 				return "#{ENV['HOME']}/#{@build_dir}/#{project_name_snake}"
 			end
-
 		end
 
-		def is_current_dir_repo? (dir)
-			return false unless File.file?("#{dir}/README.md")
-			return false unless File.exist?("#{dir}/src")
-			return false unless File.exist?("#{dir}/test_trash")
+		def local_repo_path
+			@local_repo_path
+		end
+
+		def api_port
+			@api_port
+		end
+
+		def test_port
+			@test_port
+		end
+
+		def url_base
+			@url_base
 		end
 
 		def domain_name(port: nil)
 			if is_local?
 				port = port.zero? ? "" : ":#{port}"
-				"#{@url_base}-local.#{@tld}#{port}"
+				"#{url_base}-local.#{@tld}#{port}"
 			else
-				"#{@url_base}.#{@tld}"
+				"#{url_base}.#{@tld}"
 			end
 		end
 
 		def full_url
 			"https://#{domain_name}"
+		end
+
+		def api_version
+			@api_version
 		end
 
 		def is_local?
@@ -135,17 +194,6 @@ module SaladPrep
 
 		def key_file
 			"#{app_root}/keys/#{project_name_snake}"
-		end
-
-		def env_find (key, keyRegex, prefer_keys_file: true)
-			if ENV[key].populated? && !(is_local? && prefer_keys_file)
-				return ENV[key]
-			end
-			File.open(key_file, "r") do |file|
-				file.each_line()
-					.filter_map {|e| e[keyRegex, 1]}
-					.first()
-			end
 		end
 
 		def pb_secret(prefer_keys_file: true)
@@ -185,6 +233,10 @@ module SaladPrep
 				/DB_PASS_SETUP=(\w+)/,
 				prefer_keys_file:
 			)
+		end
+
+		def db_owner_name
+			@db_owner_name
 		end
 
 		def db_owner_key(prefer_keys_file: true)
@@ -235,35 +287,6 @@ module SaladPrep
 			)
 		end
 
-
-		def generate_initial_keys_file
-			if ! File.file? (key_file)
-				File.open(key_file, "w") do |file|
-					file.puts("PB_SECRET=")
-					file.puts("PB_API_KEY=")
-					file.puts("AUTH_SECRET_KEY=#{SecureRandom.alphanumeric(32)}")
-					file.puts("SERVER_SSH_ADDRESS=root@")
-					file.puts("SERVER_KEY_FILE=")
-					file.puts("DB_PASS_API=#{SecureRandom.alphanumeric(32)}")
-					file.puts("DB_PASS_OWNER=#{SecureRandom.alphanumeric(32)}")
-					file.puts("DB_PASS_SETUP=#{SecureRandom.alphanumeric(32)}")
-					file.puts("NAMESPACE_UUID=#{SecureRandom.uuid}")
-					if block_given?
-						yield file
-					end
-				end
-			end
-		end
-
-		def run_test_block
-			@test_flags +=1
-			generate_initial_keys_file
-			load_env
-			yield
-			@test_flags -= 1
-			load_env if @test_flags == 0
-		end
-
 		def get_localhost_ssh_dir
 			"#{ENV["HOME"]}/.ssh"
 		end
@@ -292,20 +315,6 @@ module SaladPrep
 			"#{src}/#{lib}"
 		end
 
-		def abs_suffix(suffix, abs=true)
-			if abs
-				return File.join(app_root, suffix)
-			end
-			return suffix
-		end
-
-		def abs_suffix_web(suffix, abs=true)
-			if abs
-				return File.join(web_root, suffix)
-			end
-			return suffix
-		end
-
 		def templates_src
 			"#{repo_path}/templates"
 		end
@@ -321,6 +330,11 @@ module SaladPrep
 
 		def sql_scripts_dest(abs: true)
 			suffix = File.join(app_trunk, "sql_scripts")
+			abs_suffix(suffix, abs)
+		end
+
+		def content_dir(abs: true)
+			suffix = File.join(app_trunk, @content_dir)
 			abs_suffix(suffix, abs)
 		end
 
@@ -361,6 +375,34 @@ module SaladPrep
 
 		def bin_dir(abs: true)
 			File.join(bin_parent_dir(abs: abs), "bin")
+		end
+
+		def generate_initial_keys_file
+			if ! File.file? (key_file)
+				File.open(key_file, "w") do |file|
+					file.puts("PB_SECRET=")
+					file.puts("PB_API_KEY=")
+					file.puts("AUTH_SECRET_KEY=#{SecureRandom.alphanumeric(32)}")
+					file.puts("SERVER_SSH_ADDRESS=root@")
+					file.puts("SERVER_KEY_FILE=")
+					file.puts("DB_PASS_API=#{SecureRandom.alphanumeric(32)}")
+					file.puts("DB_PASS_OWNER=#{SecureRandom.alphanumeric(32)}")
+					file.puts("DB_PASS_SETUP=#{SecureRandom.alphanumeric(32)}")
+					file.puts("NAMESPACE_UUID=#{SecureRandom.uuid}")
+					if block_given?
+						yield file
+					end
+				end
+			end
+		end
+
+		def run_test_block
+			@test_flags +=1
+			generate_initial_keys_file
+			load_env
+			yield
+			@test_flags -= 1
+			load_env if @test_flags == 0
 		end
 
 		def env_hash(prefer_keys_file: true)

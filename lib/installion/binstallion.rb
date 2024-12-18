@@ -7,40 +7,105 @@ module SaladPrep
 	class Binstallion
 		def initialize(egg, template_context_path)
 			@egg = egg
+
+			#this is the path to the app defined code	
 			@template_context_path = template_context_path
 		end
 
 		def install_bins
 			FileHerder.empty_dir(@egg.dev_ops_bin)
 			BoxBox.path_append(@egg.dev_ops_bin)
-		end
-
-		def install_script(name, action_body)
-			file_path = File.join(@egg.dev_ops_bin, name)
+			provincial_path = File.join(@egg.dev_ops_bin, "provincial.rb")
+			File.open(provincial_path, "w").write(
+				File.open(@template_context_path).read
+			)
+			actions_body = ""
+			build_actions do |name, body|
+				actions ^= wrap_action(name, body)
+			end
+			file_path = File.join(
+				@egg.dev_ops_bin,
+				"#{egg.env_prefix}_dev"
+			)
 			File.open(file_path, "w").write(
 				Resorcerer.bin_wrapper_template_compile(
-					File.open(@template_context_path).read,
-					action_body
+					actions_body
 				)
 			)
 			FileUtils.chmod("a+x", file_path)
 		end
+		
+		def build_actions
+			yield update_salad_prep
+			yield refresh_bins
+		end
+
+		def wrap_action(name, body)
+			<<~CODE
+
+				actions_hash["#{name}"] =  lambda do |args_hash|
+					if args_hash.include?("testing")
+						Provincial.egg.run_test_block do
+							#{body}
+						end
+					else
+						#{body}
+					end
+				end
+
+			CODE
+		end
 
 		def install_py_env_if_needed
 			action_body = <<~CODE
-				if args_hash.include?("testing")
-					Provincial.egg.run_test_block do
-						Provincial.monty.install_py_env_if_needed
-					end
-				else
-					Provincial.monty.install_py_env_if_needed
-				end
+				Provincial.monty.install_py_env_if_needed
 			CODE
-			install_script(
-				"#{@egg.env_prefix}_install_py_env_if_needed",
-				action_body
-			)
+			["install_py_env_if_needed", action_body]
 		end
+
+		def setup_client
+			action_body = <<~CODE
+				Provincial.client_launcher.setup_client
+			CODE
+			["setup_client", action_body]
+		end
+
+		def startup_api
+			action_body = <<~CODE
+				Provincial.api_launcher.startup_api
+			CODE
+			["startup_api", action_body]
+		end
+
+		def backup_db
+			action_body = <<~CODE
+				Provincial.dbass.backup_db
+			CODE
+			["backup_db", action_body]
+		end
+
+		def backup_rmote_db
+			action_body = <<~CODE
+				Provincial.remote.backup_db
+			CODE
+			["backup_rmote_db", action_body]
+		end
+
+
+		def update_salad_prep
+			action_body = <<~CODE
+				system("bundle update")
+			CODE
+			["update_salad_prep", action_body]
+		end
+
+		def refresh_bins
+			action_body = <<~CODE
+				Provincial.binstallion.install_bins
+			CODE
+			["refresh_bins", action_body]
+		end
+
 
 	end
 end
