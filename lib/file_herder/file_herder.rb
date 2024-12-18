@@ -21,7 +21,7 @@ module SaladPrep
 		end
 
 		def self.is_dir_empty(target_dir)
-			if Dir[Dir.glob("#{target_dir}/*", File::FNM_DOTMATCH)].empty?
+			if Dir.glob("#{target_dir}/*", File::FNM_DOTMATCH).empty?
 				return true
 			end
 			return false
