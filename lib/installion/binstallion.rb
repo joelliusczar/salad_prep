@@ -25,7 +25,7 @@ module SaladPrep
 			end
 			file_path = File.join(
 				@egg.dev_ops_bin,
-				"#{egg.env_prefix}_dev"
+				"#{@egg.env_prefix}_dev"
 			)
 			File.open(file_path, "w").write(
 				Resorcerer.bin_wrapper_template_compile(
@@ -38,6 +38,8 @@ module SaladPrep
 		def build_actions
 			yield update_salad_prep
 			yield refresh_bins
+			yield backup_db
+			yield backup_remote_db
 		end
 
 		def wrap_action(name, body)
@@ -84,13 +86,12 @@ module SaladPrep
 			["backup_db", action_body]
 		end
 
-		def backup_rmote_db
+		def backup_remote_db
 			action_body = <<~CODE
 				Provincial.remote.backup_db
 			CODE
 			["backup_rmote_db", action_body]
 		end
-
 
 		def update_salad_prep
 			action_body = <<~CODE
@@ -105,7 +106,6 @@ module SaladPrep
 			CODE
 			["refresh_bins", action_body]
 		end
-
 
 	end
 end
