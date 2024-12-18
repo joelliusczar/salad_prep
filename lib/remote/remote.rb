@@ -185,7 +185,7 @@ module SaladPrep
 		def grab_file(src, dest)
 			system(
 				"scp",
-				"-i"
+				"-i",
 				@egg.ssh_id_file,
 				"root@#{@egg.ssh_address}:#{src}",
 				dest,
