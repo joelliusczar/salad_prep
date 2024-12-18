@@ -13,7 +13,7 @@ require_relative "./provincial"
 
 actions_hash = {}
 
-<%= actions_body %>'
+<%= actions_body %>
 
 args_hash = {}
 cmd = ARGV[0]

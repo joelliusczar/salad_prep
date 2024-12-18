@@ -21,7 +21,7 @@ module SaladPrep
 			)
 			actions_body = ""
 			build_actions do |name, body|
-				actions ^= wrap_action(name, body)
+				actions_body ^= wrap_action(name, body)
 			end
 			file_path = File.join(
 				@egg.dev_ops_bin,
@@ -40,6 +40,7 @@ module SaladPrep
 			yield refresh_bins
 			yield backup_db
 			yield backup_remote_db
+			yield connect_root
 		end
 
 		def wrap_action(name, body)
@@ -91,6 +92,13 @@ module SaladPrep
 				Provincial.remote.backup_db
 			CODE
 			["backup_rmote_db", action_body]
+		end
+
+		def connect_root
+			action_body = <<~CODE
+				Provincial.remote.connect_root
+			CODE
+			["connect_root", action_body]
 		end
 
 		def update_salad_prep
