@@ -112,7 +112,7 @@ module SaladPrep
 
 		def pre_deployment_check(
 			current_branch:nil,
-			test_honcho: nil,
+			test_honcho: nil
 		)
 			if current_branch.zero?
 				current_branch = `git branch --show-current 2>/dev/null`.strip
