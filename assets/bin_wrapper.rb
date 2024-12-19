@@ -35,7 +35,7 @@ end
 
 if ARGV.empty?
 	show_commands
-	quit
+	exit
 end
 
 args_hash = {}
@@ -51,7 +51,7 @@ end
 ARGV.clear
 if cmd == "-V"
 	puts(SaladPrep::Canary.version)
-elsif
+elsif cmd == "-h"
 	show_commands
 else
 	@actions_hash[cmd].call(args_hash)
