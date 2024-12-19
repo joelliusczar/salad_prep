@@ -24,7 +24,7 @@ module SaladPrep
 			)
 			actions_body = ""
 			build_actions do |name, body|
-				actions_body ^= wrap_action(name, body)
+				actions_body ^= template_cmd_mapping(name, body)
 			end
 			file_path = File.join(
 				@egg.dev_ops_bin,
@@ -42,20 +42,16 @@ module SaladPrep
 			yield update_salad_prep
 			yield refresh_bins
 			yield backup_db
-			yield backup_remote_db
+			yield tape_db
 			yield connect_root
 			yield empty_dir
 		end
 
-		def wrap_action(name, body)
+		def template_cmd_mapping(name, body)
 			<<~CODE
 
-				actions_hash["#{name}"] =  lambda do |args_hash|
-					if args_hash.include?("testing")
-						Provincial.egg.run_test_block do
-							#{body}
-						end
-					else
+				actions_hash["#{name}"] = lambda do |args_hash|
+					bin_action_wrap do
 						#{body}
 					end
 				end
@@ -91,11 +87,11 @@ module SaladPrep
 			["backup_db", action_body]
 		end
 
-		def backup_remote_db
+		def tape_db
 			action_body = <<~CODE
 				Provincial.remote.backup_db
 			CODE
-			["backup_rmote_db", action_body]
+			["tape_db", action_body]
 		end
 
 		def connect_root
