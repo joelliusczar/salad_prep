@@ -49,13 +49,11 @@ module SaladPrep
 
 		def template_cmd_mapping(name, body)
 			<<~CODE
-
 				@actions_hash["#{name}"] = lambda do |args_hash|
 					bin_action_wrap(args_hash) do
-						#{body}
+						#{body.chomp}
 					end
 				end
-
 			CODE
 		end
 
@@ -120,6 +118,13 @@ module SaladPrep
 				SaladPrep::FileHerder.empty_dir(args_hash[0])
 			CODE
 			["empty_dir", action_body]
+		end
+
+		def env_hash
+			action_body = <<~CODE
+				puts(Provincial.egg.local_env_hash)
+			CODE
+			["env_hash", action_body]
 		end
 
 	end
