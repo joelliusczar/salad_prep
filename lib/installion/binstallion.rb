@@ -45,6 +45,7 @@ module SaladPrep
 			yield tape_db
 			yield connect_root
 			yield empty_dir
+			yield env_hash
 		end
 
 		def template_cmd_mapping(name, body)
