@@ -50,8 +50,8 @@ module SaladPrep
 		def template_cmd_mapping(name, body)
 			<<~CODE
 
-				actions_hash["#{name}"] = lambda do |args_hash|
-					bin_action_wrap do
+				@actions_hash["#{name}"] = lambda do |args_hash|
+					bin_action_wrap(args_hash) do
 						#{body}
 					end
 				end

@@ -11,19 +11,19 @@ end
 require "salad_prep"
 require_relative "./provincial"
 
-actions_hash = {}
+@actions_hash = {}
 
 <%= actions_body %>
 
 def show_commands
 	puts("any of the following are valid commands")
 	puts("-V : Prints the salad prep version")
-	actions_hash.keys.sort.each do |key|
+	@actions_hash.keys.sort.each do |key|
 		puts(key)
 	end
 end
 
-def bin_action_wrap
+def bin_action_wrap(args_hash)
 	if args_hash.include?("testing")
 		Provincial.egg.run_test_block do
 			yield
@@ -54,7 +54,7 @@ if cmd == "-V"
 elsif
 	show_commands
 else
-	actions_hash[cmd].call(args_hash)
+	@actions_hash[cmd].call(args_hash)
 end
 
 
