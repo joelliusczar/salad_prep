@@ -59,70 +59,70 @@ module SaladPrep
 		end
 
 		def install_py_env_if_needed
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.monty.install_py_env_if_needed
 			CODE
 			["install_py_env_if_needed", action_body]
 		end
 
 		def setup_client
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.client_launcher.setup_client
 			CODE
 			["setup_client", action_body]
 		end
 
 		def startup_api
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.api_launcher.startup_api
 			CODE
 			["startup_api", action_body]
 		end
 
 		def backup_db
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.dbass.backup_db
 			CODE
 			["backup_db", action_body]
 		end
 
 		def tape_db
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.remote.backup_db
 			CODE
 			["tape_db", action_body]
 		end
 
 		def connect_root
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.remote.connect_root
 			CODE
 			["connect_root", action_body]
 		end
 
 		def update_salad_prep
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				system("bundle update")
 			CODE
 			["update_salad_prep", action_body]
 		end
 
 		def refresh_bins
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.binstallion.install_bins
 			CODE
 			["refresh_bins", action_body]
 		end
 
 		def empty_dir
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				SaladPrep::FileHerder.empty_dir(args_hash[0])
 			CODE
 			["empty_dir", action_body]
 		end
 
 		def env_hash
-			action_body = <<~CODE
+			action_body = <<~'CODE'
 				Provincial.egg.env_hash(include_dirs: true).each do |k, v|
 					puts("\"#{k}\"=>\"#{v}\"")
 				end
