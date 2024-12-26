@@ -50,8 +50,19 @@ module SaladPrep
 				self + "\n" + other
 			end
 
+			def instancify
+				return self if start_with?("@") 
+				"@#{to_s}"
+			end
+
 		end
 
+		refine Symbol do
+			def instancify
+				return self if start_with?("@") 
+				"@#{to_s}".to_sym
+			end
+		end
 
 	end
 

@@ -2,7 +2,7 @@ require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../file_herder/file_herder"
 require_relative "../resorcerer/resorcerer"
-require_relative "../strink/strink"
+require_relative "../extensions/strink"
 
 module SaladPrep
 	using Strink

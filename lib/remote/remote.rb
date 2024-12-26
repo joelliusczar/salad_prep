@@ -4,7 +4,7 @@ require "tempfile"
 require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../resorcerer/resorcerer"
-require_relative "../strink/strink"
+require_relative "../extensions/strink"
 
 
 

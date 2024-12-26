@@ -1,5 +1,5 @@
 require 'digest'
-require_relative "../strink/strink"
+require_relative "../extensions/strink"
 
 module SaladPrep
 	using Strink
