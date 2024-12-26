@@ -49,6 +49,9 @@ ARGV.drop(1).each_with_index do |arg, idx|
 	end
 end
 ARGV.clear
+
+Provincial.log = $stdout
+
 if cmd == "-V"
 	puts(SaladPrep::Canary.version)
 elsif cmd == "-h"
