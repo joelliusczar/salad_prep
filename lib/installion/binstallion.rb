@@ -123,7 +123,9 @@ module SaladPrep
 
 		def env_hash
 			action_body = <<~CODE
-				puts(Provincial.egg.local_env_hash)
+				Provincial.egg.env_hash(include_dirs: true).each do |k, v|
+					puts("\"${k}\"=>\"#{v}\"")
+				end
 			CODE
 			["env_hash", action_body]
 		end

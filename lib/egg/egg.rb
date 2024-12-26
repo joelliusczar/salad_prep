@@ -149,7 +149,7 @@ module SaladPrep
 			:init_rq,
 			:server_rq,
 			:deploy_rq,
-			:env_hash,
+			:env_enum,
 			prefixed_env_key: "REPO_URL"
 		)
 		def repo_url
@@ -208,7 +208,7 @@ module SaladPrep
 
 		mark_for(
 			:init_rq,
-			:env_hash,
+			:env_enum,
 			default: "v1",
 			prefixed_env_key: "API_VERSION"
 		)
@@ -225,16 +225,16 @@ module SaladPrep
 			"#{app_root}/keys/#{project_name_snake}"
 		end
 
-		mark_for(:server_rq, :deploy_rq, :env_hash)
+		mark_for(:server_rq, :deploy_rq, :env_enum)
 		def_env_find(:pb_secret, "PB_SECRET", /PB_SECRET=(\w+)/, :env_key)
 
-		mark_for(:server_rq, :deploy_rq, :env_hash)
+		mark_for(:server_rq, :deploy_rq, :env_enum)
 		def_env_find(:pb_api_key, "PB_API_KEY", /PB_API_KEY=(\w+)/, :env_key)
 
 		mark_for(
 			:server_rq,
 			:deploy_rq,
-			:env_hash,
+			:env_enum,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:api_auth_key, "AUTH_SECRET_KEY", /AUTH_SECRET_KEY=(\w+)/)
@@ -242,14 +242,14 @@ module SaladPrep
 		mark_for(
 			:server_rq,
 			:deploy_rq,
-			:env_hash,
+			:env_enum,
 			gen_key: SecureRandom.uuid
 		)
 		def_env_find(:namespace_uuid, "NAMESPACE_UUID", /NAMESPACE_UUID=([\w\-]+)/)
 
 		mark_for(
 			:deploy_sg,
-			:env_hash,
+			:env_enum,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:db_setup_key, "DB_PASS_SETUP", /DB_PASS_SETUP=(\w+)/)
@@ -261,7 +261,7 @@ module SaladPrep
 
 		mark_for(
 			:deploy_sg,
-			:env_hash,
+			:env_enum,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:db_owner_key, "DB_PASS_OWNER", /DB_PASS_OWNER=(\w+)/)
@@ -269,22 +269,22 @@ module SaladPrep
 		mark_for(
 			:server_rq,
 			:deploy_rq,
-			:env_hash,
+			:env_enum,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:api_db_user_key, "DB_PASS_API", /DB_PASS_API=(\w+)/)
  
-		mark_for(:server_rq, :deploy_rq, :env_hash)
+		mark_for(:server_rq, :deploy_rq, :env_enum)
 		def_env_find(
 			:janitor_db_user_key,
 			"DB_PASS_JANITOR",
 			/DB_PASS_JANITOR=(\w+)/
 		)
 
-		mark_for(:deploy_sg, :env_hash)
+		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:api_log_level, "API_LOG_LEVEL")
 
-		mark_for(:env_hash, prefixed_env_key: "DATABASE_NAME")
+		mark_for(:env_enum, prefixed_env_key: "DATABASE_NAME")
 		def db_name
 			"#{project_name_snake}_db"
 		end
@@ -433,27 +433,31 @@ module SaladPrep
 			load_env if @test_flags == 0
 		end
 
-		def env_hash(prefer_keys_file: true)
-			marked_methods(:env_key, :env_hash).to_h do |symbol|
+		def env_hash(prefer_keys_file: true, include_dirs: false)
+			marked_methods(:env_key, :env_enum).to_h do |symbol|
 				attrs = method_attrs(symbol)
 				key = attrs[:env_key]
 				[key, send(symbol, prefer_keys_file:)]
 			end.merge(
-				marked_methods(:prefixed_env_key, :env_hash)
+				marked_methods(:prefixed_env_key, :env_enum)
 				.filter do |symbol|
 					method(symbol).parameters.any? {|p| p[1] == :prefer_keys_file} 
 				end
 				.to_h do |symbol|
 					attrs = method_attrs(symbol)
 					key = attrs[:prefixed_env_key]
-					["#{env_prefix}_#{key}", send(symbol, prefer_keys_file:)]
+					hash_key = "#{env_prefix}_#{key}"
+					m = method(symbol)
+					if m.parameters.none?
+						[hash_key, send(symbol)]
+					elsif m.parameters.any? {|p| p[1] == :prefer_keys_file} 
+						[hash_key, send(symbol, prefer_keys_file:)]
+					else
+						[hash_key, ""]
+					end
 				end
-			).reject {|k, v| v.zero? }
-		end
-
-		def local_env_hash
-			env_hash(prefer_keys_file: false).merge(
-				marked_methods(
+			).merge(
+				include_dirs ? marked_methods(
 					:prefixed_env_key,
 					:fixed_dir
 				).to_h do |symbol|
@@ -464,12 +468,12 @@ module SaladPrep
 					else
 						["#{env_prefix}_#{key}", send(symbol, abs: false)]
 					end
-				end
-			)
+				end || {}
+			).reject {|k, v| v.zero? }
 		end
 
 		def load_env
-			local_env_hash.each_pair do |key, value|
+			env_hash(include_dirs: true).each_pair do |key, value|
 				ENV[key] = value
 			end
 			ENV["#{env_prefix}_APP_ROOT"] = @app_root
@@ -485,7 +489,7 @@ module SaladPrep
 		def server_env_check_required
 			marked_methods(:server_rq).filter do |symbol|
 				m = method(symbol)
-				if m.parameters.length < 1
+				if m.parameters.none?
 					m.call.zero?
 				elsif m.parameters.any? { |p| p[1] == :prefer_keys_file}
 					m.call(prefer_keys_file: false).zero?

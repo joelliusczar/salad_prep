@@ -21,7 +21,7 @@ module SaladPrep
 
 		def env_api_content
 			content = ""
-			@egg.local_env_hash.each_pair do |key, value|
+			@egg.env_hash(include_dirs: true).each_pair do |key, value|
 				content ^= "#{key}='#{value}'"
 			end
 			content
