@@ -7,7 +7,7 @@ module SaladPrep
 
 		module BackupLvl
 			ALL = "all"
-			STRUCTURE "structure"
+			STRUCTURE = "structure"
 			DATA = "data"
 		end
 	end
