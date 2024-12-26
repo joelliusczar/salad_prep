@@ -47,10 +47,10 @@ module SaladPrep
 				db_name,
 			]
 
-			if backup_lvl.downcase == BackupLvl.STRUCTURE
+			if backup_lvl&.downcase == BackupLvl.STRUCTURE
 				cmd_arr.push("--no-data")
 				dest += "_STRUCTURE.sql"
-			elsif backup_lvl.downcase == BackupLvl.DATA
+			elsif backup_lvl&.downcase == BackupLvl.DATA
 				cmd_arr.push("--no-create-info")
 				dest += "_DATA.sql"
 			else
