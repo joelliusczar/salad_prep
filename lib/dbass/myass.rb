@@ -31,13 +31,20 @@ module SaladPrep
 			dest = File.join(
 				@egg.app_root, "db_backup", "#{timestamp}_backup.sql"
 			)
+			owner_name = @egg.db_owner_name
+			owner_key = @egg.db_owner_key(prefer_keys_file: false)
+			db_name = @egg.db_name
+			log&.puts("owner name: #{owner_name}")
+			log&.puts("owner key: #{owner_key}")
+			log&.puts("db_name: #{db_name}")
 			system(
 				"mysqldump",
 				'-u',
-				@egg.db_owner_name,
+				owner_name,
 				"-p",
-				@egg.db_owner_key(prefer_keys_file: false),
+				owner_key,
 				@egg.db_name,
+				db_name,
 				out: File.open(dest, "w"),
 				exception: true
 			)

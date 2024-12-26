@@ -1,14 +1,12 @@
 require 'digest'
 require_relative "../extensions/strink"
+require_relative "../loggable/loggable"
 
 module SaladPrep
 	using Strink
-
+	
 	class Libby
-
-		def initialize(log: nil)
-			@log = log
-		end
+		include Loggable
 
 		def regen_lib_supports
 		end

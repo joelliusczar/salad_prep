@@ -17,10 +17,8 @@ module SaladPrep
 		def initialize(
 			egg,
 			min_version:"3.9",
-			generated_file_dir: nil,
-			log: nil
+			generated_file_dir: nil
 		)
-			super(log: log)
 			@egg = egg
 			@min_version = min_version
 			raise "generated_file_dir is required" if generated_file_dir.zero?
@@ -143,7 +141,7 @@ module SaladPrep
 
 		def regen_lib_supports
 			output_file = File.join(@generated_file_dir, "file_reference.py")
-			@log&.puts("regen_lib_supports: #{output_file} ")
+			log&.puts("regen_lib_supports: #{output_file} ")
 			input_dir = @egg.sql_scripts_src
 			File.open(output_file, "w") do |out|
 				out.write("####### This file is generated. #######\n")
@@ -154,7 +152,7 @@ module SaladPrep
 				hash_index_dir(input_dir).each do |file, enum_name, sha256_hash|
 					line =\
 						"\t#{enum_name} = (\n\t\t\"#{file}\",\n\t\t\"#{sha256_hash}\"\n\t)\n"
-					@log&.write(line)
+					log&.write(line)
 					out.write(line)
 				end
 				out.write("\n\t@property\n")
@@ -190,7 +188,7 @@ module SaladPrep
 		end
 
 		def create_py_env_in_app_trunk
-			@log&.puts("create_py_env_in_app_trunk")
+			log&.puts("create_py_env_in_app_trunk")
 			sync_requirement_list
 			create_py_env_in_dir
 			replace_lib_files

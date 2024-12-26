@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.13.6"
+	s.version = "0.14.0"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
 		"lib/installion/installion.rb",
 		"lib/libby/libby.rb",
 		"lib/libby/monty.rb",
+		"lib/loggable/loggable.rb",
 		"lib/method_marker/method_marker.rb",
 		"lib/remote/enums.rb",
 		"lib/remote/remote.rb",

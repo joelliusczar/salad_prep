@@ -1,7 +1,10 @@
 require_relative "../file_herder/file_herder"
+require_relative "../loggable/loggable"
 
 module SaladPrep
 	class DbAss
+		include Loggable
+		
 		def initialize(egg)
 			@egg = egg
 		end
