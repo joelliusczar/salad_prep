@@ -50,7 +50,7 @@ ARGV.drop(1).each_with_index do |arg, idx|
 end
 ARGV.clear
 
-Provincial.log = $stdout
+Provincial.log = Provincial.egg.log_dest
 
 if cmd == "-V"
 	puts(SaladPrep::Canary.version)
