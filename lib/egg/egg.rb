@@ -439,11 +439,7 @@ module SaladPrep
 				key = attrs[:env_key]
 				[key, send(symbol, prefer_keys_file:)]
 			end.merge(
-				marked_methods(:prefixed_env_key, :env_enum)
-				.filter do |symbol|
-					method(symbol).parameters.any? {|p| p[1] == :prefer_keys_file} 
-				end
-				.to_h do |symbol|
+				marked_methods(:prefixed_env_key, :env_enum).to_h do |symbol|
 					attrs = method_attrs(symbol)
 					key = attrs[:prefixed_env_key]
 					hash_key = "#{env_prefix}_#{key}"
