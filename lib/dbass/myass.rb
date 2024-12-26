@@ -24,7 +24,7 @@ module SaladPrep
 			end
 		end
 
-		def backup_db(backup_lvl: BackupLvl.ALL)
+		def backup_db(backup_lvl: Enums::BackupLvl.ALL)
 			FileUtils.mkdir_p(
 				File.join(@egg.app_root, "db_backup")
 			)
@@ -47,10 +47,10 @@ module SaladPrep
 				db_name,
 			]
 
-			if backup_lvl&.downcase == BackupLvl.STRUCTURE
+			if backup_lvl&.downcase == Enums::BackupLvl.STRUCTURE
 				cmd_arr.push("--no-data")
 				dest += "_STRUCTURE.sql"
-			elsif backup_lvl&.downcase == BackupLvl.DATA
+			elsif backup_lvl&.downcase == Enums::BackupLvl.DATA
 				cmd_arr.push("--no-create-info")
 				dest += "_DATA.sql"
 			else
