@@ -82,8 +82,8 @@ module SaladPrep
 
 		def backup_db
 			action_body = <<~'CODE'
-				output_path = Provincial.dbass.backup_db
-				puts("SQL dumped at '@#{output_path}'")
+				output_path = Provincial.dbass.backup_db(args_hash["-backuplvl"])
+				puts("SQL dumped at '#{output_path}'")
 			CODE
 			["backup_db", action_body]
 		end

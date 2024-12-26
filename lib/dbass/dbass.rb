@@ -1,10 +1,11 @@
+require_relative "../dbass/enums"
 require_relative "../file_herder/file_herder"
 require_relative "../loggable/loggable"
 
 module SaladPrep
 	class DbAss
 		include Loggable
-		
+
 		def initialize(egg)
 			@egg = egg
 		end
@@ -25,7 +26,7 @@ module SaladPrep
 			raise "start_db_service not implemented"
 		end
 
-		def backup_db
+		def backup_db(backup_lvl: BackupLvl.ALL)
 			raise "backup_db not implemented"
 		end
 
