@@ -468,7 +468,7 @@ module SaladPrep
 					else
 						["#{env_prefix}_#{key}", send(symbol, abs: false)]
 					end
-				end || {}
+				end : {}
 			).reject {|k, v| v.zero? }
 		end
 
