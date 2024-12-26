@@ -133,7 +133,7 @@ module SaladPrep
 
 		def egg
 			action_body = <<~'CODE'
-				Provincial.egg.to_s
+				puts(Provincial.egg.to_s)
 			CODE
 			["egg", action_body]
 		end
