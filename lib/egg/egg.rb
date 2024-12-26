@@ -523,5 +523,11 @@ module SaladPrep
 			end
 		end
 
+		def to_s
+			super + "\n" + marked_methods.sort.map do |symbol|
+				"#{symbol} => \"#{send(symbol)}\""
+			end * "\n"
+		end
+
 	end
 end

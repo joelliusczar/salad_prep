@@ -46,6 +46,7 @@ module SaladPrep
 			yield connect_root
 			yield empty_dir
 			yield env_hash
+			yield egg
 		end
 
 		def template_cmd_mapping(name, body)
@@ -128,6 +129,13 @@ module SaladPrep
 				end
 			CODE
 			["env_hash", action_body]
+		end
+
+		def egg
+			action_body = <<~'CODE'
+				Provincial.egg.to_s
+			CODE
+			["egg", action_body]
 		end
 
 	end
