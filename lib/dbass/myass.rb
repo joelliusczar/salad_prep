@@ -55,7 +55,7 @@ module SaladPrep
 				dest += "_DATA.sql"
 			elsif backup_lvl&.downcase == Enums::BackupLvl::SELECT
 				cmd_arr.push("--no-create-info")
-				cmd_arr.push(backup_tables_list)
+				cmd_arr.push(*backup_tables_list)
 				dest += "_LIMITED.sql"
 			else
 				dest += "_ALL.sql"
