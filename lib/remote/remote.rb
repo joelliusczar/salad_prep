@@ -199,7 +199,7 @@ module SaladPrep
 			content = <<~CODE
 				#{app_lvl_definitions_script}
 				Provincial.remote.class.run_remote_action do
-					output_path = Provincial.dbass.backup_db(backup_lvl: #{backup_lvl})
+					output_path = Provincial.dbass.backup_db(backup_lvl: '#{backup_lvl}')
 					puts(output_path)
 				end
 			CODE
