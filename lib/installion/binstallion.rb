@@ -36,6 +36,7 @@ module SaladPrep
 				)
 			)
 			FileUtils.chmod("a+x", file_path)
+			puts("#{Canary.version}")
 		end
 		
 		def build_actions
