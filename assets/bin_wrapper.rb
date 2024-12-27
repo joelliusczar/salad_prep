@@ -56,6 +56,8 @@ end
 ARGV.clear
 
 Provincial.log = Provincial.egg.log_dest
+Provincial.diag_log = Provincial.egg.log_dest("_DIAG")
+Provincial.error_log = $stderr
 
 if cmd == "-V"
 	puts(SaladPrep::Canary.version)

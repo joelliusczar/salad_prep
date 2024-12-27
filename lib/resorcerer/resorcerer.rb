@@ -17,13 +17,6 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}bootstrap")
 		end
 
-		def self.bootstrap_compile(update_salad_prep: false)
-			template = ERB.new(bootstrap, trim_mode:"<>")
-			template.result_with_hash({
-				update_salad_prep: update_salad_prep ? "true" : ""
-			})
-		end
-
 		def self.nginx_template
 			open_text("#{ASSETS_DIR}nginx_template.conf")
 		end

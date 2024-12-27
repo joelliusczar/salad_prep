@@ -82,15 +82,26 @@ module SaladPrep
 			script ^= env_exports
 			if shell_content.populated?
 				script ^= shell_content
+			else
+				script ^= "asdf shell ruby 3.3.5"
 			end
 			if ruby_content.populated?
 				script ^= <<~SCRIPT
 					ruby <<'EOF'
+						require 'bundler/inline'
+
+						gemfile do
+							source "https://rubygems.org"
+
+							gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+						end
+
+						require "salad_prep"
 						#{ruby_content}
 					EOF
 				SCRIPT
 			end
-			log&.write(script)
+			diag_log&.write(script)
 			BoxBox.run_and_get(
 				"ssh",
 				"-i",
@@ -173,9 +184,7 @@ module SaladPrep
 
 			pre_deployment_check(current_branch:, test_honcho:)
 
-			bootstrap_content = Resorcerer::bootstrap_compile(
-				update_salad_prep: update_salad_prep
-			)
+			bootstrap_content = Resorcerer.bootstrap
 
 			run_remote(
 				shell_content: bootstrap_content,
