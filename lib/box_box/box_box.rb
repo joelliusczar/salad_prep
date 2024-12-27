@@ -149,7 +149,7 @@ module SaladPrep
 				end
 		end
 
-		def self.run_and_get(cmds, in_s:nil, exception: false)
+		def self.run_and_get(*cmds, in_s:nil, exception: false)
 			result = IO.popen(
 				cmds,
 				"r+"
