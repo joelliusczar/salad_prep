@@ -5,6 +5,7 @@ require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../dbass/enums"
 require_relative "../extensions/strink"
+require_relative "../loggable/loggable"
 require_relative "../resorcerer/resorcerer"
 
 
@@ -13,6 +14,8 @@ module SaladPrep
 	using Strink
 
 	class Remote
+		include Loggable
+
 		def initialize (egg)
 			if ! File.file?(egg.ssh_id_file)
 				raise "id file doesn't exist: #{egg.ssh_id_file}"
@@ -87,6 +90,7 @@ module SaladPrep
 					EOF
 				SCRIPT
 			end
+			log&.write(script)
 			BoxBox.run_and_get(
 				"ssh",
 				"-i",
@@ -202,7 +206,7 @@ module SaladPrep
 			output_path = run_remote(
 				ruby_content: content
 			).chomp
-			Provincial.remote.grab_file(output_path, backup_path)
+			grab_file(output_path, backup_path)
 		end
 
 		def self.is_ssh?
