@@ -87,9 +87,6 @@ module SaladPrep
 					EOF
 				SCRIPT
 			end
-			if print_env
-				puts(env_exports)
-			end
 			BoxBox.run_and_get(
 				"ssh",
 				"-i",
