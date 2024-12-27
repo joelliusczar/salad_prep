@@ -9,6 +9,7 @@ module SaladPrep
 			ALL = "all"
 			STRUCTURE = "structure"
 			DATA = "data"
+			SELECT = "select"
 		end
 	end
 end

@@ -11,6 +11,8 @@ end
 require "salad_prep"
 require_relative "./provincial"
 
+using SaladPrep::Strink
+
 @actions_hash = {}
 
 <%= actions_body %>
@@ -40,12 +42,15 @@ end
 
 args_hash = {}
 cmd = ARGV[0]
-ARGV.drop(1).each_with_index do |arg, idx|
+idx = 0
+ARGV.drop(1).each do |arg|
 	if arg.include?("=")
 		split = arg.split("=")
-		args_hash[split[0].strip] = split[1].strip
+		args_hash[split[0].strip.downcase] = split[1].strip
 	else
 		args_hash[idx] = arg
+		args_hash[arg] = true
+		idx += 1
 	end
 end
 ARGV.clear

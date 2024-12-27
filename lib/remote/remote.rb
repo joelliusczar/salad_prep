@@ -3,8 +3,9 @@ require "resolv"
 require "tempfile"
 require "fileutils"
 require_relative "../box_box/box_box"
-require_relative "../resorcerer/resorcerer"
+require_relative "../dbass/enums"
 require_relative "../extensions/strink"
+require_relative "../resorcerer/resorcerer"
 
 
 
@@ -193,11 +194,11 @@ module SaladPrep
 			)
 		end
 
-		def backup_db(backup_path)
+		def backup_db(backup_path, backup_lvl: Enums::BackupLvl::ALL)
 			content = <<~CODE
 				#{app_lvl_definitions_script}
 				Provincial.remote.class.run_remote_action do
-					output_path = Provincial.dbass.backup_db
+					output_path = Provincial.dbass.backup_db(backup_lvl: #{backup_lvl})
 					puts(output_path)
 				end
 			CODE

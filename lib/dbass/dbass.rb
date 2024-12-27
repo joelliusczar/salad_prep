@@ -26,8 +26,12 @@ module SaladPrep
 			raise "start_db_service not implemented"
 		end
 
-		def backup_db(backup_lvl: BackupLvl.ALL)
+		def backup_db(backup_lvl: Enums::BackupLvl::ALL)
 			raise "backup_db not implemented"
+		end
+
+		def backup_tables_list
+			[]
 		end
 
 	end

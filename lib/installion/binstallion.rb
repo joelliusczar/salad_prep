@@ -92,7 +92,16 @@ module SaladPrep
 
 		def tape_db
 			action_body = <<~'CODE'
-				Provincial.remote.backup_db
+				out_param = ["-o", "-out", "-output"]
+					.filter{ |p| args_hash[p].zero? }
+					.first
+				if out_param.zero?
+						raise "Output path not provided"
+				end
+				Provincial.remote.backup_db(
+					args_hash[out_param],
+					backup_lvl:args_hash["-backuplvl"]
+				)
 			CODE
 			["tape_db", action_body]
 		end
