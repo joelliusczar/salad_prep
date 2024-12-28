@@ -57,7 +57,7 @@ module SaladPrep
 				<<~CODE
 					@actions_hash["#{name}"] = lambda do |args_hash|
 						bin_action_wrap(args_hash) do
-							#{yield.chomp}
+							#{yield}
 						end
 					end
 				CODE
@@ -101,7 +101,7 @@ module SaladPrep
 					.filter{ |p| args_hash[p].zero? }
 					.first
 				if out_param.zero?
-						raise "Output path not provided"
+					raise "Output path not provided"
 				end
 
 				remote_script = Provincial.egg.env_exports
