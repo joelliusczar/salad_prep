@@ -10,6 +10,7 @@ module SaladPrep
 	class Binstallion
 		using Strink
 		extend MethodMarker
+		include Loggable
 		
 		def initialize(egg, template_context_path)
 			@egg = egg
