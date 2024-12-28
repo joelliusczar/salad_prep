@@ -27,14 +27,14 @@ module SaladPrep
 				File.open(@template_context_path).read
 			)
 			actions_body = ""
-			action_body ^= refresh_bins
+			actions_body ^= refresh_bins
 			begin
 				marked = marked_methods(:sh_cmd)
 				warning_log&.puts("No symboles") if marked.none?
 				marked.each do |symbol|
 					diag_log&.put(symbol)
 					next if symbol == :refresh_bins
-					action_body ^= send(symbol)
+					actions_body ^= send(symbol)
 				end
 			rescue
 				error_log&.puts("Error while trying to create bin file.")
