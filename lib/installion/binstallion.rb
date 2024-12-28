@@ -54,7 +54,7 @@ module SaladPrep
 
 		def self.def_cmd(name)
 			define_method(name) do
-				<<-CODE
+				<<~CODE
 					@actions_hash["#{name}"] = lambda do |args_hash|
 						bin_action_wrap(args_hash) do
 							#{yield.chomp}
