@@ -278,6 +278,15 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd)
+		def_cmd("deploy_snippet") do
+			action_body = <<~'CODE'
+				remote_script = args_hash[0]
+				Provincial.egg.load_env
+				Provincial.remote.run_remote(remote_script)
+			CODE
+		end
+
+		mark_for(:sh_cmd)
 		def_cmd("connect_root") do
 			action_body = <<~'CODE'
 				Provincial.remote.connect_root
