@@ -1,9 +1,9 @@
 module SaladPrep
 	module Loggable
-		@@log
-		@@warning_log
-		@@error_log
-		@@diag_log
+		@@log = nil
+		@@warning_log = nil
+		@@error_log = nil
+		@@diag_log = nil
 
 		def log=(value)
 			@@log = value
