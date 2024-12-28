@@ -282,7 +282,7 @@ module SaladPrep
 			action_body = <<~'CODE'
 				remote_script = args_hash[0]
 				Provincial.egg.load_env
-				Provincial.remote.run_remote(remote_script)
+				puts(Provincial.remote.run_remote(remote_script))
 			CODE
 		end
 
