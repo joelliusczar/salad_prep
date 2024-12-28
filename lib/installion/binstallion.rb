@@ -57,7 +57,7 @@ module SaladPrep
 				<<~CODE
 					@actions_hash["#{name}"] = lambda do |args_hash|
 						bin_action_wrap(args_hash) do
-							#{yield}
+							#{yield.gsub('\n', '\n\t').chomp}
 						end
 					end
 				CODE
