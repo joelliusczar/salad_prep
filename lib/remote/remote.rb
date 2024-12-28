@@ -76,7 +76,7 @@ module SaladPrep
 				@egg.ssh_id_file,
 				"root@#{@egg.ssh_address}",
 				"bash",
-				"-s",
+				"-sl",
 				in_s: script,
 				exception: true
 			)
