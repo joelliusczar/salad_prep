@@ -65,28 +65,28 @@ module SaladPrep
 		end
 
 		def_cmd("install_py_env_if_needed") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.monty.install_py_env_if_needed
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("setup_client") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.client_launcher.setup_client
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("startup_api") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.api_launcher.startup_api
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("backup_db") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				output_path = Provincial.dbass.backup_db(
 					backup_lvl:args_hash["-backuplvl"]
 				)
@@ -96,7 +96,7 @@ module SaladPrep
 
 		mark_for(:sh_cmd)
 		def_cmd("tape_db") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				out_param = ["-o", "-out", "-output"]
 					.filter{ |p| args_hash[p].zero? }
 					.first
@@ -133,35 +133,35 @@ module SaladPrep
 
 		mark_for(:sh_cmd)
 		def_cmd("connect_root") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.remote.connect_root
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("update_salad_prep") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				system("bundle update")
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("refresh_bins") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.binstallion.install_bins
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("empty_dir") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				SaladPrep::FileHerder.empty_dir(args_hash[0])
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("env_hash") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.egg.env_hash(include_dirs: true).each do |k, v|
 					puts("\"#{k}\"=>\"#{v}\"")
 				end
@@ -170,21 +170,21 @@ module SaladPrep
 
 		mark_for(:sh_cmd)
 		def_cmd("egg") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				puts(Provincial.egg.to_s)
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("install") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.installion.install_dependencies
 			CODE
 		end
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_install") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				current_branch = args_hash["branch"]
 				if current_branch.zero?
 					current_branch = `git branch --show-current 2>/dev/null`.strip
@@ -215,7 +215,7 @@ module SaladPrep
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_api") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				current_branch = args_hash["branch"]
 				if current_branch.zero?
 					current_branch = `git branch --show-current 2>/dev/null`.strip
@@ -247,7 +247,7 @@ module SaladPrep
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_client") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				current_branch = args_hash["branch"]
 				if current_branch.zero?
 					current_branch = `git branch --show-current 2>/dev/null`.strip
@@ -279,7 +279,7 @@ module SaladPrep
 
 		mark_for(:sh_cmd)
 		def_cmd("connect_root") do
-			action_body = <<-'CODE'
+			action_body = <<~'CODE'
 				Provincial.remote.connect_root
 			CODE
 		end
