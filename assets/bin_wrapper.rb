@@ -1,11 +1,13 @@
 #!/usr/bin/env ruby
 
 require 'bundler/inline'
+require 'bundler'
 
 gemfile do
 	source "https://rubygems.org"
 
 	gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+	# gem "salad_prep", path: "#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-<git-hash-12>"
 end
 
 require "salad_prep"
