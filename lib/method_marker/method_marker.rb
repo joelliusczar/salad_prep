@@ -17,13 +17,12 @@ module SaladPrep
 				end
 			end
 		end
-		
-		def method_added(name)
-			@current_attrs = [] if @current_attrs.nil?
+
+		def link_method_attrs(name, attrs)
 			@method_attr_hash = {} if @method_attr_hash.nil?
 			@attr_method_hash = {} if @attr_method_hash.nil?
 			attr_hash = @method_attr_hash[name] || {}
-			@current_attrs.each do |attr|
+			attrs.each do |attr|
 				if attr.kind_of?(Hash)
 					attr.each_pair do |k, v|
 						attr_hash[k] = v
@@ -39,7 +38,23 @@ module SaladPrep
 				end
 			end
 			@method_attr_hash[name] = attr_hash
+		end
+		alias_method :late_mark_for, :link_method_attrs
+		
+		def register_method(name)
+			@current_attrs = [] if @current_attrs.nil?
+			link_method_attrs(name, @current_attrs)
 			@current_attrs.clear
+		end
+
+		def method_added(name)
+			register_method(name)
+		end
+
+		unbound_register = instance_method(:register_method)
+		unbound_register.bind(self)
+		def singleton_method_added(name)
+			register_method(name)
 		end
 
 		def mark_for(*attrs, **kwargs)

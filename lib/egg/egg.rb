@@ -68,6 +68,18 @@ module SaladPrep
 			end
 		end
 
+		def env_exports
+			exports = ""
+			env_hash.each_pair do |key, value|
+				exports += "export #{key}='#{value}'; "
+			end
+			exports
+		end
+
+		def app_lvl_definitions_script
+			"raise 'app_lvl_definitions_script not implemented'"
+		end
+
 		def is_current_dir_repo? (dir)
 			return false unless File.file?("#{dir}/README.md")
 			return false unless File.exist?("#{dir}/src")

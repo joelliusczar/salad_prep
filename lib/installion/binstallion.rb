@@ -1,13 +1,15 @@
 require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../file_herder/file_herder"
+require_relative "../method_marker/method_marker"
 require_relative "../resorcerer/resorcerer"
 require_relative "../extensions/strink"
 
 module SaladPrep
-	using Strink
-
 	class Binstallion
+		using Strink
+		extend MethodMarker
+		
 		def initialize(egg, template_context_path)
 			@egg = egg
 
@@ -23,8 +25,12 @@ module SaladPrep
 				File.open(@template_context_path).read
 			)
 			actions_body = ""
-			build_actions do |name, body|
-				actions_body ^= template_cmd_mapping(name, body)
+			begin
+				marked_methods(:sh_cmd).each do |symbol|
+					action_body ^= send(symbol)
+				end
+			rescue
+				action_body ^= refresh_bins
 			end
 			file_path = File.join(
 				@egg.dev_ops_bin,
@@ -38,60 +44,51 @@ module SaladPrep
 			FileUtils.chmod("a+x", file_path)
 			puts("#{Canary.version}")
 		end
-		
-		def build_actions
-			yield update_salad_prep
-			yield refresh_bins
-			yield backup_db
-			yield tape_db
-			yield connect_root
-			yield empty_dir
-			yield env_hash
-			yield egg
-		end
 
-		def template_cmd_mapping(name, body)
-			<<~CODE
-				@actions_hash["#{name}"] = lambda do |args_hash|
-					bin_action_wrap(args_hash) do
-						#{body.chomp}
+		def self.def_cmd(name)
+			define_method(name) do
+				<<~CODE
+					@actions_hash["#{name}"] = lambda do |args_hash|
+						bin_action_wrap(args_hash) do
+							#{yield.chomp}
+						end
 					end
-				end
-			CODE
+				CODE
+			end
 		end
 
-		def install_py_env_if_needed
+		def_cmd("install_py_env_if_needed") do
 			action_body = <<~'CODE'
 				Provincial.monty.install_py_env_if_needed
 			CODE
-			["install_py_env_if_needed", action_body]
 		end
 
-		def setup_client
+		mark_for(:sh_cmd)
+		def_cmd("setup_client") do
 			action_body = <<~'CODE'
 				Provincial.client_launcher.setup_client
 			CODE
-			["setup_client", action_body]
 		end
 
-		def startup_api
+		mark_for(:sh_cmd)
+		def_cmd("startup_api") do
 			action_body = <<~'CODE'
 				Provincial.api_launcher.startup_api
 			CODE
-			["startup_api", action_body]
 		end
 
-		def backup_db
+		mark_for(:sh_cmd)
+		def_cmd("backup_db") do
 			action_body = <<~'CODE'
 				output_path = Provincial.dbass.backup_db(
 					backup_lvl:args_hash["-backuplvl"]
 				)
 				puts("SQL dumped at '#{output_path}'")
 			CODE
-			["backup_db", action_body]
 		end
 
-		def tape_db
+		mark_for(:sh_cmd)
+		def_cmd("tape_db") do
 			action_body = <<~'CODE'
 				out_param = ["-o", "-out", "-output"]
 					.filter{ |p| args_hash[p].zero? }
@@ -99,56 +96,185 @@ module SaladPrep
 				if out_param.zero?
 						raise "Output path not provided"
 				end
-				Provincial.remote.backup_db(
-					args_hash[out_param],
-					backup_lvl:args_hash["-backuplvl"]
-				)
+
+				remote_script = Provincial.egg.env_exports
+				remote_script ^= "asdf shell ruby 3.3.5"
+				remote_script ^= <<~REMOTE
+					ruby <<'EOF'
+					require 'bundler/inline'
+	
+					gemfile do
+						source "https://rubygems.org"
+	
+						gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+					end
+	
+					require "salad_prep"
+					#{Provincial.egg.app_lvl_definitions_script}
+					Provincial.egg.load_env
+					output_path = Provincial.dbass.backup_db(
+						backup_lvl: '#{args_hash["-backuplvl"]}'
+					)
+					puts(output_path)
+					EOF
+				REMOTE
+	
+				output_path = Provincial.remote.run_remote(remote_script).chomp
+				Provincial.remote.grab_file(output_path, args_hash[out_param])
 			CODE
-			["tape_db", action_body]
 		end
 
-		def connect_root
+		mark_for(:sh_cmd)
+		def_cmd("connect_root") do
 			action_body = <<~'CODE'
 				Provincial.remote.connect_root
 			CODE
-			["connect_root", action_body]
 		end
 
-		def update_salad_prep
+		mark_for(:sh_cmd)
+		def_cmd("update_salad_prep") do
 			action_body = <<~'CODE'
 				system("bundle update")
 			CODE
-			["update_salad_prep", action_body]
 		end
 
-		def refresh_bins
+		mark_for(:sh_cmd)
+		def_cmd("refresh_bins") do
 			action_body = <<~'CODE'
 				Provincial.binstallion.install_bins
 			CODE
-			["refresh_bins", action_body]
 		end
 
-		def empty_dir
+		mark_for(:sh_cmd)
+		def_cmd("empty_dir") do
 			action_body = <<~'CODE'
 				SaladPrep::FileHerder.empty_dir(args_hash[0])
 			CODE
-			["empty_dir", action_body]
 		end
 
-		def env_hash
+		mark_for(:sh_cmd)
+		def_cmd("env_hash") do
 			action_body = <<~'CODE'
 				Provincial.egg.env_hash(include_dirs: true).each do |k, v|
 					puts("\"#{k}\"=>\"#{v}\"")
 				end
 			CODE
-			["env_hash", action_body]
 		end
 
-		def egg
+		mark_for(:sh_cmd)
+		def_cmd("egg") do
 			action_body = <<~'CODE'
 				puts(Provincial.egg.to_s)
 			CODE
-			["egg", action_body]
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("install") do
+			action_body = <<~'CODE'
+				Provincial.installion.install_dependencies
+			CODE
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("deploy_install") do
+			action_body = <<~'CODE'
+				current_branch = args_hash["branch"]
+				if current_branch.zero?
+					current_branch = `git branch --show-current 2>/dev/null`.strip
+				end
+				Provincial.egg.load_env
+				Provincial.remote.pre_deployment_check(current_branch:)
+				remote_script = Provincial.egg.env_exports
+				remote_script ^= Provincial::Resorcerer.bootstrap_install
+				remote_script ^= <<~REMOTE
+					ruby <<'EOF'
+						require 'bundler/inline'
+	
+						gemfile do
+							source "https://rubygems.org"
+		
+							gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+						end
+		
+						require "salad_prep"
+						#{Provincial.egg.app_lvl_definitions_script}
+						Provincial.brick_stack.setup_build
+						Provincial.installion.install_dependencies
+					EOF
+				REMOTE
+				Provincial.remote.run_remote(remote_script)
+			CODE
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("deploy_api") do
+			action_body = <<~'CODE'
+				current_branch = args_hash["branch"]
+				if current_branch.zero?
+					current_branch = `git branch --show-current 2>/dev/null`.strip
+				end
+				Provincial.egg.load_env
+				Provincial.remote.pre_deployment_check(
+					current_branch:,
+					test_honcho: Provincial.test_honcho
+				)
+				remote_script = Provincial.egg.env_exports
+				remote_script ^= "asdf shell ruby 3.3.5"
+				remote_script ^= <<~REMOTE
+						require 'bundler/inline'
+	
+						gemfile do
+							source "https://rubygems.org"
+		
+							gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+						end
+		
+						require "salad_prep"
+						#{Provincial.egg.app_lvl_definitions_script}
+						Provincial.brick_stack.setup_build
+						Provincial.api_launcher.startup_api
+				REMOTE
+				Provincial.remote.run_remote(remote_script)
+			CODE
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("deploy_client") do
+			action_body = <<~'CODE'
+				current_branch = args_hash["branch"]
+				if current_branch.zero?
+					current_branch = `git branch --show-current 2>/dev/null`.strip
+				end
+				Provincial.egg.load_env
+				Provincial.remote.pre_deployment_check(
+					current_branch:,
+					test_honcho: Provincial.test_honcho
+				)
+				remote_script = Provincial.egg.env_exports
+				remote_script ^= "asdf shell ruby 3.3.5"
+				remote_script ^= <<~REMOTE
+					require 'bundler/inline'
+
+					gemfile do
+						source "https://rubygems.org"
+	
+						gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+					end
+	
+					require "salad_prep"
+					#{Provincial.egg.app_lvl_definitions_script}
+					Provincial.brick_stack.setup_build
+					Provincial.client_launcher.setup_client
+				REMOTE
+				Provincial.remote.run_remote(remote_script)
+			CODE
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("connect_root") do
+			action_body = <<~'CODE'
+				Provincial.remote.connect_root
+			CODE
 		end
 
 	end

@@ -10,7 +10,7 @@ module SaladPrep
 			@node_version = node_version
 		end
 
-		def setup_client()
+		def setup_client
 			ArgChecker.path(@egg.client_dest)
 			ArgChecker.path(@egg.full_url)
 			ArgChecker.api_version(@egg.api_version)

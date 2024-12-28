@@ -13,8 +13,8 @@ module SaladPrep
 			File.open(resource_path(path)).read
 		end
 
-		def self.bootstrap
-			open_text("#{ASSETS_DIR}bootstrap")
+		def self.bootstrap_install
+			open_text("#{ASSETS_DIR}bootstrap_install")
 		end
 
 		def self.nginx_template

@@ -42,6 +42,37 @@ module SaladPrep
 			FileUtils.mkdir_p(@egg.repo_path)
 		end
 
-	end
+		def setup_build(current_branch: nil)
+			@egg.load_env
+			required_env_vars = @egg.server_env_check_required.map do |e|
+				"Required var #{e} not set"
+			end
 
+			if required_env_vars.any?
+				raise required_env_vars.join("\n")
+			end
+
+			create_install_directory
+
+			BoxBox.install_if_missing("git")
+
+			FileUtils.rm_rf(@egg.repo_path)
+
+			Dir.chdir(@egg.build_dir) do 
+				system(
+					"git", "clone", @egg.repo_url, @egg.project_name_snake,
+					exception: true
+				)
+				Dir.chdir(@egg.project_name_snake) do
+					if current_branch != "main"
+						system(
+							"git", "checkout", "-t" , "origin/#{current_branch}",
+							exception: true
+						)
+					end
+				end
+			end
+		end
+
+	end
 end
