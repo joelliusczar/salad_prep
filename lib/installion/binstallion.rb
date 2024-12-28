@@ -4,6 +4,7 @@ require_relative "../file_herder/file_herder"
 require_relative "../method_marker/method_marker"
 require_relative "../resorcerer/resorcerer"
 require_relative "../extensions/strink"
+require_relative "../loggable/loggable"
 
 module SaladPrep
 	class Binstallion
@@ -25,12 +26,17 @@ module SaladPrep
 				File.open(@template_context_path).read
 			)
 			actions_body = ""
+			action_body ^= refresh_bins
 			begin
-				marked_methods(:sh_cmd).each do |symbol|
+				marked = marked_methods(:sh_cmd)
+				warning_log&.puts("No symboles") if marked.none?
+				marked.each do |symbol|
+					diag_log&.put(symbol)
+					next if symbol == :refresh_bins
 					action_body ^= send(symbol)
 				end
 			rescue
-				action_body ^= refresh_bins
+				error_log&.puts("Error while trying to create bin file.")
 			end
 			file_path = File.join(
 				@egg.dev_ops_bin,

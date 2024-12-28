@@ -56,6 +56,7 @@ end
 ARGV.clear
 
 Provincial.log = Provincial.egg.log_dest
+Provincial.warning_log = Provincial.egg.log_dest("_WARN")
 Provincial.diag_log = Provincial.egg.log_dest("_DIAG")
 Provincial.error_log = $stderr
 

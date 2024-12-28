@@ -1,6 +1,7 @@
 module SaladPrep
 	module Loggable
 		@@log
+		@@warning_log
 		@@error_log
 		@@diag_log
 
@@ -10,6 +11,14 @@ module SaladPrep
 
 		def log
 			@@log
+		end
+
+		def warning_log=(value)
+			@@warning_log = value
+		end
+
+		def warning_log
+			@@warning_log
 		end
 
 		def error_log=(value)
