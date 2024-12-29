@@ -17,15 +17,6 @@ module SaladPrep
 		include Loggable
 
 		def initialize (egg)
-			if ! File.file?(egg.ssh_id_file)
-				raise "id file doesn't exist: #{egg.ssh_id_file}"
-			end
-
-			unless egg.ssh_address =~ Resolv::IPv6::Regex \
-				|| egg.ssh_address =~ Resolv::IPv6::Regex\
-			then
-				raise "invalid ip address: #{egg.ssh_address}"
-			end
 			@egg = egg
 		end
 
