@@ -17,7 +17,7 @@ require_relative "extensions/thing"
 require_relative "file_herder/file_herder"
 require_relative "installion/binstallion"
 require_relative "installion/installion"
-require_relative "instancifier/instancifier",
+require_relative "instancifier/instancifier"
 require_relative "libby/monty"
 require_relative "libby/libby"
 require_relative "loggable/loggable"
