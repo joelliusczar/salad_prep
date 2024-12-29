@@ -2,13 +2,8 @@ require_relative "./enums"
 require_relative "../extensions/strink"
 
 module SaladPrep
-	using Strink
-
 	class BoxBox
-
-		def initialize(egg)
-			@egg = egg
-		end
+		using Strink
 
 		def self.which(cmd)
 			ENV["PATH"].split(File::PATH_SEPARATOR).filter_map do |folder|

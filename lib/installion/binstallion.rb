@@ -293,5 +293,21 @@ module SaladPrep
 			CODE
 		end
 
+		mark_for(:sh_cmd)
+		def_cmd("bundle_path") do
+			action_body = <<~'CODE'
+					git_hash = Provincial.BoxBox.run_and_get(
+						"git",
+						"ls-remote",
+						Provincial.egg.repo_url,
+						exception: true
+					).split.first[0,12]
+					require "bundler"
+					puts(
+						"#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-#{git_hash}"
+					)
+			CODE
+		end
+
 	end
 end
