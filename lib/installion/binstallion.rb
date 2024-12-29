@@ -98,11 +98,13 @@ module SaladPrep
 		def_cmd("tape_db") do
 			action_body = <<~'CODE'
 				out_param = ["-o", "-out", "-output"]
-					.filter{ |p| args_hash[p].zero? }
+					.filter{ |p| args_hash[p].populated? }
 					.first
-				if out_param.zero?
+				local_out_path = args_hash[out_param]
+				if local_out_path.zero?
 					raise "Output path not provided"
 				end
+
 
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby 3.3.5"
@@ -119,15 +121,18 @@ module SaladPrep
 					require "salad_prep"
 					#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
-					output_path = Provincial.dbass.backup_db(
+					out_path = Provincial.dbass.backup_db(
 						backup_lvl: '#{args_hash["-backuplvl"]}'
 					)
-					puts(output_path)
+					puts(out_path)
 					EOF
 				REMOTE
 	
-				output_path = Provincial.remote.run_remote(remote_script).chomp
-				Provincial.remote.grab_file(output_path, args_hash[out_param])
+				remote_out_path = Provincial.remote.run_remote(remote_script).chomp
+				if remote_out_path.zero?
+					raise "Server provided output path is blank."
+				end
+				Provincial.remote.grab_file(remote_out_path, local_out_path)
 			CODE
 		end
 
