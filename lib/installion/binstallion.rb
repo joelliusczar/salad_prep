@@ -296,7 +296,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("bundle_path") do
 			action_body = <<~'CODE'
-					git_hash = Provincial.BoxBox.run_and_get(
+					git_hash = Provincial::BoxBox.run_and_get(
 						"git",
 						"ls-remote",
 						Provincial.egg.repo_url,
