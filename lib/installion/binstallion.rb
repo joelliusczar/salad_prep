@@ -299,7 +299,7 @@ module SaladPrep
 					git_hash = Provincial::BoxBox.run_and_get(
 						"git",
 						"ls-remote",
-						Provincial.egg.repo_url,
+						Provincial::Canary.source_code_uri,
 						exception: true
 					).split.first[0,12]
 					require "bundler"
