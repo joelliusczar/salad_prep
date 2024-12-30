@@ -178,7 +178,7 @@ module SaladPrep
 			end
 		end
 
-		mark_for(:init_rq, :server_rq, :deploy_sg, default: nil)
+		mark_for(:init_rq, :server_rq, :deploy_sg, :env_enum, default: nil)
 		def local_repo_path
 			@local_repo_path
 		end

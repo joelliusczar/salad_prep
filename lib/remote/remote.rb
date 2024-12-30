@@ -89,27 +89,29 @@ module SaladPrep
 		end
 
 		def unmerged_check
-			if ! `git status --porcelain`.zero?
-				puts(
-					"There are uncommited changes that will not be apart of the deploy"
-				)
-				puts("continue?")
-				choice = gets.chomp
-				if choice.upcase == "N"
-					puts("Canceling action")
-					return
+			Dir.chdir(@egg.repo_path) do
+				if ! `git status --porcelain`.zero?
+					puts(
+						"There are uncommited changes that will not be apart of the deploy"
+					)
+					puts("continue?")
+					choice = gets.chomp
+					if choice.upcase == "N"
+						puts("Canceling action")
+						return
+					end
 				end
-			end
 
-			system("git fetch")
+				system("git fetch")
 
-			if `git rev-parse @` != `git rev-parse @{u}`
-				puts("remote branch may not have latest set of commits")
-				puts("continue?")
-				choice = gets.chomp
-				if choice.upcase == "N"
-					puts("Canceling action")
-					return
+				if `git rev-parse @` != `git rev-parse @{u}`
+					puts("remote branch may not have latest set of commits")
+					puts("continue?")
+					choice = gets.chomp
+					if choice.upcase == "N"
+						puts("Canceling action")
+						return
+					end
 				end
 			end
 		end
