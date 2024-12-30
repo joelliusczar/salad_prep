@@ -1,9 +1,9 @@
 require 'digest'
-require_relative "../extensions/strink"
+require_relative "../extensions/string_ex"
 require_relative "../loggable/loggable"
 
 module SaladPrep
-	using Strink
+	using StringEx
 	
 	class Libby
 		include Loggable

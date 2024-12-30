@@ -1,5 +1,5 @@
 module SaladPrep
-	module Thing
+	module ObjectEx
 
 		refine Object do
 			def embodied?

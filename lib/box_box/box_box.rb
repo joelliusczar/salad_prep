@@ -1,9 +1,9 @@
 require_relative "./enums"
-require_relative "../extensions/strink"
+require_relative "../extensions/string_ex"
 
 module SaladPrep
 	class BoxBox
-		using Strink
+		using StringEx
 
 		def self.which(cmd)
 			ENV["PATH"].split(File::PATH_SEPARATOR).filter_map do |folder|

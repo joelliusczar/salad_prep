@@ -3,12 +3,12 @@ require_relative "../box_box/box_box"
 require_relative "../file_herder/file_herder"
 require_relative "../method_marker/method_marker"
 require_relative "../resorcerer/resorcerer"
-require_relative "../extensions/strink"
+require_relative "../extensions/string_ex"
 require_relative "../loggable/loggable"
 
 module SaladPrep
 	class Binstallion
-		using Strink
+		using StringEx
 		extend MethodMarker
 		include Loggable
 		

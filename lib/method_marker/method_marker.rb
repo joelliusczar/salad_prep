@@ -48,12 +48,14 @@ module SaladPrep
 		end
 
 		def method_added(name)
+			super
 			register_method(name)
 		end
 
 		unbound_register = instance_method(:register_method)
 		unbound_register.bind(self)
 		def singleton_method_added(name)
+			super
 			register_method(name)
 		end
 

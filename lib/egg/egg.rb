@@ -3,12 +3,12 @@ require "securerandom"
 require_relative "../box_box/enums"
 require_relative "../file_herder/file_herder"
 require_relative "../method_marker/method_marker"
-require_relative "../extensions/strink"
-require_relative "../extensions/thing"
+require_relative "../extensions/string_ex"
+require_relative "../extensions/object_ex"
 
 module SaladPrep
-	using Strink
-	using Thing
+	using StringEx
+	using ObjectEx
 
 	class Egg
 		extend MethodMarker
@@ -238,10 +238,10 @@ module SaladPrep
 		end
 
 		mark_for(:server_rq, :deploy_rq, :env_enum)
-		def_env_find(:pb_secret, "PB_SECRET", /PB_SECRET=(\w+)/, :env_key)
+		def_env_find(:pb_secret, "PB_SECRET", nil, :env_key)
 
 		mark_for(:server_rq, :deploy_rq, :env_enum)
-		def_env_find(:pb_api_key, "PB_API_KEY", /PB_API_KEY=(\w+)/, :env_key)
+		def_env_find(:pb_api_key, "PB_API_KEY", nil, :env_key)
 
 		mark_for(
 			:server_rq,

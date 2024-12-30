@@ -7,10 +7,10 @@ require "tempfile"
 require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
 require_relative "../egg/egg"
-require_relative "../extensions/strink"
+require_relative "../extensions/string_ex"
 
 module SaladPrep
-	using Strink
+	using StringEx
 
 	class WSpoon
 

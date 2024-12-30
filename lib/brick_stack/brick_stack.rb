@@ -1,10 +1,10 @@
 require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../file_herder/file_herder"
-require_relative "../extensions/strink"
+require_relative "../extensions/string_ex"
 
 module SaladPrep
-	using Strink
+	using StringEx
 
 	class BrickStack
 

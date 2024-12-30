@@ -1,10 +1,10 @@
 require 'mysql'
 require_relative "../arg_checker/arg_checker"
 require_relative "./enums"
-require_relative "../extensions/strink"
+require_relative "../extensions/stringEx"
 
 module SaladPrep
-	using Strink
+	using StringEx
 
 	class MyAssRoot
 

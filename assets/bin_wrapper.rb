@@ -15,7 +15,7 @@ end
 require "salad_prep"
 require_relative "./provincial"
 
-using SaladPrep::Strink
+using SaladPrep::StringEx
 
 @actions_hash = {}
 

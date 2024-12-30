@@ -1,5 +1,5 @@
 module SaladPrep
-	module Strink
+	module StringEx
 
 		LOW = :low
 		UP = :up

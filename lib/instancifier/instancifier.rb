@@ -6,6 +6,7 @@ module SaladPrep
 		end
 
 		def singleton_method_added(name)
+			super
 			if @marked_inst
 				define_method(name) do |*args, **kwargs|
 					self.class.send(name, *args, **kwargs)

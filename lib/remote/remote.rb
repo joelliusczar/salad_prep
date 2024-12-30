@@ -4,14 +4,14 @@ require "tempfile"
 require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../dbass/enums"
-require_relative "../extensions/strink"
+require_relative "../extensions/string_ex"
 require_relative "../loggable/loggable"
 require_relative "../resorcerer/resorcerer"
 
 
 
 module SaladPrep
-	using Strink
+	using StringEx
 
 	class Remote
 		include Loggable
@@ -133,7 +133,7 @@ module SaladPrep
 
 		def grab_file(src, dest)
 			system(
-				"scp",
+				"sftp",
 				"-i",
 				@egg.ssh_id_file,
 				"root@[#{@egg.ssh_address}]:#{src}",
