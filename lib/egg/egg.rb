@@ -3,15 +3,17 @@ require "securerandom"
 require_relative "../box_box/enums"
 require_relative "../file_herder/file_herder"
 require_relative "../method_marker/method_marker"
-require_relative "../extensions/string_ex"
 require_relative "../extensions/object_ex"
+require_relative "../extensions/string_ex"
+require_relative "../loggable/loggable"
 
 module SaladPrep
-	using StringEx
-	using ObjectEx
-
+	
 	class Egg
+		using StringEx
+		using ObjectEx
 		extend MethodMarker
+		include Loggable
 
 		def initialize(**kwargs)
 			marked_methods(:init_rq).each do |symbol|
