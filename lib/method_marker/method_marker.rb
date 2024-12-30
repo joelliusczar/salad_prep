@@ -39,7 +39,10 @@ module SaladPrep
 			end
 			@method_attr_hash[name] = attr_hash
 		end
-		alias_method :late_mark_for, :link_method_attrs
+
+		def late_mark_for(name, *attrs, **kwattrs)
+			link_method_attrs(name, attrs.push(kwattrs))
+		end
 		
 		def register_method(name)
 			@current_attrs = [] if @current_attrs.nil?
