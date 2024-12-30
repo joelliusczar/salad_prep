@@ -129,6 +129,7 @@ module SaladPrep
 				REMOTE
 	
 				remote_out_path = Provincial.remote.run_remote(remote_script).chomp
+				puts(remote_out_path)
 				if remote_out_path.zero?
 					raise "Server provided output path is blank."
 				end

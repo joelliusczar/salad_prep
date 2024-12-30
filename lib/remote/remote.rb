@@ -136,7 +136,7 @@ module SaladPrep
 				"scp",
 				"-i",
 				@egg.ssh_id_file,
-				"root@#{@egg.ssh_address}:#{src}",
+				"root@[#{@egg.ssh_address}]:#{src}",
 				dest,
 				exception: true
 			)
