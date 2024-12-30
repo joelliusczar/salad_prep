@@ -11,9 +11,8 @@ require_relative "../resorcerer/resorcerer"
 
 
 module SaladPrep
-	using StringEx
-
 	class Remote
+		using StringEx
 		include Loggable
 
 		def initialize (egg)
@@ -60,7 +59,7 @@ module SaladPrep
 		end
 
 		def run_remote(script)
-			diag_log&.write(script)
+			huge_log&.write(script)
 			BoxBox.run_and_get(
 				"ssh",
 				"-i",

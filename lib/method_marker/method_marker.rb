@@ -41,7 +41,7 @@ module SaladPrep
 		end
 
 		def late_mark_for(name, *attrs, **kwattrs)
-			link_method_attrs(name, attrs.push(kwattrs))
+			link_method_attrs(name, attrs.push(:__implied__).push(kwattrs))
 		end
 		
 		def register_method(name)

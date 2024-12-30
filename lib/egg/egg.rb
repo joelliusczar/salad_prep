@@ -306,6 +306,7 @@ module SaladPrep
 		late_mark_for(:log, :env_enum, prefixed_env_key: "LOG_DEST")
 		late_mark_for(:warning_log, :env_enum, prefixed_env_key: "WARN_LOG_DEST")
 		late_mark_for(:diag_log, :env_enum, prefixed_env_key: "DIAG_LOG_DEST")
+		late_mark_for(:huge_log, :env_enum, prefixed_env_key: "HUGE_LOG_DEST")
 
 		def log_dest(name="")
 			value = ENV["#{@env_prefix}#{name}_LOG_DEST"]
