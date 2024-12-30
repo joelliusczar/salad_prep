@@ -5,10 +5,9 @@ require_relative "../file_herder/file_herder"
 require_relative "../loggable/loggable"
 
 module SaladPrep
-	include Loggable
-	using StringEx
-
 	class BrickStack
+		using StringEx
+		include Loggable
 
 		def initialize(egg)
 			@egg = egg
