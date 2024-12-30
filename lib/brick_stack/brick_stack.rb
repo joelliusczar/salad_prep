@@ -1,9 +1,11 @@
 require "fileutils"
 require_relative "../box_box/box_box"
-require_relative "../file_herder/file_herder"
 require_relative "../extensions/string_ex"
+require_relative "../file_herder/file_herder"
+require_relative "../loggable/loggable"
 
 module SaladPrep
+	include Loggable
 	using StringEx
 
 	class BrickStack
@@ -57,6 +59,9 @@ module SaladPrep
 			BoxBox.install_if_missing("git")
 
 			FileUtils.rm_rf(@egg.repo_path)
+			diag_log&.puts("setup_build")
+			diag_log&.puts(@egg.repo_path)
+			diag_log&.puts(@egg.build_dir)
 
 			Dir.chdir(@egg.build_dir) do 
 				system(

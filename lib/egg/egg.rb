@@ -303,6 +303,10 @@ module SaladPrep
 		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:api_log_level, "API_LOG_LEVEL")
 
+		late_mark_for(:log, :env_enum, prefixed_env_key: "LOG_DEST")
+		late_mark_for(:warning_log, :env_enum, prefixed_env_key: "WARN_LOG_DEST")
+		late_mark_for(:diag_log, :env_enum, prefixed_env_key: "DIAG_LOG_DEST")
+
 		def log_dest(name="")
 			value = ENV["#{@env_prefix}#{name}_LOG_DEST"]
 			if value.zero?
