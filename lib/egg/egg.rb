@@ -305,21 +305,23 @@ module SaladPrep
 		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:api_log_level, "API_LOG_LEVEL")
 
-		late_mark_for(:log, :env_enum, prefixed_env_key: "LOG_DEST")
-		late_mark_for(:warning_log, :env_enum, prefixed_env_key: "WARN_LOG_DEST")
-		late_mark_for(:diag_log, :env_enum, prefixed_env_key: "DIAG_LOG_DEST")
-		late_mark_for(:huge_log, :env_enum, prefixed_env_key: "HUGE_LOG_DEST")
-
 		def log_dest(name="")
 			value = ENV["#{@env_prefix}#{name}_LOG_DEST"]
 			if value.zero?
 				nil
 			elsif value.downcase == "stdout" 
 				$stdout
+			elsif value.downcase == "stderr"
+					$stderr 
 			else
 				File.open(value, "a")
 			end
 		end
+
+		def_env_find(:build_log_dest, "LOG_DEST")
+		def_env_find(:build_warning_log_dest, "WARN_LOG_DEST")
+		def_env_find(:build_diag_log_dest, "DIAG_LOG_DEST")
+		def_env_find(:build_huge_log_dest, "HUGE_LOG_DEST")
 
 		mark_for(:env_enum, prefixed_env_key: "DATABASE_NAME")
 		def db_name
