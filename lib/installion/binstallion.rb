@@ -120,7 +120,6 @@ module SaladPrep
 	
 					require "salad_prep"
 					#{Provincial.egg.app_lvl_definitions_script}
-					Provincial.egg.set_logs
 					Provincial.egg.load_env
 					out_path = Provincial.dbass.backup_db(
 						backup_lvl: '#{args_hash["-backuplvl"]}'
@@ -212,7 +211,6 @@ module SaladPrep
 		
 						require "salad_prep"
 						#{Provincial.egg.app_lvl_definitions_script}
-						Provincial.egg.set_logs
 						Provincial.brick_stack.setup_build
 						Provincial.installion.install_dependencies
 					EOF
