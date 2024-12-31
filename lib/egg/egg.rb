@@ -319,17 +319,11 @@ module SaladPrep
 		end
 
 		def set_logs
-			puts("setting log")
-			p defined? api_version
-			p defined? diag_log
-			p method(:diag_log)
-			log = log_dest
-			warning_log = log_dest("_WARN")
-			p diag_log
-			diag_log = log_dest("_DIAG")
-			p diag_log
-			huge_log = log_dest("_HUGE")
-			error_log = $stderr
+			self.log = log_dest
+			self.warning_log = log_dest("_WARN")
+			self.diag_log = log_dest("_DIAG")
+			self.huge_log = log_dest("_HUGE")
+			self.error_log = $stderr
 		end
 
 		mark_for(:deploy_sg, :env_enum)
