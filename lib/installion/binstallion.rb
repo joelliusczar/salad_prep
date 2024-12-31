@@ -35,6 +35,7 @@ module SaladPrep
 					diag_log&.puts(symbol)
 					next if symbol == :refresh_bins
 					actions_body ^= send(symbol)
+						.gsub("<% ruby_remote_prelude %>",ruby_remote_prelude)
 				end
 			rescue
 				error_log&.puts("Error while trying to create bin file.")
@@ -126,7 +127,7 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby 3.3.5"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-					#{ruby_remote_prelude}
+					<% ruby_remote_prelude %>
 					#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
 					out_path = Provincial.dbass.backup_db(
@@ -207,9 +208,9 @@ module SaladPrep
 				return unless Provincial.remote.pre_deployment_check(current_branch:)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
-				remote_script ^= "ruby <<'EOF'"
-				remote_script ^= ruby_remote_prelude
 				remote_script ^= <<~REMOTE
+					ruby <<'EOF'
+						<% ruby_remote_prelude %>
 						#{Provincial.egg.app_lvl_definitions_script}
 						Provincial.brick_stack.setup_build
 						Provincial.installion.install_dependencies
@@ -234,10 +235,12 @@ module SaladPrep
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby 3.3.5"
 				remote_script ^= <<~REMOTE
-						#{ruby_remote_prelude}
+					ruby <<'EOF'
+						<% ruby_remote_prelude %>
 						#{Provincial.egg.app_lvl_definitions_script}
 						Provincial.brick_stack.setup_build
 						Provincial.api_launcher.startup_api
+					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE
@@ -258,10 +261,12 @@ module SaladPrep
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby 3.3.5"
 				remote_script ^= <<~REMOTE
-					#{ruby_remote_prelude}
-					#{Provincial.egg.app_lvl_definitions_script}
-					Provincial.brick_stack.setup_build
-					Provincial.client_launcher.setup_client
+					ruby <<'EOF'
+						<% ruby_remote_prelude %>
+						#{Provincial.egg.app_lvl_definitions_script}
+						Provincial.brick_stack.setup_build
+						Provincial.client_launcher.setup_client
+					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE
