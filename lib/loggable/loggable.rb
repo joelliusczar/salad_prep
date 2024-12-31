@@ -31,6 +31,8 @@ module SaladPrep
 		end
 
 		def diag_log=(value)
+			puts("setting diag log")
+			p(value)
 			@@diag_log = value
 		end
 
