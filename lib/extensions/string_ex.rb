@@ -55,6 +55,10 @@ module SaladPrep
 				"@#{to_s}"
 			end
 
+			def r_shift(tabs = 1)
+				split.split("\n") * ("\n" + ("\t" * tabs))
+			end
+
 		end
 
 		refine Symbol do

@@ -35,7 +35,6 @@ module SaladPrep
 					diag_log&.puts(symbol)
 					next if symbol == :refresh_bins
 					actions_body ^= send(symbol)
-						.gsub("<% ruby_remote_prelude %>",ruby_remote_prelude)
 				end
 			rescue
 				error_log&.puts("Error while trying to create bin file.")
@@ -51,22 +50,6 @@ module SaladPrep
 			)
 			FileUtils.chmod("a+x", file_path)
 			puts("#{Canary.version}")
-		end
-
-		def ruby_remote_prelude
-			<<~CODE
-			require 'bundler/inline'
-	
-			gemfile do
-				source "https://rubygems.org"
-
-				gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
-			end
-
-			require "salad_prep"
-
-			Provincial.egg.set_logs
-			CODE
 		end
 
 		def self.def_cmd(name)
@@ -127,8 +110,17 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby 3.3.5"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-					<% ruby_remote_prelude %>
+					require 'bundler/inline'
+	
+					gemfile do
+						source "https://rubygems.org"
+	
+						gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+					end
+	
+					require "salad_prep"
 					#{Provincial.egg.app_lvl_definitions_script}
+					Provincial.egg.set_logs
 					Provincial.egg.load_env
 					out_path = Provincial.dbass.backup_db(
 						backup_lvl: '#{args_hash["-backuplvl"]}'
@@ -210,8 +202,17 @@ module SaladPrep
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-						<% ruby_remote_prelude %>
+						require 'bundler/inline'
+	
+						gemfile do
+							source "https://rubygems.org"
+		
+							gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+						end
+		
+						require "salad_prep"
 						#{Provincial.egg.app_lvl_definitions_script}
+						Provincial.egg.set_logs
 						Provincial.brick_stack.setup_build
 						Provincial.installion.install_dependencies
 					EOF
@@ -236,10 +237,19 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby 3.3.5"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-						<% ruby_remote_prelude %>
-						#{Provincial.egg.app_lvl_definitions_script}
-						Provincial.brick_stack.setup_build
-						Provincial.api_launcher.startup_api
+					require 'bundler/inline'
+
+					gemfile do
+						source "https://rubygems.org"
+	
+						gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+					end
+	
+					require "salad_prep"
+					#{Provincial.egg.app_lvl_definitions_script}
+					Provincial.egg.set_logs
+					Provincial.brick_stack.setup_build
+					Provincial.api_launcher.startup_api
 					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
@@ -262,10 +272,19 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby 3.3.5"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-						<% ruby_remote_prelude %>
-						#{Provincial.egg.app_lvl_definitions_script}
-						Provincial.brick_stack.setup_build
-						Provincial.client_launcher.setup_client
+					require 'bundler/inline'
+
+					gemfile do
+						source "https://rubygems.org"
+	
+						gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+					end
+	
+					require "salad_prep"
+					#{Provincial.egg.app_lvl_definitions_script}
+					Provincial.egg.set_logs
+					Provincial.brick_stack.setup_build
+					Provincial.client_launcher.setup_client
 					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
