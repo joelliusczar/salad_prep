@@ -59,11 +59,7 @@ ARGV.drop(1).each do |arg|
 end
 ARGV.clear
 
-Provincial.log = Provincial.egg.log_dest
-Provincial.warning_log = Provincial.egg.log_dest("_WARN")
-Provincial.diag_log = Provincial.egg.log_dest("_DIAG")
-Provincial.huge_log = Provincial.egg.log_dest("_HUGE")
-Provincial.error_log = $stderr
+Provincial.egg.set_logs
 
 if cmd == "-V"
 	puts(SaladPrep::Canary.version)

@@ -318,6 +318,14 @@ module SaladPrep
 			end
 		end
 
+		def set_logs
+			log = log_dest
+			warning_log = log_dest("_WARN")
+			diag_log = log_dest("_DIAG")
+			huge_log = log_dest("_HUGE")
+			error_log = $stderr
+		end
+
 		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:build_log_dest, "LOG_DEST")
 		mark_for(:deploy_sg, :env_enum)
