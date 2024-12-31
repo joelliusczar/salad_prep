@@ -322,6 +322,7 @@ module SaladPrep
 			puts("setting log")
 			p defined? api_version
 			p defined? diag_log
+			p method(diag_log)
 			log = log_dest
 			warning_log = log_dest("_WARN")
 			p diag_log
