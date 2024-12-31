@@ -324,7 +324,9 @@ module SaladPrep
 			p defined? diag_log
 			log = log_dest
 			warning_log = log_dest("_WARN")
+			p diag_log
 			diag_log = log_dest("_DIAG")
+			p diag_log
 			huge_log = log_dest("_HUGE")
 			error_log = $stderr
 		end
