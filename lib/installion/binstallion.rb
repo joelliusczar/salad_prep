@@ -196,7 +196,7 @@ module SaladPrep
 					current_branch = `git branch --show-current 2>/dev/null`.strip
 				end
 				Provincial.egg.load_env
-				Provincial.remote.pre_deployment_check(current_branch:)
+				return unless Provincial.remote.pre_deployment_check(current_branch:)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
 				remote_script ^= <<~REMOTE
@@ -227,7 +227,7 @@ module SaladPrep
 					current_branch = `git branch --show-current 2>/dev/null`.strip
 				end
 				Provincial.egg.load_env
-				Provincial.remote.pre_deployment_check(
+				return unless Provincial.remote.pre_deployment_check(
 					current_branch:,
 					test_honcho: Provincial.test_honcho
 				)
@@ -259,7 +259,7 @@ module SaladPrep
 					current_branch = `git branch --show-current 2>/dev/null`.strip
 				end
 				Provincial.egg.load_env
-				Provincial.remote.pre_deployment_check(
+				return unless Provincial.remote.pre_deployment_check(
 					current_branch:,
 					test_honcho: Provincial.test_honcho
 				)

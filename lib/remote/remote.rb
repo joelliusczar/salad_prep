@@ -97,7 +97,7 @@ module SaladPrep
 					choice = gets.chomp
 					if choice.upcase == "N"
 						puts("Canceling action")
-						return
+						return false
 					end
 				end
 
@@ -109,10 +109,11 @@ module SaladPrep
 					choice = gets.chomp
 					if choice.upcase == "N"
 						puts("Canceling action")
-						return
+						return false
 					end
 				end
 			end
+			true
 		end
 
 		def pre_deployment_check(
@@ -125,7 +126,7 @@ module SaladPrep
 
 			deployment_vars_check
 
-			unmerged_check
+			return unless unmerged_check
 
 			if test_honcho
 				test_honcho.run_unit_tests

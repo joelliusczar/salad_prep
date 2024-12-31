@@ -318,9 +318,13 @@ module SaladPrep
 			end
 		end
 
+		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:build_log_dest, "LOG_DEST")
+		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:build_warning_log_dest, "WARN_LOG_DEST")
+		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:build_diag_log_dest, "DIAG_LOG_DEST")
+		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:build_huge_log_dest, "HUGE_LOG_DEST")
 
 		mark_for(:env_enum, prefixed_env_key: "DATABASE_NAME")

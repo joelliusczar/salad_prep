@@ -3,9 +3,8 @@ require_relative "../extensions/string_ex"
 require_relative "../loggable/loggable"
 
 module SaladPrep
-	using StringEx
-	
 	class Libby
+		using StringEx
 		include Loggable
 
 		def regen_lib_supports
