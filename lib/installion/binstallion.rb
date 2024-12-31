@@ -207,9 +207,9 @@ module SaladPrep
 				return unless Provincial.remote.pre_deployment_check(current_branch:)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
+				remote_script ^= "ruby <<'EOF'"
+				remote_script ^= ruby_remote_prelude
 				remote_script ^= <<~REMOTE
-					ruby <<'EOF'
-						#{ruby_remote_prelude}
 						#{Provincial.egg.app_lvl_definitions_script}
 						Provincial.brick_stack.setup_build
 						Provincial.installion.install_dependencies
