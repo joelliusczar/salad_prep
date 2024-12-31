@@ -156,6 +156,7 @@ module SaladPrep
 				output = p.read
 			end
 			if exception && ! $?.success?
+				puts(result)
 				raise "#{cmds[0]} failed with exit code #{$?.exitstatus}"
 			end
 			result
