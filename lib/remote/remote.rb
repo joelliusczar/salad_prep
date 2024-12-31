@@ -131,6 +131,8 @@ module SaladPrep
 			if test_honcho
 				test_honcho.run_unit_tests
 			end
+
+			true
 		end
 
 		def grab_file(src, dest)
