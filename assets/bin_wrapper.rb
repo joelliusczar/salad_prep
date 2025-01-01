@@ -1,15 +1,25 @@
 #!/usr/bin/env ruby
 
 require 'bundler/inline'
-#require 'bundler'
+require 'bundler'
 
 gemfile do
 	source "https://rubygems.org"
 
-	gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
-	# git_hash = `git ls-remote https://github.com/joelliusczar/salad_prep.git`
-	# 	.split.first[0,12]
-	# gem "salad_prep", path: "#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-#{git_hash}"
+	prefer_local = false
+	if ! prefer_local
+		gem(
+			"salad_prep",
+			git: "https://github.com/joelliusczar/salad_prep"
+		)
+	else
+		git_hash = `git ls-remote https://github.com/joelliusczar/salad_prep.git`
+			.split.first[0,12]
+		gem(
+			"salad_prep",
+			path: "#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-#{git_hash}"
+		)
+	end
 end
 
 require "salad_prep"

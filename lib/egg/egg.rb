@@ -234,8 +234,10 @@ module SaladPrep
 			@api_version
 		end
 
+		def_env_find(:current_env, "ENV")
+
 		def is_local?
-			ENV["#{@env_prefix}_ENV"] == "local"
+			current_env == "local"
 		end
 
 		mark_for

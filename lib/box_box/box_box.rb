@@ -209,14 +209,6 @@ module SaladPrep
 			FileUtils.mkdir_p(@egg.build_dir)
 		end
 
-		def env_api_content
-			content = ""
-			@egg.env_hash(include_dirs: true).each_pair do |key, value|
-				content ^= "#{key}='#{value}'"
-			end
-			content
-		end
-
 		def setup_env_api_file
 			puts("setting up .env file")
 			env_file = "#{@egg.config_dir}/.env"
@@ -224,7 +216,10 @@ module SaladPrep
 			if !FileHerder::is_path_allowed(env_file)
 				raise "env_file file path has potential errors: #{env_file}"
 			end
-			contents = env_api_content
+			contents = ""
+			@egg.env_hash(include_dirs: true).each_pair do |key, value|
+				contents ^= "#{key}='#{value}'"
+			end
 			File.open(env_file, "w") { |f| f.write(contents)}
 		end
 
