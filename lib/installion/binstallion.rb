@@ -211,7 +211,7 @@ module SaladPrep
 		
 						require "salad_prep"
 						#{Provincial.egg.app_lvl_definitions_script}
-						Provincial.brick_stack.setup_build
+						Provincial.box_box.setup_build
 						Provincial.installion.install_dependencies
 					EOF
 				REMOTE
@@ -246,7 +246,7 @@ module SaladPrep
 					require "salad_prep"
 					#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.set_logs
-					Provincial.brick_stack.setup_build
+					Provincial.box_box.setup_build
 					Provincial.api_launcher.startup_api
 					EOF
 				REMOTE
@@ -281,7 +281,7 @@ module SaladPrep
 					require "salad_prep"
 					#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.set_logs
-					Provincial.brick_stack.setup_build
+					Provincial.box_box.setup_build
 					Provincial.client_launcher.setup_client
 					EOF
 				REMOTE
