@@ -1,10 +1,13 @@
+require "tempfile"
 require_relative "./enums"
 require_relative "../extensions/string_ex"
+require_relative "../extensions/object_ex"
 require_relative "../loggable/loggable"
 
 module SaladPrep
 	class BoxBox
 		using StringEx
+		using ObjectEx
 		include Loggable
 
 		def initialize(egg)
@@ -150,21 +153,31 @@ module SaladPrep
 				end
 		end
 
-		def self.run_and_get(*cmds, in_s:nil, exception: false)
-			result = IO.popen(
-				cmds,
-				"r+"
-			) do |p|
-				if in_s.populated?
-					p.write(in_s)
+		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
+			Tempfile.create do |t|
+				result = IO.popen(
+					cmds,
+					"r+",
+					err: t
+				) do |p|
+					if in_s.populated?
+						p.write(in_s)
+					end
+					p.close_write
+					output = p.read
 				end
-				p.close_write
-				output = p.read
+				if exception && ! $?.success?
+					raise <<~ERROUT 
+						#{cmds[0]} failed with exit code #{$?.exitstatus}
+						#{result}
+						#{t.read}
+					ERROUT
+				end
+				if err.embodied?
+					err.write(t.read)
+				end
+				result
 			end
-			if exception && ! $?.success?
-				raise "#{cmds[0]} failed with exit code #{$?.exitstatus}"
-			end
-			result
 		end
 
 		def self.kill_process_using_port(port)
