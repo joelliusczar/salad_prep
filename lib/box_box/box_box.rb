@@ -170,7 +170,7 @@ module SaladPrep
 		def self.kill_process_using_port(port)
 			if system("ss -V", out: File::NULL, err: File::NULL)
 				procId = run_and_get(
-					["ss", "-lpn", "sport = :#{port}"],
+					"ss", "-lpn", "sport = :#{port}",
 					exception: true
 				)
 				if procId.populated?
@@ -178,7 +178,7 @@ module SaladPrep
 				end
 			elsif system("lsof -v", out: File::NULL, err: File::NULL)
 				procId = run_and_get(
-					["lsof", "-i", ":#{port}"],
+					"lsof", "-i", ":#{port}",
 					exception: true
 				).split("\n")[1].split[1]
 				if procId.populated?
