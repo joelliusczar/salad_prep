@@ -169,8 +169,8 @@ module SaladPrep
 				if exception && ! $?.success?
 					raise <<~ERROUT 
 						#{cmds[0]} failed with exit code #{$?.exitstatus}
-						#{result}
-						#{t.read}
+						out:#{result}
+						err: #{t.read}
 					ERROUT
 				end
 				if err.embodied?
