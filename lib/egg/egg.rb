@@ -182,10 +182,7 @@ module SaladPrep
 
 		mark_for(
 			:init_rq,
-			:server_rq,
 			:deploy_sg,
-			:env_enum,
-			prefixed_env_key: "LOCAL_REPO_DIR",
 			default: nil
 		)
 		def local_repo_path

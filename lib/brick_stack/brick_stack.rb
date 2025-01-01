@@ -58,9 +58,6 @@ module SaladPrep
 			BoxBox.install_if_missing("git")
 
 			FileUtils.rm_rf(@egg.repo_path)
-			diag_log&.puts("setup_build")
-			diag_log&.puts(@egg.repo_path)
-			diag_log&.puts(@egg.build_dir)
 
 			Dir.chdir(@egg.build_dir) do 
 				system(
