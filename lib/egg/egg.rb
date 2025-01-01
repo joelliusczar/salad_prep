@@ -575,9 +575,14 @@ module SaladPrep
 			end
 		end
 
-		def to_s
+		def to_s(prefer_keys_file: true)
 			super + "\n" + marked_methods.sort.map do |symbol|
-				"#{symbol} => \"#{send(symbol)}\""
+				m = method(symbol)
+				if m.parameters.any? {|p| p[1] == :prefer_keys_file}
+					"#{symbol} => \"#{send(symbol, prefer_keys_file:)}\""
+				else
+					"#{symbol} => \"#{send(symbol)}\""
+				end
 			end * "\n"
 		end
 

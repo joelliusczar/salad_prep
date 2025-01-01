@@ -181,7 +181,8 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("egg") do
 			action_body = <<~'CODE'
-				puts(Provincial.egg.to_s)
+				prefer_keys_file = args_hash[0] != "local"
+				puts(Provincial.egg.to_s(prefer_keys_file:))
 			CODE
 		end
 
