@@ -174,7 +174,7 @@ module SaladPrep
 					exception: true
 				)
 				if procId.populated?
-					Process.kill(15, procId)
+					Process.kill(15, procId.to_i)
 				end
 			elsif system("lsof -v", out: File::NULL, err: File::NULL)
 				procId = run_and_get(
@@ -182,7 +182,7 @@ module SaladPrep
 					exception: true
 				).split("\n")[1].split[1]
 				if procId.populated?
-					Process.kill(15, procId)
+					Process.kill(15, procId.to_i)
 				end
 			else
 				raise "Script not wired up to be able to kill process at port: #{port}"
