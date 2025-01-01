@@ -517,7 +517,10 @@ module SaladPrep
 		end
 
 		def load_env
-			env_hash(include_dirs: true).each_pair do |key, value|
+			env_hash(
+				include_dirs: true,
+				prefer_keys_file: false
+			).each_pair do |key, value|
 				ENV[key] = value
 			end
 			ENV["#{env_prefix}_APP_ROOT"] = @app_root

@@ -168,7 +168,11 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("env_hash") do
 			action_body = <<~'CODE'
-				Provincial.egg.env_hash(include_dirs: true).each do |k, v|
+				prefer_keys_file = args_hash[0] != "local"
+				Provincial.egg.env_hash(
+					include_dirs: true,
+					prefer_keys_file:
+				).each do |k, v|
 					puts("\"#{k}\"=>\"#{v}\"")
 				end
 			CODE
@@ -245,7 +249,7 @@ module SaladPrep
 	
 					require "salad_prep"
 					#{Provincial.egg.app_lvl_definitions_script}
-					Provincial.egg.set_logs
+					Provincial.egg.load_env
 					Provincial.box_box.setup_build
 					Provincial.api_launcher.startup_api
 					EOF
@@ -280,7 +284,7 @@ module SaladPrep
 	
 					require "salad_prep"
 					#{Provincial.egg.app_lvl_definitions_script}
-					Provincial.egg.set_logs
+					Provincial.egg.load_env
 					Provincial.box_box.setup_build
 					Provincial.client_launcher.setup_client
 					EOF
