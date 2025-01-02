@@ -156,7 +156,7 @@ module SaladPrep
 
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
 			result = Open3.popen3(
-				cmds
+				*cmds
 			) do |i, o, e, t|
 					if in_s.populated?
 						Thread.new do
