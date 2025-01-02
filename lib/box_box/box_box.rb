@@ -158,12 +158,14 @@ module SaladPrep
 			result = Open3.popen3(
 				*cmds
 			) do |i, o, e, t|
-					if in_s.populated?
-						Thread.new do
-							i.write(in_s)
-							i.close
-						end
-					end					
+				out_lines = []
+				err_lines = []
+				if in_s.populated?
+					Thread.new do
+						i.write(in_s)
+						i.close
+					end
+				end					
 			
 				Thread.new do
 					until (line = o.gets).nil?
