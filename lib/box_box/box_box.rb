@@ -1,4 +1,5 @@
 require "tempfile"
+require "open3"
 require_relative "./enums"
 require_relative "../extensions/string_ex"
 require_relative "../extensions/object_ex"
@@ -154,29 +155,37 @@ module SaladPrep
 		end
 
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
-			Tempfile.create do |t|
-				result = IO.popen(
-					cmds,
-					"r+",
-					err: t
-				) do |p|
+			result = Open3.popen3(
+				cmds
+			) do |i, o, e, t|
 					if in_s.populated?
-						p.write(in_s)
+						Thread.new do
+							i.write(in_s)
+							i.close
+						end
+					end					
+			
+				Thread.new do
+					until (line = o.gets).nil?
+						out_lines.push(line)
 					end
-					p.close_write
-					output = p.read
 				end
-				if exception && ! $?.success?
-					raise <<~ERROUT 
-						#{cmds[0]} failed with exit code #{$?.exitstatus}
-						out:#{result}
-						err: #{t.read}
-					ERROUT
+			
+				Thread.new do
+					until (line = e.gets).nil?
+						err_lines.push(line)
+					end
 				end
-				if err.embodied?
-					err.write(t.read)
+				
+				t.join
+				out_lines * ""
+				if t.value.exitstatus == 0
+					log&.puts(err_lines * "")
+					out_lines * ""
+				else
+					log&.puts(out_lines * "")
+					err_lines * ""
 				end
-				result
 			end
 		end
 
