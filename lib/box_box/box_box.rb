@@ -181,15 +181,18 @@ module SaladPrep
 				end
 				
 				t.join
-				out_lines * ""
 				if t.value.exitstatus == 0
 					log&.puts(err_lines * "")
 					out_lines * ""
 				else
+					if exception
+						raise "#{cmds[0]} failed with exit code #{t.value.exitstatus}"
+					end
 					log&.puts(out_lines * "")
 					err_lines * ""
 				end
 			end
+
 		end
 
 		def self.kill_process_using_port(port)
