@@ -10,6 +10,7 @@ module SaladPrep
 		using StringEx
 		using ObjectEx
 		include Loggable
+		extend Loggable
 
 		def initialize(egg)
 			@egg = egg
