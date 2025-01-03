@@ -121,12 +121,12 @@ module SaladPrep
 					out_path = Provincial.dbass.backup_db(
 						backup_lvl: '#{args_hash["-backuplvl"]}'
 					)
-					puts(out_path)
+					puts(out_path) #doesn't print to screen. This is returned
 					EOF
 				REMOTE
 	
 				remote_out_path = Provincial.remote.run_remote(remote_script).chomp
-				puts(remote_out_path)
+				puts("Remote path: #{remote_out_path}")
 				if remote_out_path.zero?
 					raise "Server provided output path is blank."
 				end

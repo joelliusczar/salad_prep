@@ -1,17 +1,56 @@
+require_relative "../extensions/string_ex"
+
 module SaladPrep
 	module Loggable
+		using StringEx
+
 		@@log = nil
 		@@warning_log = nil
 		@@error_log = nil
 		@@diag_log = nil
 		@@huge_log = nil
+		@alt_outs = [$stdout]
+
+		def register_sub(alt_out)
+			raise "Cannot redirect to stdout" if alt_out == $stdout
+			@alt_outs.push(alt_out)
+			yield
+			previous = @alt_outs.pop
+			if @alt_outs[-1] != previous
+				if ! previous.tty?
+					previous.rewind
+				end
+				@alt_outs[-1].write(previous.read)
+			end
+		end
+
+		def self.included(other)
+			other.class_eval do
+				def class_variable_get(symbol)
+					self.class.class_variable_get(symbol)
+				end
+			end
+		end
+
+		def access(symbol)
+			value = class_variable_get(symbol)
+			if @alt_outs.size > 1
+				if value == $stdout
+					@alt_outs[-1]
+				else
+					value
+				end
+			else
+				value
+			end
+		end
 
 		def log=(value)
 			@@log = value
 		end
 
 		def log
-			@@log
+			acess(:@@log)
 		end
 
 		def warning_log=(value)
@@ -19,7 +58,7 @@ module SaladPrep
 		end
 
 		def warning_log
-			@@warning_log
+			acess(:@@warning_log)
 		end
 
 		def error_log=(value)
@@ -27,7 +66,7 @@ module SaladPrep
 		end
 
 		def error_log
-			@@error_log
+			acess(:@@error_log)
 		end
 
 		def diag_log=(value)
@@ -35,7 +74,7 @@ module SaladPrep
 		end
 
 		def diag_log
-			@@diag_log
+			acess(:@@diag_log)
 		end
 
 		def huge_log=(value)
@@ -43,7 +82,7 @@ module SaladPrep
 		end
 
 		def huge_log
-			@@huge_log
+			acess(:@@huge_log)
 		end
 	end
 end

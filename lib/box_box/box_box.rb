@@ -156,44 +156,48 @@ module SaladPrep
 		end
 
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
-			result = Open3.popen3(
-				*cmds
-			) do |i, o, e, t|
-				out_lines = []
-				err_lines = []
-				if in_s.populated?
-					Thread.new do
-						i.write(in_s)
-						i.close
-					end
-				end					
-			
-				Thread.new do
-					until (line = o.gets).nil?
-						out_lines.push(line)
-					end
-				end
-			
-				Thread.new do
-					until (line = e.gets).nil?
-						err_lines.push(line)
-					end
-				end
-				
-				t.join
-				if t.value.exitstatus == 0
-					error_log&.puts(err_lines * "")
-					out_lines * ""
-				else
-					log&.puts(out_lines * "")
-					if exception
-						raise <<~ERR_MSG
-							#{err_lines * ""}
-							#{"#" * 20}
-							#{cmds[0]} failed with exit code #{t.value.exitstatus}
-						ERR_MSG
-					end
+			Tempfile.create do |tmp|
+				register_sub(tmp) do
+					result = Open3.popen3(
+						*cmds
+					) do |i, o, e, t|
+						out_lines = []
+						err_lines = []
+						if in_s.populated?
+							Thread.new do
+								i.write(in_s)
+								i.close
+							end
+						end					
 					
+						Thread.new do
+							until (line = o.gets).nil?
+								out_lines.push(line)
+							end
+						end
+					
+						Thread.new do
+							until (line = e.gets).nil?
+								err_lines.push(line)
+							end
+						end
+						
+						t.join
+						if t.value.exitstatus == 0
+							error_log&.puts(err_lines * "")
+							out_lines * ""
+						else
+							log&.puts(out_lines * "")
+							if exception
+								raise <<~ERR_MSG
+									#{err_lines * ""}
+									#{"#" * 20}
+									#{cmds[0]} failed with exit code #{t.value.exitstatus}
+								ERR_MSG
+							end
+							
+						end
+					end
 				end
 			end
 
