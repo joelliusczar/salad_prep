@@ -2,12 +2,14 @@ require "date"
 require "fileutils"
 require 'mysql'
 require_relative "../arg_checker/arg_checker"
+require_relative "../box_box/enums"
 require_relative "./dbass"
 require_relative "./enums"
-require_relative "../box_box/enums"
+require_relative "../extensions/string_ex"
 
 module SaladPrep
 	class MyAss < DbAss
+		using StringEx
 
 		def connection(user, pw, db)
 			Mysql.connect("mysql://#{user}:#{pw}@127.0.0.1/#{db}")
