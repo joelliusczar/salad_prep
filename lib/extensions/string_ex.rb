@@ -17,6 +17,14 @@ module SaladPrep
 				! zero?
 			end
 
+			def true?
+				if is_kind_of?(String)
+					downcase == "true"
+				else
+					false
+				end
+			end
+
 		end
 
 		refine String do

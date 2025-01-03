@@ -97,10 +97,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("tape_db") do
 			action_body = <<~'CODE'
-				out_param = ["-o", "-out", "-output"]
-					.filter{ |p| args_hash[p].populated? }
-					.first
-				local_out_path = args_hash[out_param]
+				local_out_path = args_hash.coalesce("o", "out", "output")
 				if local_out_path.zero?
 					raise "Output path not provided"
 				end
@@ -141,7 +138,7 @@ module SaladPrep
 		def_cmd("setup_db") do
 			action_body = <<~'CODE'
 				if args_hash["clean"].populated?
-					Provincial.dbass.teardown_db
+					Provincial.dbass.teardown_db(args_hash.include?("force", "-f"))
 				end
 				Provincial.dbass.setup_db
 			CODE
