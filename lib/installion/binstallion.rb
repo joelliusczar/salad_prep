@@ -138,6 +138,20 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd)
+		def_cmd("setup_db") do
+			action_body = <<~'CODE'
+				Provincial.dbass.setup_db
+			CODE
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("db_run") do
+			action_body = <<~'CODE'
+				Provincial.dbass.run_one_off($stdin)
+			CODE
+		end
+
+		mark_for(:sh_cmd)
 		def_cmd("connect_root") do
 			action_body = <<~'CODE'
 				Provincial.remote.connect_root

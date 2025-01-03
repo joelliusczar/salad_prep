@@ -70,5 +70,17 @@ module SaladPrep
 			dest
 		end
 
+		def run_one_off(file)
+			system(
+				"mysql",
+				"-u",
+				@egg.db_owner_name,
+				"-p",
+				@egg.db_owner_key,
+				@egg.db_name,
+				in: file
+			)
+		end
+
 	end
 end

@@ -34,5 +34,9 @@ module SaladPrep
 			[]
 		end
 
+		def run_one_off(file)
+			raise "run_one_off not implemented"
+		end
+
 	end
 end
