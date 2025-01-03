@@ -138,7 +138,9 @@ module SaladPrep
 		def_cmd("setup_db") do
 			action_body = <<~'CODE'
 				if args_hash["clean"].populated?
-					Provincial.dbass.teardown_db(args_hash.include?("force", "-f"))
+					Provincial.dbass.teardown_db(
+						force: args_hash.include?("force", "-f")
+					)
 				end
 				Provincial.dbass.setup_db
 			CODE
