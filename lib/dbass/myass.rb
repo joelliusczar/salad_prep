@@ -24,7 +24,7 @@ module SaladPrep
 			end
 		end
 
-		def backup_db(backup_lvl: Enums::BackupLvl::ALL)
+		def backup_db(backup_lvl: Enums::BackupLvl::ALL, has_bin: false)
 			FileUtils.mkdir_p(
 				File.join(@egg.app_root, "db_backup")
 			)
@@ -60,6 +60,8 @@ module SaladPrep
 			else
 				dest += "_ALL.sql"
 			end
+
+			cmd_arr.push("--hex-blob") if has_bin
 
 			
 			system(
