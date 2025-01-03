@@ -211,6 +211,7 @@ module SaladPrep
 		end
 
 		def start_python
+			@egg.load_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
 			ArgChecker.path(activate)
@@ -218,6 +219,7 @@ module SaladPrep
 		end
 
 		def run_python_script(script, exception: true)
+			@egg.load_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
 			ArgChecker.path(activate)
