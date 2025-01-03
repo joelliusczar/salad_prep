@@ -3,11 +3,13 @@
 require 'bundler/inline'
 require 'bundler'
 
+cmd = ARGV[0]
+
 gemfile do
 	source "https://rubygems.org"
 
-	prefer_local = false
-	if ! prefer_local
+	prefer_local = false 
+	if ! prefer_local || cmd == "refresh_bins"
 		gem(
 			"salad_prep",
 			git: "https://github.com/joelliusczar/salad_prep"
@@ -55,9 +57,8 @@ if ARGV.empty?
 end
 
 args_hash = {}
-cmd = ARGV[0]
 idx = 0
-ARGV.drop(1).each do |arg|
+ARGV.drop(1).each do |arg| #drop 0 since that's the command itself
 	if arg.include?("=")
 		split = arg.split("=")
 		args_hash[split[0].strip.downcase] = split[1].strip
