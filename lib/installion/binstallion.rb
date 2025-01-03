@@ -140,6 +140,9 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("setup_db") do
 			action_body = <<~'CODE'
+				if args_hash["clean"].populated?
+					Provincial.dbass.teardown_db
+				end
 				Provincial.dbass.setup_db
 			CODE
 		end
