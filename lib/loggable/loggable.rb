@@ -50,7 +50,7 @@ module SaladPrep
 		end
 
 		def log
-			acess(:@@log)
+			access(:@@log)
 		end
 
 		def warning_log=(value)
@@ -58,7 +58,7 @@ module SaladPrep
 		end
 
 		def warning_log
-			acess(:@@warning_log)
+			access(:@@warning_log)
 		end
 
 		def error_log=(value)
@@ -66,7 +66,7 @@ module SaladPrep
 		end
 
 		def error_log
-			acess(:@@error_log)
+			access(:@@error_log)
 		end
 
 		def diag_log=(value)
@@ -74,7 +74,7 @@ module SaladPrep
 		end
 
 		def diag_log
-			acess(:@@diag_log)
+			access(:@@diag_log)
 		end
 
 		def huge_log=(value)
@@ -82,7 +82,7 @@ module SaladPrep
 		end
 
 		def huge_log
-			acess(:@@huge_log)
+			access(:@@huge_log)
 		end
 	end
 end
