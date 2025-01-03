@@ -13,6 +13,9 @@ module SaladPrep
 
 		def register_sub(alt_out)
 			raise "Cannot redirect to stdout" if alt_out == $stdout
+			if @alt_outs.nil?
+				@alt_outs = [$stdout]
+			end
 			@alt_outs.push(alt_out)
 			yield
 			previous = @alt_outs.pop
@@ -34,6 +37,9 @@ module SaladPrep
 
 		def access(symbol)
 			value = class_variable_get(symbol)
+			if @alt_outs.nil?
+				@alt_outs = [$stdout]
+			end
 			if @alt_outs.size > 1
 				if value == $stdout
 					@alt_outs[-1]
