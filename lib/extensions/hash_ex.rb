@@ -15,10 +15,10 @@ module SaladPrep
 			end
 	
 			def include?(*keys)
-				keys.each { |key| return true if has_key(key) }
+				keys.each { |key| return true if has_key?(key) }
 				false
 			end
-			
+
 		end
 
 	end
