@@ -18,7 +18,7 @@ module SaladPrep
 			raise "teardown_db not implemented"
 		end
 
-		def teardown_db
+		def teardown_db(force: false)
 			raise "teardown_db not implemented"
 		end
 
