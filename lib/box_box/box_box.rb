@@ -182,14 +182,18 @@ module SaladPrep
 				
 				t.join
 				if t.value.exitstatus == 0
-					log&.puts(err_lines * "")
+					error_log&.puts(err_lines * "")
 					out_lines * ""
 				else
-					if exception
-						raise "#{cmds[0]} failed with exit code #{t.value.exitstatus}"
-					end
 					log&.puts(out_lines * "")
-					err_lines * ""
+					if exception
+						raise <<~ERR_MSG
+							#{err_lines * ""}
+							#{"#" * 20}
+							#{cmds[0]} failed with exit code #{t.value.exitstatus}
+						ERR_MSG
+					end
+					
 				end
 			end
 
