@@ -17,7 +17,7 @@ module SaladPrep
 				@alt_outs = [$stdout]
 			end
 			@alt_outs.push(alt_out)
-			yield
+			result = yield
 			previous = @alt_outs.pop
 			if @alt_outs[-1] != previous
 				if ! previous.tty?
@@ -25,6 +25,7 @@ module SaladPrep
 				end
 				@alt_outs[-1].write(previous.read)
 			end
+			result
 		end
 
 		def self.included(other)
