@@ -68,7 +68,7 @@ module SaladPrep
 			end
 
 			def home_sub
-				sub("~", ENV["HOME"]) if start_with("~")
+				sub("~", ENV["HOME"]) if start_with?("~")
 			end
 
 		end
