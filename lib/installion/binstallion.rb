@@ -35,7 +35,7 @@ module SaladPrep
 						if method_attrs(symbol).include?(:remote)
 							actions_body ^= send(symbol)
 						else
-							actions_body ^= self.class.body_builder(symbol) do
+							actions_body ^= body_builder(symbol) do
 								action_body = <<~CODE
 									puts("\#{cmd_name} is not available in this environment")
 								CODE
@@ -82,7 +82,7 @@ module SaladPrep
 			PRE
 		end
 
-		def self.body_builder(name)
+		def body_builder(name)
 			<<~CODE
 				@actions_hash["#{name}"] = lambda do |args_hash|
 					cmd_name = "#{name}"
