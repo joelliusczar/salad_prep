@@ -146,6 +146,21 @@ module SaladPrep
 			)
 		end
 
+		def push_files(src, dest, recursive: false)
+			cmd_arr = [
+				"sftp",
+				"-i",
+				@egg.ssh_id_file,
+				src,
+				"root@[#{@egg.ssh_address}]:#{dest}",
+			]
+			cmd_arr.insert(1, "-r") if recursive
+			system(
+				*cmd_arr
+				exception: true
+			)
+		end
+
 		def self.is_ssh?
 			! ENV["SSH_CONNECTION"].zero?
 		end		

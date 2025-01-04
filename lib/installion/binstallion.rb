@@ -320,6 +320,27 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd)
+		def_cmd("deploy_files") do
+			action_body = <<~'CODE'
+				local_in_path = args_hash.coalesce("in", "input")
+				if local_in_path.zero?
+					raise "Input path not provided"
+				end
+
+				remote_out_path = args_hash.coalesce("o", "out", "output")
+				if remote_out_path.zero?
+					raise "Output path not provided"
+				end
+
+				Provincial.remote.push_files(
+					local_in_path,
+					remote_out_path,
+					recursive: args_hash.include?("-r")
+				)
+			CODE
+		end
+
+		mark_for(:sh_cmd)
 		def_cmd("connect_root") do
 			action_body = <<~'CODE'
 				Provincial.remote.connect_root
