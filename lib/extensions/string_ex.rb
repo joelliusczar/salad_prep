@@ -67,6 +67,10 @@ module SaladPrep
 				split.split("\n") * ("\n" + ("\t" * tabs))
 			end
 
+			def home_sub
+				sub("~", ENV["HOME"]) if start_with("~")
+			end
+
 		end
 
 		refine Symbol do

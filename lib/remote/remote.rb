@@ -137,21 +137,21 @@ module SaladPrep
 
 		def grab_file(src, dest)
 			system(
-				"sftp",
+				"scp",
 				"-i",
 				@egg.ssh_id_file,
 				"root@[#{@egg.ssh_address}]:#{src}",
-				dest,
+				dest.home_sub,
 				exception: true
 			)
 		end
 
 		def push_files(src, dest, recursive: false)
 			cmd_arr = [
-				"sftp",
+				"scp",
 				"-i",
 				@egg.ssh_id_file,
-				src,
+				src.home_sub,
 				"root@[#{@egg.ssh_address}]:#{dest}",
 			]
 			cmd_arr.insert(1, "-r") if recursive
