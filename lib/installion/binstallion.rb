@@ -43,8 +43,10 @@ module SaladPrep
 						end
 					end
 				end
-			rescue
+			rescue => e
 				error_log&.puts("Error while trying to create bin file.")
+				error_log&.puts(e.backtrace * "\n")
+				error_log&.puts(e.message)
 			end
 			actions_body
 		end
