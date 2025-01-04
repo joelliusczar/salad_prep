@@ -156,7 +156,7 @@ module SaladPrep
 			]
 			cmd_arr.insert(1, "-r") if recursive
 			system(
-				*cmd_arr
+				*cmd_arr,
 				exception: true
 			)
 		end
