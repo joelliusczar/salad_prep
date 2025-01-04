@@ -191,7 +191,7 @@ module SaladPrep
 		def_cmd("refresh_procs") do
 			action_body = <<~CODE
 				Provincial.binstallion.install_bins
-				puts("\#{Canary.version}")
+				puts("\#{Provincial::Canary.version}")
 			CODE
 		end
 
