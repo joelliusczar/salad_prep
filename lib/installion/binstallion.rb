@@ -341,14 +341,12 @@ module SaladPrep
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_procs") do
+			#no access to provincial in remote script
 			action_body = <<~CODE
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby #{@ruby_version}"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-						=begin
-							No access to Provincial in this remote script
-						=end
 						require "tempfile"
 						#{ruby_prelude}
 						egg = SaladPrep::Egg.new(
