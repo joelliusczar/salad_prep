@@ -211,7 +211,7 @@ module SaladPrep
 					include_dirs: true,
 					prefer_keys_file:
 				).each do |k, v|
-					puts("\"\#{k}\"=>\"\#{v}\"")
+					puts("\\"\#{k}\\"=>\\"\#{v}\\"")
 				end
 			CODE
 		end
