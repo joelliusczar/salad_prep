@@ -84,12 +84,12 @@ module SaladPrep
 			PRE
 		end
 
-		def body_builder(name)
+		def body_builder(name, &block)
 			<<~CODE
 				@actions_hash["#{name}"] = lambda do |args_hash|
 					cmd_name = "#{name}"
 					bin_action_wrap(args_hash) do
-						#{yield.split("\n") * "\n\t\t"}
+						#{instance_eval(&block).split("\n") * "\n\t\t"}
 					end
 				end
 			CODE
@@ -99,6 +99,13 @@ module SaladPrep
 			define_method(name) do
 				body_builder(name, &block)
 			end
+		end
+
+		def_cmd("refresh_procs") do
+			action_body = <<~CODE
+				Provincial.binstallion.install_bins
+				puts("\#{Provincial::Canary.version}")
+			CODE
 		end
 
 		def_cmd("install_py_env_if_needed") do
@@ -155,7 +162,7 @@ module SaladPrep
 				REMOTE
 	
 				remote_out_path = Provincial.remote.run_remote(remote_script).chomp
-				puts("Remote path: #{remote_out_path}")
+				puts("Remote path: \#{remote_out_path}")
 				if remote_out_path.zero?
 					raise "Server provided output path is blank."
 				end
@@ -186,14 +193,6 @@ module SaladPrep
 		def_cmd("connect_root") do
 			action_body = <<~CODE
 				Provincial.remote.connect_root
-			CODE
-		end
-
-		mark_for(:sh_cmd)
-		def_cmd("refresh_procs") do
-			action_body = <<~CODE
-				Provincial.binstallion.install_bins
-				puts("\#{Provincial::Canary.version}")
 			CODE
 		end
 
