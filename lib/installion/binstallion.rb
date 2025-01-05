@@ -368,9 +368,9 @@ module SaladPrep
 				remote_path = Provincial.remote.run_remote(remote_script)
 				Provincial.remote.push_files(
 					"#{@template_context_path}",
-					"#{remote_path}/provincial.rb",
+					"\#{remote_path}/provincial.rb",
 				)
-				gen_out_path = "#{remote_path}/#{@egg.env_prefix.downcase}_dev"
+				gen_out_path = "\#{remote_path}/\#{@egg.env_prefix.downcase}_dev"
 				Tempfile.create do |tmp|
 					tmp.write(
 						SaladPrep::Resorcerer.bin_wrapper_template_compile(
@@ -387,7 +387,7 @@ module SaladPrep
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
 						require "fileutils"
-						FileUtils.chmod("a+x", "#{gen_out_path}")
+						FileUtils.chmod("a+x", "\#{gen_out_path}")
 					EOF
 				REMOTE
 			CODE
