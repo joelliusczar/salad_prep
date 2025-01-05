@@ -72,15 +72,15 @@ module SaladPrep
 
 		def ruby_prelude
 			<<~PRE
-			require 'bundler/inline'
+				require 'bundler/inline'
 
-			gemfile do
-				source "https://rubygems.org"
+				gemfile do
+					source "https://rubygems.org"
 
-				gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
-			end
+					gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+				end
 
-			require "salad_prep"
+				require "salad_prep"
 			PRE
 		end
 
@@ -105,6 +105,58 @@ module SaladPrep
 			action_body = <<~CODE
 				Provincial.binstallion.install_bins
 				puts("\#{Provincial::Canary.version}")
+			CODE
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("deploy_procs") do
+			#no access to provincial in remote script
+			action_body = <<~CODE
+				remote_script = Provincial.egg.env_exports
+				remote_script ^= "asdf shell ruby #{@ruby_version}"
+				remote_script ^= <<~REMOTE1
+					ruby <<'EOF1'
+						require "tempfile"
+						#{ruby_prelude}
+						egg = SaladPrep::Egg.new(
+							project_name_0: "#{@egg.project_name_0}",
+							repo_url: "#{@egg.repo_url}",
+							env_prefix: "#{@egg.env_prefix}",
+							url_base:  "#{@egg.url_base}",
+							tld: "#{@egg.tld}",
+							db_owner_name: "#{@egg.db_owner_name}",
+						)
+
+						SaladPrep::FileHerder.empty_dir(egg.dev_ops_bin)
+						SaladPrep::BoxBox.path_append(egg.dev_ops_bin)
+						puts(egg.dev_ops_bin)
+					EOF1
+				REMOTE1
+				remote_path = Provincial.remote.run_remote(remote_script)
+				Provincial.remote.push_files(
+					"#{@template_context_path}",
+					"\#{remote_path}/provincial.rb",
+				)
+				gen_out_path = "\#{remote_path}/\#{@egg.env_prefix.downcase}_dev"
+				Tempfile.create do |tmp|
+					tmp.write(
+						SaladPrep::Resorcerer.bin_wrapper_template_compile(
+							Provincial.binstallion.concat_actions(is_local: false)
+						)
+					)
+					Provincial.remote.push_files(
+						tmp.path,
+						gen_out_path,
+					)
+				end
+				remote_script = Provincial.egg.env_exports
+				remote_script ^= "asdf shell ruby #{@ruby_version}"
+				remote_script ^= <<~REMOTE2
+					ruby <<'EOF2'
+						require "fileutils"
+						FileUtils.chmod("a+x", "\#{gen_out_path}")
+					EOF2
+				REMOTE2
 			CODE
 		end
 
@@ -336,58 +388,6 @@ module SaladPrep
 					remote_out_path,
 					recursive: args_hash.include?("-r")
 				)
-			CODE
-		end
-
-		mark_for(:sh_cmd)
-		def_cmd("deploy_procs") do
-			#no access to provincial in remote script
-			action_body = <<~CODE
-				remote_script = Provincial.egg.env_exports
-				remote_script ^= "asdf shell ruby #{@ruby_version}"
-				remote_script ^= <<~REMOTE
-					ruby <<'EOF'
-						require "tempfile"
-						#{ruby_prelude}
-						egg = SaladPrep::Egg.new(
-							project_name_0: "#{@egg.project_name_0}",
-							repo_url: "#{@egg.repo_url}",
-							env_prefix: "#{@egg.env_prefix}",
-							url_base:  "#{@egg.url_base}",
-							tld: "#{@egg.tld}",
-							db_owner_name: "#{@egg.db_owner_name}",
-						)
-
-						SaladPrep::FileHerder.empty_dir(egg.dev_ops_bin)
-						SaladPrep::BoxBox.path_append(egg.dev_ops_bin)
-						puts(egg.dev_ops_bin)
-					EOF
-				REMOTE
-				remote_path = Provincial.remote.run_remote(remote_script)
-				Provincial.remote.push_files(
-					"#{@template_context_path}",
-					"\#{remote_path}/provincial.rb",
-				)
-				gen_out_path = "\#{remote_path}/\#{@egg.env_prefix.downcase}_dev"
-				Tempfile.create do |tmp|
-					tmp.write(
-						SaladPrep::Resorcerer.bin_wrapper_template_compile(
-							Provincial.binstallion.concat_actions(is_local: false)
-						)
-					)
-					Provincial.remote.push_files(
-						tmp.path,
-						gen_out_path,
-					)
-				end
-				remote_script = Provincial.egg.env_exports
-				remote_script ^= "asdf shell ruby #{@ruby_version}"
-				remote_script ^= <<~REMOTE
-					ruby <<'EOF'
-						require "fileutils"
-						FileUtils.chmod("a+x", "\#{gen_out_path}")
-					EOF
-				REMOTE
 			CODE
 		end
 
