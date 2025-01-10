@@ -134,11 +134,11 @@ module SaladPrep
 		def_cmd("deploy_procs") do
 			#no access to provincial in remote script
 			body = <<~CODE
+				require "tempfile"
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE1
 					ruby <<'EOF1'
-						require "tempfile"
 						<% ruby_prelude.split("\n").each do |l| %>
 						<%= l %>
 
@@ -158,7 +158,7 @@ module SaladPrep
 						puts(egg.dev_ops_bin)
 					EOF1
 				REMOTE1
-				remote_path = Provincial.remote.run_remote(remote_script)
+				remote_path = Provincial.remote.run_remote(remote_script).chomp
 				Provincial.remote.push_files(
 					"<%= @template_context_path %>",
 					"\#{remote_path}/provincial.rb"
