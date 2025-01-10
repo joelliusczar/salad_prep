@@ -24,12 +24,12 @@ module SaladPrep
 		def concat_actions(is_local:)
 			actions_body = ""
 			actions_body ^= refresh_procs
+			actions_body ^= spit_procs
 			begin
 				marked = marked_methods(:sh_cmd)
 				warning_log&.puts("No symbols") if marked.none?
 				marked.each do |symbol|
 					diag_log&.puts(symbol)
-					next if symbol == :refresh_procs
 					if is_local
 						actions_body ^= send(symbol)
 					else
@@ -121,7 +121,6 @@ module SaladPrep
 			CODE
 		end
 
-		mark_for(:sh_cmd)
 		def_cmd("spit_procs") do
 			body = <<~CODE
 				show_whitespace = args_hash["ws"].populated?
@@ -229,10 +228,10 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-				<% ruby_prelude.split("\n").each do |l| %>
-				<%= l %>
+					<% ruby_prelude.split("\n").each do |l| %>
+					<%= l %>
 
-				<% end %>
+					<% end %>
 
 					\#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env

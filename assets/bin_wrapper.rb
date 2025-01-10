@@ -24,6 +24,10 @@ ARGV.drop(1).each do |arg| #drop 0 since that's the command itself
 end
 ARGV.clear
 
+if cmd == "spit_procs"
+	args_hash["local"] = true
+end
+
 
 gemfile do
 	source "https://rubygems.org"
