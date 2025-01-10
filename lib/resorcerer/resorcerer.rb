@@ -29,10 +29,11 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}bin_wrapper.rb")
 		end
 
-		def self.bin_wrapper_template_compile(actions_body)
+		def self.bin_wrapper_template_compile(actions_body, prefer_local: false)
 			template = ERB.new(bin_wrapper_template, trim_mode:"<>")
 			template.result_with_hash({
-				actions_body: actions_body
+				actions_body: actions_body,
+				prefer_local:
 			})
 		end
 

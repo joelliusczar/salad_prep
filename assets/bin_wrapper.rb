@@ -8,7 +8,7 @@ cmd = ARGV[0]
 gemfile do
 	source "https://rubygems.org"
 
-	prefer_local = false 
+	prefer_local = <%= prefer_local %> 
 	if ! prefer_local || cmd == "refresh_bins"
 		gem(
 			"salad_prep",

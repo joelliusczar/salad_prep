@@ -52,7 +52,7 @@ module SaladPrep
 			actions_body
 		end
 
-		def install_bins
+		def install_bins(prefer_local: false)
 			FileHerder.empty_dir(@egg.dev_ops_bin)
 			BoxBox.path_append(@egg.dev_ops_bin)
 			provincial_path = File.join(@egg.dev_ops_bin, "provincial.rb")
@@ -65,7 +65,8 @@ module SaladPrep
 			)
 			File.open(file_path, "w").write(
 				Resorcerer.bin_wrapper_template_compile(
-					concat_actions(is_local: true)
+					concat_actions(is_local: true),
+					prefer_local:
 				)
 			)
 			FileUtils.chmod("a+x", file_path)
@@ -108,7 +109,8 @@ module SaladPrep
 
 		def_cmd("refresh_procs") do
 			body = <<~CODE
-				Provincial.binstallion.install_bins
+				prefer_local = args_hash["local"].populated?
+				Provincial.binstallion.install_bins(prefer_local:)
 				puts("\#{Provincial::Canary.version}")
 			CODE
 		end
@@ -127,12 +129,12 @@ module SaladPrep
 	
 						<% end %>
 						egg = SaladPrep::Egg.new(
-							project_name_0: "<% @egg.project_name_0 %>",
-							repo_url: "<% @egg.repo_url %>",
-							env_prefix: "<% @egg.env_prefix %>",
-							url_base:  "<% @egg.url_base %>",
-							tld: "<% @egg.tld %>",
-							db_owner_name: "<% @egg.db_owner_name %>",
+							project_name_0: "<%= @egg.project_name_0 %>",
+							repo_url: "<%= @egg.repo_url %>",
+							env_prefix: "<%= @egg.env_prefix %>",
+							url_base:  "<%= @egg.url_base %>",
+							tld: "<%= @egg.tld %>",
+							db_owner_name: "<%= @egg.db_owner_name %>",
 						)
 
 						SaladPrep::FileHerder.empty_dir(egg.dev_ops_bin)
