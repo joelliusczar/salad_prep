@@ -161,7 +161,7 @@ module SaladPrep
 				remote_path = Provincial.remote.run_remote(remote_script)
 				Provincial.remote.push_files(
 					"<%= @template_context_path %>",
-					"\#{remote_path}/provincial.rb",
+					"\#{remote_path}/provincial.rb"
 				)
 				gen_out_path = "\#{remote_path}/<%= @egg.env_prefix.downcase %>_dev"
 				Tempfile.create do |tmp|
