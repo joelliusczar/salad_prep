@@ -24,7 +24,6 @@ ARGV.drop(1).each do |arg| #drop 0 since that's the command itself
 end
 ARGV.clear
 
-Provincial.egg.set_logs
 
 gemfile do
 	source "https://rubygems.org"
@@ -50,6 +49,8 @@ require_relative "./provincial"
 
 using SaladPrep::StringEx
 using SaladPrep::HashEx
+
+Provincial.egg.set_logs
 
 @actions_hash = {}
 
