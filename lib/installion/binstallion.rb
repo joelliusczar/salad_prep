@@ -52,10 +52,14 @@ module SaladPrep
 			actions_body
 		end
 
-		def full_proc_file_content
-			Resorcerer.bin_wrapper_template_compile(
+		def full_proc_file_content(show_whitespace:false)
+			content = Resorcerer.bin_wrapper_template_compile(
 				concat_actions(is_local: true)
 			)
+			if show_whitespace
+				content.gsub!("\t", "\\t").gsub!(" ", "^")
+			end
+			content
 		end
 
 		def install_bins
@@ -120,7 +124,8 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("spit_procs") do
 			body = <<~CODE
-				print(Provincial.binstallion.full_proc_file_content)
+				show_whitespace = args_hash["ws"].populated?
+				print(Provincial.binstallion.full_proc_file_content(show_whitespace:))
 			CODE
 		end
 
