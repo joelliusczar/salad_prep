@@ -102,8 +102,9 @@ module SaladPrep
 						<%= l %>
 	
 						<% end %>
-						
+
 					end
+
 				end
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
@@ -138,10 +139,10 @@ module SaladPrep
 				remote_script ^= <<~REMOTE1
 					ruby <<'EOF1'
 						require "tempfile"
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
+						<% ruby_prelude.split("\n").each do |l| %>
+						<%= l %>
 
-					<% end %>
+						<% end %>
 
 						egg = SaladPrep::Egg.new(
 							project_name_0: "<%= @egg.project_name_0 %>",
@@ -332,10 +333,10 @@ module SaladPrep
 
 					<% end %>
 
-						require "salad_prep"
-						\#{Provincial.egg.app_lvl_definitions_script}
-						Provincial.box_box.setup_build
-						Provincial.installion.install_dependencies
+					require "salad_prep"
+					\#{Provincial.egg.app_lvl_definitions_script}
+					Provincial.box_box.setup_build
+					Provincial.installion.install_dependencies
 					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
@@ -359,10 +360,10 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-				<% ruby_prelude.split("\n").each do |l| %>
-				<%= l %>
+					<% ruby_prelude.split("\n").each do |l| %>
+					<%= l %>
 
-				<% end %>
+					<% end %>
 
 					\#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
@@ -391,10 +392,10 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-				<% ruby_prelude.split("\n").each do |l| %>
-				<%= l %>
+					<% ruby_prelude.split("\n").each do |l| %>
+					<%= l %>
 
-				<% end %>
+					<% end %>
 
 					\#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
