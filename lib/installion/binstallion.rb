@@ -52,7 +52,7 @@ module SaladPrep
 			actions_body
 		end
 
-		def install_bins(prefer_local: false)
+		def install_bins
 			FileHerder.empty_dir(@egg.dev_ops_bin)
 			BoxBox.path_append(@egg.dev_ops_bin)
 			provincial_path = File.join(@egg.dev_ops_bin, "provincial.rb")
@@ -65,8 +65,7 @@ module SaladPrep
 			)
 			File.open(file_path, "w").write(
 				Resorcerer.bin_wrapper_template_compile(
-					concat_actions(is_local: true),
-					prefer_local:
+					concat_actions(is_local: true)
 				)
 			)
 			FileUtils.chmod("a+x", file_path)
@@ -109,8 +108,7 @@ module SaladPrep
 
 		def_cmd("refresh_procs") do
 			body = <<~CODE
-				prefer_local = args_hash["local"].populated?
-				Provincial.binstallion.install_bins(prefer_local:)
+				Provincial.binstallion.install_bins
 				puts("\#{Provincial::Canary.version}")
 			CODE
 		end
@@ -381,7 +379,7 @@ module SaladPrep
 				<%= l %>
 
 				<% end %>
-				
+
 					\#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
 					Provincial.box_box.setup_build
