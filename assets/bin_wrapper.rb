@@ -28,7 +28,7 @@ ARGV.clear
 gemfile do
 	source "https://rubygems.org"
 
-	prefer_local = ! args_hash["local"].nil? 
+	prefer_local = ! args_hash["local"].nil?
 	if ! prefer_local || cmd == "refresh_bins"
 		gem(
 			"salad_prep",

@@ -52,6 +52,12 @@ module SaladPrep
 			actions_body
 		end
 
+		def full_proc_file_content
+			Resorcerer.bin_wrapper_template_compile(
+				concat_actions(is_local: true)
+			)
+		end
+
 		def install_bins
 			FileHerder.empty_dir(@egg.dev_ops_bin)
 			BoxBox.path_append(@egg.dev_ops_bin)
@@ -64,9 +70,7 @@ module SaladPrep
 				"#{@egg.env_prefix.downcase}_dev"
 			)
 			File.open(file_path, "w").write(
-				Resorcerer.bin_wrapper_template_compile(
-					concat_actions(is_local: true)
-				)
+				full_proc_file_content
 			)
 			FileUtils.chmod("a+x", file_path)
 		end
@@ -114,6 +118,13 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd)
+		def_cmd("spit_procs") do
+			body = <<~CODE
+				print(Provincial.binstallion.full_proc_file_content)
+			CODE
+		end
+
+		mark_for(:sh_cmd)
 		def_cmd("deploy_procs") do
 			#no access to provincial in remote script
 			body = <<~CODE
@@ -146,7 +157,7 @@ module SaladPrep
 					"<%= @template_context_path %>",
 					"\#{remote_path}/provincial.rb",
 				)
-				gen_out_path = "\#{remote_path}/\#{@egg.env_prefix.downcase}_dev"
+				gen_out_path = "\#{remote_path}/<%= @egg.env_prefix.downcase %>_dev"
 				Tempfile.create do |tmp|
 					tmp.write(
 						SaladPrep::Resorcerer.bin_wrapper_template_compile(
