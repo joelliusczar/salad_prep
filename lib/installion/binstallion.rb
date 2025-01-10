@@ -124,10 +124,11 @@ module SaladPrep
 				remote_script ^= <<~REMOTE1
 					ruby <<'EOF1'
 						require "tempfile"
-						<% ruby_prelude.split("\n").each do |l| %>
-						<%= l %>
-	
-						<% end %>
+					<% ruby_prelude.split("\n").each do |l| %>
+					<%= l %>
+
+					<% end %>
+
 						egg = SaladPrep::Egg.new(
 							project_name_0: "<%= @egg.project_name_0 %>",
 							repo_url: "<%= @egg.repo_url %>",
@@ -214,10 +215,11 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
+				<% ruby_prelude.split("\n").each do |l| %>
+				<%= l %>
 
-					<% end %>
+				<% end %>
+
 					\#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
 					out_path = Provincial.dbass.backup_db(
@@ -311,10 +313,11 @@ module SaladPrep
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-						<% ruby_prelude.split("\n").each do |l| %>
-						<%= l %>
-	
-						<% end %>
+					<% ruby_prelude.split("\n").each do |l| %>
+					<%= l %>
+
+					<% end %>
+
 						require "salad_prep"
 						\#{Provincial.egg.app_lvl_definitions_script}
 						Provincial.box_box.setup_build
@@ -342,10 +345,11 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
+				<% ruby_prelude.split("\n").each do |l| %>
+				<%= l %>
 
-					<% end %>
+				<% end %>
+
 					\#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
 					Provincial.box_box.setup_build
@@ -373,10 +377,11 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE
 					ruby <<'EOF'
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
+				<% ruby_prelude.split("\n").each do |l| %>
+				<%= l %>
 
-					<% end %>
+				<% end %>
+				
 					\#{Provincial.egg.app_lvl_definitions_script}
 					Provincial.egg.load_env
 					Provincial.box_box.setup_build
