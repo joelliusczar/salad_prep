@@ -37,9 +37,11 @@ module SaladPrep
 			owner_name = @egg.db_owner_name
 			owner_key = @egg.db_owner_key(prefer_keys_file: false)
 			db_name = @egg.db_name
-			diag_log&.puts("owner name: #{owner_name}")
-			diag_log&.puts("owner key?  #{owner_key.populated? ? 'Yes' : 'No'}")
-			diag_log&.puts("db_name: #{db_name}")
+			Toob.diag&.puts("owner name: #{owner_name}")
+			Toob.diag&.puts(
+				"owner key?  #{owner_key.populated? ? 'Yes' : 'No'}"
+			)
+			Toob.diag&.puts("db_name: #{db_name}")
 
 			cmd_arr = [
 				"mysqldump",

@@ -1,9 +1,8 @@
 require_relative "../file_herder/file_herder"
-require_relative "../loggable/loggable"
+require_relative "../toob/toob"
 
 module SaladPrep
 	class TestHoncho
-		include Loggable
 	
 		def initialize(egg:, dbass:, box_box:)
 			@egg = egg

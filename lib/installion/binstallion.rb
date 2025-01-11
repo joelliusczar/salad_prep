@@ -5,13 +5,12 @@ require_relative "../file_herder/file_herder"
 require_relative "../method_marker/method_marker"
 require_relative "../resorcerer/resorcerer"
 require_relative "../extensions/string_ex"
-require_relative "../loggable/loggable"
+require_relative "../toob/toob"
 
 module SaladPrep
 	class Binstallion
 		using StringEx
 		extend MethodMarker
-		include Loggable
 		
 		def initialize(egg, template_context_path, ruby_version = "3.3.5")
 			@egg = egg
@@ -27,9 +26,9 @@ module SaladPrep
 			actions_body ^= spit_procs
 			begin
 				marked = marked_methods(:sh_cmd)
-				warning_log&.puts("No symbols") if marked.none?
+				Toob.warning&.puts("No symbols") if marked.none?
 				marked.each do |symbol|
-					diag_log&.puts(symbol)
+					diag&.puts(symbol)
 					if is_local
 						actions_body ^= send(symbol)
 					else
@@ -45,9 +44,9 @@ module SaladPrep
 					end
 				end
 			rescue => e
-				error_log&.puts("Error while trying to create bin file.")
-				error_log&.puts(e.backtrace * "\n")
-				error_log&.puts(e.message)
+				Toob.error&.puts("Error while trying to create bin file.")
+				Toob.error&.puts(e.backtrace * "\n")
+				Toob.error&.puts(e.message)
 			end
 			actions_body
 		end

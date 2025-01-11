@@ -1,11 +1,10 @@
 require 'digest'
 require_relative "../extensions/string_ex"
-require_relative "../loggable/loggable"
+require_relative "../toob/toob"
 
 module SaladPrep
 	class Libby
 		using StringEx
-		include Loggable
 
 		def regen_lib_supports
 		end

@@ -5,7 +5,7 @@ require_relative "../file_herder/file_herder"
 require_relative "../method_marker/method_marker"
 require_relative "../extensions/object_ex"
 require_relative "../extensions/string_ex"
-require_relative "../loggable/loggable"
+require_relative "../toob/toob"
 
 module SaladPrep
 	
@@ -13,7 +13,6 @@ module SaladPrep
 		using StringEx
 		using ObjectEx
 		extend MethodMarker
-		include Loggable
 
 		def initialize(**kwargs)
 			marked_methods(:init_rq).each do |symbol|
@@ -307,27 +306,6 @@ module SaladPrep
 		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:api_log_level, "API_LOG_LEVEL")
 
-		def log_dest(name="")
-			value = ENV["#{@env_prefix}#{name}_LOG_DEST"]
-			if value.zero?
-				nil
-			elsif value.downcase == "stdout" 
-				$stdout
-			elsif value.downcase == "stderr"
-					$stderr 
-			else
-				File.open(value, "a")
-			end
-		end
-
-		def set_logs
-			self.log = log_dest
-			self.warning_log = log_dest("_WARN")
-			self.diag_log = log_dest("_DIAG")
-			self.huge_log = log_dest("_HUGE")
-			self.error_log = $stderr
-		end
-
 		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:build_log_dest, "LOG_DEST")
 		mark_for(:deploy_sg, :env_enum)
@@ -530,7 +508,7 @@ module SaladPrep
 			end
 			ENV["#{env_prefix}_APP_ROOT"] = @app_root
 			ENV["__TEST_FLAG__"] = @test_flags > 0 ? "true" : ""
-			set_logs
+			Toob.set_all
 		end
 
 		def server_env_check_recommended

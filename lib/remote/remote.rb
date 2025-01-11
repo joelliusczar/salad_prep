@@ -5,7 +5,7 @@ require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../dbass/enums"
 require_relative "../extensions/string_ex"
-require_relative "../loggable/loggable"
+require_relative "../toob/toob"
 require_relative "../resorcerer/resorcerer"
 
 
@@ -13,7 +13,6 @@ require_relative "../resorcerer/resorcerer"
 module SaladPrep
 	class Remote
 		using StringEx
-		include Loggable
 
 		def initialize (egg)
 			@egg = egg
@@ -59,7 +58,7 @@ module SaladPrep
 		end
 
 		def run_remote(script)
-			huge_log&.write(script)
+			Toob.huge&.write(script)
 			BoxBox.run_and_get(
 				"ssh",
 				"-i",

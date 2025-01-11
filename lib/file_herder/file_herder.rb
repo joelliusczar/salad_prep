@@ -1,18 +1,21 @@
 require "fileutils"
-require_relative "../loggable/loggable"
+require_relative "../toob/toob"
 
 module SaladPrep
 	module FileHerder
-		extend Loggable
 
 		def self.is_path_allowed(target_dir)
 			if %r{//} =~ target_dir
-				error_log&.puts("Segments seem to be missing in #{target_dir}")
+				Toob.error&.puts(
+					"Segments seem to be missing in #{target_dir}"
+				)
 				return false
 			end
 
 			if target_dir == "/"
-				error_log&.puts("Segments seem to be missing in #{target_dir}")
+				Toob.error&.puts(
+					"Segments seem to be missing in #{target_dir}"
+				)
 				return false
 			end
 			return true

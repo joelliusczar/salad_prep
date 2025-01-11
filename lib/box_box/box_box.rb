@@ -3,14 +3,12 @@ require "open3"
 require_relative "./enums"
 require_relative "../extensions/string_ex"
 require_relative "../extensions/object_ex"
-require_relative "../loggable/loggable"
+require_relative "../toob/toob"
 
 module SaladPrep
 	class BoxBox
 		using StringEx
 		using ObjectEx
-		include Loggable
-		extend Loggable
 
 		def initialize(egg)
 			@egg = egg
@@ -184,10 +182,10 @@ module SaladPrep
 						
 						t.join
 						if t.value.exitstatus == 0
-							error_log&.puts(err_lines * "")
+							Toob.error&.puts(err_lines * "")
 							out_lines * ""
 						else
-							log&.puts(out_lines * "")
+							Toob.log&.puts(out_lines * "")
 							if exception
 								raise <<~ERR_MSG
 									#{err_lines * ""}
