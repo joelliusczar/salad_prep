@@ -2,6 +2,7 @@ module SaladPrep
 	module Toob
 		using StringEx
 
+		@env_prefix
 		@log = nil
 		@warning = nil
 		@error = nil
@@ -95,12 +96,13 @@ module SaladPrep
 			end
 		end
 
-		def self.set_all
-			log = log_dest
-			warning = log_dest("_WARN")
-			diag = log_dest("_DIAG")
-			huge = log_dest("_HUGE")
-			error = $stderr
+		def self.set_all(env_prefix)
+			@env_prefix = env_prefix
+			self.log = log_dest
+			self.warning = log_dest("_WARN")
+			self.diag = log_dest("_DIAG")
+			self.huge = log_dest("_HUGE")
+			self.error = $stderr
 		end
 
 	end

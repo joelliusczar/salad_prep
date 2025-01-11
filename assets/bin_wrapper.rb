@@ -54,7 +54,7 @@ require_relative "./provincial"
 using SaladPrep::StringEx
 using SaladPrep::HashEx
 
-Provincial::Toob.set_all
+Provincial::Toob.set_all(Provincial.egg.env_prefix)
 
 @actions_hash = {}
 
