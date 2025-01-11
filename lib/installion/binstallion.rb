@@ -28,7 +28,7 @@ module SaladPrep
 				marked = marked_methods(:sh_cmd)
 				Toob.warning&.puts("No symbols") if marked.none?
 				marked.each do |symbol|
-					diag&.puts(symbol)
+					Toob.diag&.puts(symbol)
 					if is_local
 						actions_body ^= send(symbol)
 					else
