@@ -40,7 +40,7 @@ module SaladPrep
 		end
 
 		def self.empty_dir(dir_replacera)
-			log&.puts("Replacing #{dir_replacera}")
+			Toob.log&.puts("Replacing #{dir_replacera}")
 			if ! is_path_allowed(dir_replacera)
 				raise "#{dir_replacera} has some potential errors."
 			end
@@ -50,18 +50,18 @@ module SaladPrep
 			else
 				FileUtils.mkdir_p(dir_replacera)
 			end
-			log&.puts("Done replacing #{dir_replacera}")
+			Toob.log&.puts("Done replacing #{dir_replacera}")
 			return results
 		end
 
 		def self.copy_dir(src_dir, dest_dir)
-			log&.puts("copying from #{src_dir} to #{dest_dir}")
+			Toob.log&.puts("copying from #{src_dir} to #{dest_dir}")
 			if ! are_paths_allowed("#{src_dir}/.",dest_dir)
 				raise "src_dir: #{src_dir} or dest_dir:#{dest_dir} have errors"
 			end
 			empty_dir(dest_dir)
 			FileUtils.cp_r("#{src_dir}/.", dest_dir, verbose:true)
-			log&.puts("done copying dir from #{src_dir} to #{dest_dir}")
+			Toob.log&.puts("done copying dir from #{src_dir} to #{dest_dir}")
 		end
 
 		def self.update_in_place(file_path)
