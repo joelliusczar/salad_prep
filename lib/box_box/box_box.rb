@@ -155,7 +155,7 @@ module SaladPrep
 
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
 			Tempfile.create do |tmp|
-				register_sub(tmp) do
+				Toob.register_sub(tmp) do
 					result = Open3.popen3(
 						*cmds
 					) do |i, o, e, t|
