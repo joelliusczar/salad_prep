@@ -169,19 +169,21 @@ module SaladPrep
 							Provincial.binstallion.concat_actions(is_local: false)
 						)
 					)
+					tmp.rewind
 					Provincial.remote.push_files(
 						tmp.path,
 						gen_out_path,
 					)
 				end
 				remote_script = Provincial.egg.env_exports
-				remote_script ^= "asdf shell ruby <% @ruby_version >"
+				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE2
 					ruby <<'EOF2'
 						require "fileutils"
 						FileUtils.chmod("a+x", "\#{gen_out_path}")
 					EOF2
 				REMOTE2
+				Provincial.remote.run_remote(remote_script)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end

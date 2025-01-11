@@ -508,7 +508,7 @@ module SaladPrep
 			end
 			ENV["#{env_prefix}_APP_ROOT"] = @app_root
 			ENV["__TEST_FLAG__"] = @test_flags > 0 ? "true" : ""
-			Toob.set_all
+			Toob.set_all(@env_prefix)
 		end
 
 		def server_env_check_recommended
