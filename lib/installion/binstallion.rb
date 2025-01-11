@@ -124,7 +124,7 @@ module SaladPrep
 
 		def_cmd("spit_procs") do
 			body = <<~CODE
-				show_whitespace = args_hash["ws"].populated?
+				show_whitespace = args_hash["-ws"].populated?
 				print(Provincial.binstallion.full_proc_file_content(show_whitespace:))
 			CODE
 		end
@@ -221,7 +221,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("tape_db") do
 			body = <<~CODE
-				local_out_path = args_hash.coalesce("o", "out", "output")
+				local_out_path = args_hash.coalesce("-o", "-out", "-output")
 				if local_out_path.zero?
 					raise "Output path not provided"
 				end
@@ -258,9 +258,9 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_db") do
 			body = <<~CODE
-				if args_hash["clean"].populated?
+				if args_hash["-clean"].populated?
 					Provincial.dbass.teardown_db(
-						force: args_hash.include?("force", "-f")
+						force: args_hash.include?("-force", "-f")
 					)
 				end
 				Provincial.dbass.setup_db
@@ -291,7 +291,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("env_hash") do
 			body = <<~CODE
-				prefer_keys_file = args_hash[0] != "local"
+				prefer_keys_file = args_hash[0] == "-key-file"
 				Provincial.egg.env_hash(
 					include_dirs: true,
 					prefer_keys_file:
@@ -304,7 +304,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("egg") do
 			body = <<~CODE
-				prefer_keys_file = args_hash[0] != "local"
+				prefer_keys_file = args_hash[0] == "-key-file"
 				puts(Provincial.egg.to_s(prefer_keys_file:))
 			CODE
 		end
@@ -319,7 +319,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_install") do
 			body = <<~CODE
-				current_branch = args_hash["branch"]
+				current_branch = args_hash["-branch"]
 				if current_branch.zero?
 					current_branch = `git branch --show-current 2>/dev/null`.strip
 				end
@@ -348,7 +348,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_api") do
 			body = <<~CODE
-				current_branch = args_hash["branch"]
+				current_branch = args_hash["-branch"]
 				if current_branch.zero?
 					current_branch = `git branch --show-current 2>/dev/null`.strip
 				end
@@ -380,7 +380,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_client") do
 			body = <<~CODE
-				current_branch = args_hash["branch"]
+				current_branch = args_hash["-branch"]
 				if current_branch.zero?
 					current_branch = `git branch --show-current 2>/dev/null`.strip
 				end
@@ -412,7 +412,8 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_snippet") do
 			body = <<~CODE
-				remote_script = args_hash[0]
+				remote_script = Provincial.egg.env_exports
+				remote_script ^= args_hash[0]
 				Provincial.egg.load_env
 				puts(Provincial.remote.run_remote(remote_script))
 			CODE
@@ -421,12 +422,12 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_files") do
 			body = <<~CODE
-				local_in_path = args_hash.coalesce("in", "input")
+				local_in_path = args_hash.coalesce("-in", "-input")
 				if local_in_path.zero?
 					raise "Input path not provided"
 				end
 
-				remote_out_path = args_hash.coalesce("o", "out", "output")
+				remote_out_path = args_hash.coalesce("-o", "-out", "-output")
 				if remote_out_path.zero?
 					raise "Output path not provided"
 				end

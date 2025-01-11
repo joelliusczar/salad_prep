@@ -25,14 +25,14 @@ end
 ARGV.clear
 
 if cmd == "spit_procs"
-	args_hash["local"] = true
+	args_hash["-local"] = true
 end
 
 
 gemfile do
 	source "https://rubygems.org"
 
-	prefer_local = ! args_hash["local"].nil?
+	prefer_local = ! args_hash["-local"].nil?
 	if ! prefer_local || cmd == "refresh_bins"
 		gem(
 			"salad_prep",
@@ -69,7 +69,7 @@ def show_commands
 end
 
 def bin_action_wrap(args_hash)
-	if args_hash.include?("testing")
+	if args_hash.include?("-testing")
 		Provincial.egg.run_test_block do
 			yield
 		end
