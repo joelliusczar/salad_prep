@@ -83,10 +83,10 @@ module SaladPrep
 				@actions_hash["<%= name %>"] = lambda do |args_hash|
 					cmd_name = "<%= name %>"
 					bin_action_wrap(args_hash) do
-						<% instance_eval(&block).split("\n").each do |l| %>
-						<%= l %>
-	
-						<% end %>
+					<% instance_eval(&block).split("\n").each do |l| %>
+					<%= l %>
+
+					<% end %>
 
 					end
 

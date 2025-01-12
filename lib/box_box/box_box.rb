@@ -182,7 +182,9 @@ module SaladPrep
 						
 						t.join
 						if t.value.exitstatus == 0
-							Toob.error&.puts(err_lines * "")
+							if err_lines.populated?
+								Toob.error&.puts(err_lines * "")
+							end
 							out_lines * ""
 						else
 							Toob.log&.puts(out_lines * "")
