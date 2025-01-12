@@ -78,6 +78,48 @@ def bin_action_wrap(args_hash)
 	end
 end
 
+def wrap_ruby(content)
+	body = <<~PRE
+		ruby <<'EOF'
+		require 'bundler/inline'
+		require 'bundler'
+
+		gemfile do
+			source "https://rubygems.org"
+
+			prefer_local = false
+			if ! prefer_local
+				gem(
+					"salad_prep",
+					git: "https://github.com/joelliusczar/salad_prep"
+				)
+			else
+				git_hash = `git ls-remote https://github.com/joelliusczar/salad_prep.git`
+					.split.first[0,12]
+				gem(
+					"salad_prep",
+					path: "\#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-\#{git_hash}"
+				)
+			end
+		end
+
+		require "salad_prep"
+		require "tempfile"
+		\#{Provincial.egg.app_lvl_definitions_script}
+		Provincial.egg.load_env
+		Tempfile.create do |tmp|
+			Provincial::Toob.register_sub(tmp) do
+				<%% content.split("\n").each do |l| %>
+				<%%= l %>
+
+				<%% end %>
+			end
+		end
+		EOF
+	PRE
+	ERB.new(body, trim_mode:">").result(binding)
+end
+
 if cmd == "-V"
 	puts(SaladPrep::Canary.version)
 elsif cmd == "-h"
