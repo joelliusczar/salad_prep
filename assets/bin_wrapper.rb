@@ -105,7 +105,7 @@ def wrap_ruby(content)
 
 		require "salad_prep"
 		require "tempfile"
-		\#{Provincial.egg.app_lvl_definitions_script}
+		#{Provincial.egg.app_lvl_definitions_script}
 		Provincial.egg.load_env
 		Tempfile.create do |tmp|
 			Provincial::Toob.register_sub(tmp) do

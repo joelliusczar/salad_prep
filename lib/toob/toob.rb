@@ -1,6 +1,10 @@
+require_relative "../extensions/string_ex"
+require_relative "../extensions/object_ex"
+
 module SaladPrep
 	module Toob
 		using StringEx
+		using ObjectEx
 
 		@env_prefix
 		@log = nil
@@ -8,17 +12,17 @@ module SaladPrep
 		@error = nil
 		@diag = nil
 		@huge = nil
-		@alt_outs
+		@alt_outs = []
 
 		def self.register_sub(alt_out)
 			raise "Cannot redirect to stdout" if alt_out == $stdout
 			if @alt_outs.nil?
-				@alt_outs = [$stdout]
+				@alt_outs = []
 			end
 			@alt_outs.push(alt_out)
 			result = yield
 			previous = @alt_outs.pop
-			if @alt_outs[-1] != previous
+			if @alt_outs[-1] != previous && @alt_outs[-1].embodied?
 				if ! previous.tty?
 					previous.rewind
 				end
@@ -30,7 +34,7 @@ module SaladPrep
 		def self.access(symbol)
 			value = instance_variable_get(symbol)
 			if @alt_outs.nil?
-				@alt_outs = [$stdout]
+				@alt_outs = []
 			end
 			if @alt_outs.size > 1
 				if value == $stdout
