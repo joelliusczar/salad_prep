@@ -78,18 +78,46 @@ module SaladPrep
 			FileUtils.chmod("a+x", file_path)
 		end
 
-		def ruby_prelude
-			<<~PRE
+		def wrap_ruby(content)
+			body = <<~PRE
+				ruby <<'EOF'
 				require 'bundler/inline'
+				require 'bundler'
 
 				gemfile do
 					source "https://rubygems.org"
 
-					gem "salad_prep", git: "https://github.com/joelliusczar/salad_prep"
+					prefer_local = false
+					if ! prefer_local
+						gem(
+							"salad_prep",
+							git: "https://github.com/joelliusczar/salad_prep"
+						)
+					else
+						git_hash = `git ls-remote https://github.com/joelliusczar/salad_prep.git`
+							.split.first[0,12]
+						gem(
+							"salad_prep",
+							path: "#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-#{git_hash}"
+						)
+					end
 				end
 
 				require "salad_prep"
+				require "tempfile"
+				\#{Provincial.egg.app_lvl_definitions_script}
+				Provincial.egg.load_env
+				Tempfile.create do |tmp|
+					Provincial::Toob.register_sub(tmp) do
+						<% content.split("\n").each do |l| %>
+						<%= l %>
+
+						<% end %>
+					end
+				end
+				EOF
 			PRE
+			ERB.new(body, trim_mode:">").result(binding)
 		end
 
 		def body_builder(name, &block)
@@ -138,10 +166,29 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= <<~REMOTE1
 					ruby <<'EOF1'
-						<% ruby_prelude.split("\n").each do |l| %>
-						<%= l %>
+						require 'bundler/inline'
+						require 'bundler'
 
-						<% end %>
+						gemfile do
+							source "https://rubygems.org"
+
+							prefer_local = false
+							if ! prefer_local
+								gem(
+									"salad_prep",
+									git: "https://github.com/joelliusczar/salad_prep"
+								)
+							else
+								git_hash = `git ls-remote https://github.com/joelliusczar/salad_prep.git`
+									.split.first[0,12]
+								gem(
+									"salad_prep",
+									path: "#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-#{git_hash}"
+								)
+							end
+						end
+
+						require "salad_prep"
 
 						egg = SaladPrep::Egg.new(
 							project_name_0: "<%= @egg.project_name_0 %>",
@@ -229,20 +276,11 @@ module SaladPrep
 
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
-				remote_script ^= <<~REMOTE
-					ruby <<'EOF'
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
-
-					<% end %>
-
-					\#{Provincial.egg.app_lvl_definitions_script}
-					Provincial.egg.load_env
+				remote_script ^= wrap_ruby <<~REMOTE
 					out_path = Provincial.dbass.backup_db(
 						backup_lvl: '\#{args_hash["-backuplvl"]}'
 					)
 					puts(out_path) #doesn't print to screen. This is returned
-					EOF
 				REMOTE
 	
 				remote_out_path = Provincial.remote.run_remote(remote_script).chomp
@@ -327,18 +365,9 @@ module SaladPrep
 				return unless Provincial.remote.pre_deployment_check(current_branch:)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
-				remote_script ^= <<~REMOTE
-					ruby <<'EOF'
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
-
-					<% end %>
-
-					require "salad_prep"
-					\#{Provincial.egg.app_lvl_definitions_script}
+				remote_script ^= wrap_ruby <<~REMOTE
 					Provincial.box_box.setup_build
 					Provincial.installion.install_dependencies
-					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE
@@ -359,18 +388,9 @@ module SaladPrep
 				)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
-				remote_script ^= <<~REMOTE
-					ruby <<'EOF'
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
-
-					<% end %>
-
-					\#{Provincial.egg.app_lvl_definitions_script}
-					Provincial.egg.load_env
+				remote_script ^= wrap_ruby <<~REMOTE
 					Provincial.box_box.setup_build
 					Provincial.api_launcher.startup_api
-					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE
@@ -391,18 +411,9 @@ module SaladPrep
 				)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
-				remote_script ^= <<~REMOTE
-					ruby <<'EOF'
-					<% ruby_prelude.split("\n").each do |l| %>
-					<%= l %>
-
-					<% end %>
-
-					\#{Provincial.egg.app_lvl_definitions_script}
-					Provincial.egg.load_env
+				remote_script ^= wrap_ruby <<~REMOTE
 					Provincial.box_box.setup_build
 					Provincial.client_launcher.setup_client
-					EOF
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE

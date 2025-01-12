@@ -166,7 +166,7 @@ module SaladPrep
 								i.write(in_s)
 								i.close
 							end
-						end					
+						end
 					
 						Thread.new do
 							until (line = o.gets).nil?
