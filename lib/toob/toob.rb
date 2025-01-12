@@ -36,7 +36,7 @@ module SaladPrep
 			if @alt_outs.nil?
 				@alt_outs = []
 			end
-			if @alt_outs.size > 1
+			if @alt_outs.populated?
 				if value == $stdout
 					@alt_outs[-1]
 				else
