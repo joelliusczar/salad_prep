@@ -141,7 +141,7 @@ module SaladPrep
 									.split.first[0,12]
 								gem(
 									"salad_prep",
-									path: "\#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-\#{git_hash}"
+									path: "\\\#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-\\\#{git_hash}"
 								)
 							end
 						end

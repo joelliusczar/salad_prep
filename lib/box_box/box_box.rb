@@ -168,19 +168,21 @@ module SaladPrep
 							end
 						end
 					
-						Thread.new do
+						ot = Thread.new do
 							until (line = o.gets).nil?
 								out_lines.push(line)
 							end
 						end
 					
-						Thread.new do
+						et =Thread.new do
 							until (line = e.gets).nil?
 								err_lines.push(line)
 							end
 						end
 						
 						t.join
+						ot.join
+						et.join
 						if t.value.exitstatus == 0
 							if err_lines.populated?
 								Toob.error&.puts(err_lines * "")
