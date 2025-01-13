@@ -7,7 +7,7 @@ require_relative "../extensions/array_ex"
 require_relative "../extensions/string_ex"
 require_relative "../file_herder/file_herder"
 require_relative "./libby"
-require_relative "./toob/toob"
+require_relative "../toob/toob"
 
 module SaladPrep
 	using ArrayEx
