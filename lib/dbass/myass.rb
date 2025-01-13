@@ -117,7 +117,7 @@ module SaladPrep
 			IO.pipe do |r, w|
 				Thread.new do
 					until (line = file.gets).nil?
-						sandbox = "/*!999999\- enable the sandbox mode */"
+						sandbox = "/*!999999\\- enable the sandbox mode */"
 						if is_dump_broken && line.include?(sandbox)
 							next
 						end
