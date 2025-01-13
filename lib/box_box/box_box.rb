@@ -212,7 +212,7 @@ module SaladPrep
 					exception: true
 				)
 				match = result&.match(/pid=(\d+)/)
-				procId = match.embodied? match[1] : nil
+				procId = match.embodied? ? match[1] : nil
 				if procId.populated?
 					Process.kill(15, procId.to_i)
 				end
