@@ -37,5 +37,9 @@ module SaladPrep
 			raise "run_one_off not implemented"
 		end
 
+		def version
+			raise "version not implemented"
+		end
+
 	end
 end

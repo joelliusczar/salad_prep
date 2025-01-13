@@ -5,10 +5,12 @@ require_relative "../arg_checker/arg_checker"
 require_relative "../box_box/enums"
 require_relative "./dbass"
 require_relative "./enums"
+require_relative "../extensions/array_ex"
 require_relative "../extensions/string_ex"
 
 module SaladPrep
 	class MyAss < DbAss
+		using ArrayEx
 		using StringEx
 
 		def connection(user, pw, db)
@@ -76,16 +78,76 @@ module SaladPrep
 			dest
 		end
 
+		def is_dump_broken
+			installed_version = version
+			minor = installed_version[1]
+			patch = installed_version[2]
+			if installed_version[0] < 10
+				return true
+			end
+			if installed_version[0] == 10
+				if installed_version.le([10,5,25])
+					return true
+				end
+				if minor == 6 && patch < 18
+					return true
+				end
+				if minor == 11 && patch < 8
+					return true
+				end
+			end
+			if installed_version[0] == 11
+				if installed_version.le([11,0,6])
+					return true
+				end
+				if minor == 1 && patch < 5
+					return true
+				end
+				if minor == 2 && patch < 4
+					return true
+				end
+				if minor == 4 && patch < 2
+					return true
+				end
+			end
+			false
+		end
+
 		def run_one_off(file)
-			system(
+			IO.pipe do |r, w|
+				Thread.new do
+					until (line = file.gets).nil?
+						sandbox = "/*!999999\- enable the sandbox mode */"
+						if is_dump_broken && line.include?(sandbox)
+							next
+						end
+						w.write(line)
+					end
+					w.close
+				end
+				owner_key = @egg.db_owner_key(prefer_keys_file: false)
+				system(
+					"mysql",
+					"-u",
+					@egg.db_owner_name,
+					"-p#{owner_key}",
+					@egg.db_name,
+					in: r
+				)
+			end
+		end
+
+		def version
+			owner_key = @egg.db_owner_key(prefer_keys_file: false)
+			version_str = BoxBox.run_and_get(
 				"mysql",
 				"-u",
 				@egg.db_owner_name,
-				"-p",
-				@egg.db_owner_key,
-				@egg.db_name,
-				in: file
+				"-p#{owner_key}",
+				in_s: "SELECT version()",
+				exception: true
 			)
+			version_str.match(/(\d+)\.(\d+)\.(\d+)/).to_a.drop(1).map(&:to_i)
 		end
 
 	end

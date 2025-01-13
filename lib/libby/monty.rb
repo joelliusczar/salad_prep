@@ -3,11 +3,13 @@ require "tempfile"
 require_relative "../arg_checker/arg_checker"
 require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
+require_relative "../extensions/array_ex"
+require_relative "../extensions/string_ex"
 require_relative "../file_herder/file_herder"
 require_relative "./libby"
-require_relative "../extensions/string_ex"
 
 module SaladPrep
+	using ArrayEx
 	using StringEx
 
 	class Monty < Libby
@@ -101,7 +103,7 @@ module SaladPrep
 		def is_installed_version_good?
 			min_version = @min_version.split(".").take(2).map(&:to_i)
 			installed_version = python_version.take(2).map(&:to_i)
-			(installed_version <=> min_version) > -1
+			installed_version.ge(min_version)
 		end
 
 		def create_py_env_in_dir(env_root=nil)

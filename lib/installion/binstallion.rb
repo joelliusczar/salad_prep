@@ -278,13 +278,6 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd, :remote)
-		def_cmd("empty_dir") do
-			body = <<~CODE
-				SaladPrep::FileHerder.empty_dir(args_hash[0])
-			CODE
-		end
-
-		mark_for(:sh_cmd, :remote)
 		def_cmd("env_hash") do
 			body = <<~CODE
 				prefer_keys_file = args_hash[0] == "-key-file"
