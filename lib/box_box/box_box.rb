@@ -207,10 +207,11 @@ module SaladPrep
 
 		def self.kill_process_using_port(port)
 			if system("ss -V", out: File::NULL, err: File::NULL)
-				procId = run_and_get(
+				result = run_and_get(
 					"ss", "-lpn", "sport = :#{port}",
 					exception: true
 				)
+				procId = result&.match(/pid=(\d+)/)[1]
 				if procId.populated?
 					Process.kill(15, procId.to_i)
 				end
