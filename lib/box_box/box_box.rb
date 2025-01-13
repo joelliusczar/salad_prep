@@ -211,7 +211,8 @@ module SaladPrep
 					"ss", "-lpn", "sport = :#{port}",
 					exception: true
 				)
-				procId = result&.match(/pid=(\d+)/)[1]
+				match = result&.match(/pid=(\d+)/)
+				procId = match.embodied? match[1] : nil
 				if procId.populated?
 					Process.kill(15, procId.to_i)
 				end
