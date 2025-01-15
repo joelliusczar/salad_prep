@@ -20,6 +20,7 @@ module SaladPrep
 		end
 
 		def get_nginx_value(key = "conf-path")
+			BoxBox.process_path_append("/usr/sbin/")
 			output = `nginx -V 2>&1` 
 			output.split.find{|a| a =~ /--#{key}/}[/.*=(.*)/, 1]
 		end

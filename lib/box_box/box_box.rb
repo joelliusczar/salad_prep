@@ -133,6 +133,12 @@ module SaladPrep
 			end
 		end
 
+		def self.process_path_append(segment)
+			if ! ENV["PATH"].include?(segment)
+				ENV["PATH"] += ":#{segment}"
+			end
+		end
+
 		def self.path_append(segment)
 			profile = File.join(
 				ENV["HOME"],
