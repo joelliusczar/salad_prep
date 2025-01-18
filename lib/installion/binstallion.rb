@@ -84,6 +84,7 @@ module SaladPrep
 				@actions_hash["<%= name %>"] = lambda do |args_hash|
 					cmd_name = "<%= name %>"
 					need_sudo = <%= need_sudo %>
+
 					if need_sudo
 						if Process.uid != 0
 							raise "This proc is required to be run as root"
