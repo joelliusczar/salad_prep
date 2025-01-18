@@ -68,14 +68,17 @@ module SaladPrep
 			File.open(provincial_path, "w").write(
 				File.open(@template_context_path).read
 			)
+			script_name = "#{@egg.env_prefix.downcase}_dev"
 			file_path = File.join(
 				@egg.dev_ops_bin,
-				"#{@egg.env_prefix.downcase}_dev"
+				script_name
 			)
 			File.open(file_path, "w").write(
 				full_proc_file_content
 			)
 			FileUtils.chmod("a+x", file_path)
+			link_path = File.join("/usr/bin/", script_name)
+			FileUtils.ln_sf(file_path, link_path)
 		end
 
 		def body_builder(name, &block)
