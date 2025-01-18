@@ -53,7 +53,9 @@ module SaladPrep
 					#some os'es are finicky about creating directories at the root lvl
 					#even with sudo, so we're not going to even try
 					#we'll just create missing dir in $sitesFolderPath folder
-					FileUtils.mkdir_p(abs_path)
+					BoxBox.run_root_block do
+						FileUtils.mkdir_p(abs_path)
+					end
 				end
 				return abs_path
 			end
@@ -67,7 +69,9 @@ module SaladPrep
 				unless /[a-zA-Z0-9\-_\.]+-local\.[a-zA-Z0-9\.]/ =~ domain
 					raise "#{domain} is not a valid local url"
 				end
-				File.open("/etc/hosts", "a").write("127.0.0.1\t#{domain}\n")
+				BoxBox.run_root_block do
+					File.open("/etc/hosts", "a").write("127.0.0.1\t#{domain}\n")
+				end
 			end
 		end
 
@@ -209,11 +213,13 @@ module SaladPrep
 				certs_matching_name(common_name).each do |cert|
 					sha_256_value = extract_sha256_from_cert(cert)
 					if is_cert_expired(cert)
-						system(
-							"security", "delete-certificate",
-							"-z", sha_256_value, "-t", keychain_osx,
-							exception: true
-						)
+						BoxBox.run_root_block do
+							system(
+								"security", "delete-certificate",
+								"-z", sha_256_value, "-t", keychain_osx,
+								exception: true
+							)
+						end
 					end
 				end
 			when Enums::BoxOSes::LINUX
@@ -223,11 +229,13 @@ module SaladPrep
 						if cert_name.zero?
 							cert_name = common_name
 						end
-						FileUtils.rm(Dir.glob("#{cert_dir}/#{cert_name}*.crt"))
-						system(
-							"update-ca-certificates",
-							exception: true
-						)
+						BoxBox.run_root_block do
+							FileUtils.rm(Dir.glob("#{cert_dir}/#{cert_name}*.crt"))
+							system(
+								"update-ca-certificates",
+								exception: true
+							)
+						end
 					end
 				end
 			else
@@ -259,7 +267,9 @@ module SaladPrep
 				}
 			}
 			POLICY
-			File.open(policy_file, "w").write(content)
+			BoxBox.run_root_block do
+				File.open(policy_file, "w").write(content)
+			end
 		end
 
 		def get_trusted_by_firefox_json_with_added_cert(
@@ -285,11 +295,13 @@ module SaladPrep
 			policy_file="/usr/share/firefox-esr/distribution/policies.json"
 			if system("firefox", "-v", err: File::NULL)
 				if File.size?(policy_file)
-					content = get_trusted_by_firefox_json_with_added_cert(
-						public_key_file_path,
-						File.open(policy_file).read
-					)
-					File.open(policy_file, "w").write(content)
+					BoxBox.run_root_block do
+						content = get_trusted_by_firefox_json_with_added_cert(
+							public_key_file_path,
+							File.open(policy_file).read
+						)
+						File.open(policy_file, "w").write(content)
+					end
 				else
 					create_firefox_cert_policy_file(
 						public_key_file_path,
@@ -332,20 +344,24 @@ module SaladPrep
 		end
 
 		def install_local_cert_osx(public_key_file_path)
-			system(
-				"security", "add-trusted-cert", "-p",
-				"ssl", "-d", "-r", "trustRoot",
-				"-k", keychain_osx, public_key_file_path,
-				exception: true
-			)
+			BoxBox.run_root_block do
+				system(
+					"security", "add-trusted-cert", "-p",
+					"ssl", "-d", "-r", "trustRoot",
+					"-k", keychain_osx, public_key_file_path,
+					exception: true
+				)
+			end
 		end
 
 		def install_local_cert_debian(public_key_file_path)
-			FileUtils.cp(public_key_file_path, "/usr/local/share/ca-certificates")
-			system(
-				"sudo", "update-ca-certificates",
-				exception: true
-			)
+			BoxBox.run_root_block do
+				FileUtils.cp(public_key_file_path, "/usr/local/share/ca-certificates")
+				system(
+					"sudo", "update-ca-certificates",
+					exception: true
+				)
+			end
 		end
 
 		def setup_ssl_cert_local(
@@ -442,17 +458,19 @@ module SaladPrep
 		
 		def enable_nginx_include(conf_dir_include, nginx_conf_path)
 			escaped_guess = Regexp.new(conf_dir_include.gsub(/\*/,"\\*"))
-			File.open(nginx_conf_path, "r+") do |f|
-				updated = f.readlines.map do |l|
-					if %r{#{escaped_guess}} =~ l
-						l.gsub(/^[ \t]*#/,"")
-					else
-						l
-					end
-				end * ""
-				f.truncate(0)
-				f.rewind
-				f.write(updated)
+			BoxBox.run_root_block do
+				File.open(nginx_conf_path, "r+") do |f|
+					updated = f.readlines.map do |l|
+						if %r{#{escaped_guess}} =~ l
+							l.gsub(/^[ \t]*#/,"")
+						else
+							l
+						end
+					end * ""
+					f.truncate(0)
+					f.rewind
+					f.write(updated)
+				end
 			end
 		end
 		
@@ -471,21 +489,23 @@ module SaladPrep
 		end
 
 		def update_nginx_conf(app_conf_path, port)
-			File.open(app_conf_path, "w") do |f|
-				content = @resourcerer::nginx_template
-				content.gsub!(
-					"<CLIENT_DEST>",
-					@egg.client_dest
-				)
-				content.gsub!("<SERVER_NAME>", @egg.domain_name)
-				content.gsub!("<API_PORT>", port.to_s)
-				content.gsub!("<API_VERSION>", @egg.api_version)
-				if @egg.is_local?
-					set_local_nginx_app_conf!(content)
-				else
-					set_deployed_nginx_app_conf!(content)
+			BoxBox.run_root_block do
+				File.open(app_conf_path, "w") do |f|
+					content = @resourcerer::nginx_template
+					content.gsub!(
+						"<CLIENT_DEST>",
+						@egg.client_dest
+					)
+					content.gsub!("<SERVER_NAME>", @egg.domain_name)
+					content.gsub!("<API_PORT>", port.to_s)
+					content.gsub!("<API_VERSION>", @egg.api_version)
+					if @egg.is_local?
+						set_local_nginx_app_conf!(content)
+					else
+						set_deployed_nginx_app_conf!(content)
+					end
+					f.write(content)
 				end
-				f.write(content)
 			end
 		end
 
@@ -512,7 +532,9 @@ module SaladPrep
 			setup_ssl_cert_nginx
 			enable_nginx_include(conf_dir_include, nginx_conf_path)
 			update_nginx_conf("#{conf_dir}/#{@egg.app}.conf", port)
-			FileUtils.rm_f(File.join(conf_dir, "default"))
+			BoxBox.run_root_block do
+				FileUtils.rm_f(File.join(conf_dir, "default"))
+			end
 			restart_nginx
 		end
 

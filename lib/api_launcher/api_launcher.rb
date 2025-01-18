@@ -14,7 +14,9 @@ module SaladPrep
 
 		def setup_api_dir
 			unless File.directory?(@egg.api_dest)
-				FileUtils.mkdir_p(@egg.api_dest)
+				BoxBox.run_root_block do
+					FileUtils.mkdir_p(@egg.api_dest)
+				end
 			end
 		end
 

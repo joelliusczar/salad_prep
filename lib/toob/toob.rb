@@ -31,6 +31,26 @@ module SaladPrep
 			result
 		end
 
+		def self.contain_outs
+			if @alt_outs.populated?
+				if @contain_count.nil?
+					@contain_count = 1
+				else
+					@contain_count += 1
+				end
+				old_out = $stdout
+				$stdout = @alt_outs[-1]
+				result = yield
+				@contain_count -= 1
+				if @contain_count == 0
+					$stdout = old_out
+				end
+				result
+			else
+				yield
+			end
+		end
+
 		def self.access(symbol)
 			value = instance_variable_get(symbol)
 			if @alt_outs.nil?

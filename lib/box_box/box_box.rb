@@ -1,5 +1,6 @@
-require "tempfile"
+require "etc"
 require "open3"
+require "tempfile"
 require_relative "./enums"
 require_relative "../extensions/string_ex"
 require_relative "../extensions/object_ex"
@@ -10,8 +11,22 @@ module SaladPrep
 		using StringEx
 		using ObjectEx
 
+		ROOT_UID = 0
+
 		def initialize(egg)
 			@egg = egg
+		end
+
+		def self.login_name
+			ENV["SUDO_USER"] || Etc.getlogin
+		end
+
+		def self.login_id
+			ENV["SUDO_UID"] || Process::UID.from_name(login_name)
+		end
+
+		def self.login_group
+			ENV["SUDO_GID"] || Etc.getpwuid(login_id)
 		end
 
 		def self.which(cmd)
@@ -125,11 +140,13 @@ module SaladPrep
 		end
 
 		def self.restart_service(service)
-			if system("systemctl", "is-active", --"quiet", service)
-				system("systemctl", "restart", service, exception: true)
-			else
-				system("systemctl", "enable", service, exception: true)
-				system("systemctl", "start", service, exception: true)
+			run_root_block do
+				if system("systemctl", "is-active", --"quiet", service)
+					system("systemctl", "restart", service, exception: true)
+				else
+					system("systemctl", "enable", service, exception: true)
+					system("systemctl", "start", service, exception: true)
+				end
 			end
 		end
 
@@ -223,16 +240,37 @@ module SaladPrep
 					Process.kill(15, procId.to_i)
 				end
 			elsif system("lsof -v", out: File::NULL, err: File::NULL)
-				procId = run_and_get(
-					"lsof", "-i", ":#{port}",
-					exception: true
-				).split("\n")[1].split[1]
-				if procId.populated?
-					Process.kill(15, procId.to_i)
+				run_root_block do
+					procId = run_and_get(
+						"lsof", "-i", ":#{port}",
+						exception: true
+					).split("\n")[1].split[1]
+					if procId.populated?
+						Process.kill(15, procId.to_i)
+					end
 				end
 			else
 				raise "Script not wired up to be able to kill process at port: #{port}"
 			end
+		end
+
+		def self.run_root_block
+			if Process.uid != ROOT_UID
+				raise "This section requires script to be run as root"
+			end
+			if @root_count.nil?
+				@root_count = 1
+			else
+				@root_count += 1
+			end
+			Process::Sys.seteuid(ROOT_UID)
+			result = yield
+			@root_count -= 1
+			if @root_count == 0
+				Process::Sys.seteuid(login_id)
+				Process::Sys.setegid(Etc.getpwuid(login_id).gid)
+			end
+			result
 		end
 
 		def setup_app_directories

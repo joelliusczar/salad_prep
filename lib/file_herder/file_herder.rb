@@ -54,13 +54,52 @@ module SaladPrep
 			return results
 		end
 
+		def self.cp_contents(src_dir, dest_dir)
+			begin
+				Toob.contain_outs do
+					FileUtils.cp_r("#{src_dir}/.", dest_dir, verbose:true)
+				end
+			rescue Errno::EACCES
+				BoxBox.run_root_block do
+					Toob.contain_outs do
+						FileUtils.cp_r("#{src_dir}/.", dest_dir, verbose:true)
+					end
+				end
+			end
+		end
+
+		def self.unroot(target_dir)
+			begin
+				Toob.contain_outs do
+					FileUtils.chown_R(
+						BoxBox.login_name,
+						BoxBox.login_group,
+						target_dir,
+						verbose: true
+					)
+				end
+			rescue Errno::EACCES
+				BoxBox.run_root_block do
+					Toob.contain_outs do
+						FileUtils.chown_R(
+							BoxBox.login_name,
+							BoxBox.login_group,
+							target_dir,
+							verbose: true
+						)
+					end
+				end
+			end
+		end
+
 		def self.copy_dir(src_dir, dest_dir)
 			Toob.log&.puts("copying from #{src_dir} to #{dest_dir}")
 			if ! are_paths_allowed("#{src_dir}/.",dest_dir)
 				raise "src_dir: #{src_dir} or dest_dir:#{dest_dir} have errors"
 			end
 			empty_dir(dest_dir)
-			FileUtils.cp_r("#{src_dir}/.", dest_dir, verbose:true)
+			cp_contents(src_dir, dest_dir)
+			unroot(dest_dir)
 			Toob.log&.puts("done copying dir from #{src_dir} to #{dest_dir}")
 		end
 
