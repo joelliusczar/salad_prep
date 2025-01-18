@@ -79,7 +79,7 @@ module SaladPrep
 		end
 
 		def body_builder(name, &block)
-			need_sudo = method_attrs(name).include?(:sudo) ? "true" : "false"
+			need_sudo = method_attrs(name.to_sym).include?(:sudo) ? "true" : "false"
 			body = <<~CODE
 				@actions_hash["<%= name %>"] = lambda do |args_hash|
 					cmd_name = "<%= name %>"
