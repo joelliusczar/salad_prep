@@ -25,8 +25,12 @@ module SaladPrep
 			ENV["SUDO_UID"] || Process::UID.from_name(login_name)
 		end
 
-		def self.login_group
-			ENV["SUDO_GID"] || Etc.getpwuid(login_id)
+		def self.login_group_id
+			ENV["SUDO_GID"] || Etc.getpwuid(login_id).gid
+		end
+
+		def self.login_group_name
+			Etc.getgrgid(login_group_id).name
 		end
 
 		def self.which(cmd)
@@ -142,10 +146,10 @@ module SaladPrep
 		def self.restart_service(service)
 			run_root_block do
 				if system("systemctl", "is-active", --"quiet", service)
-					system("systemctl", "restart", service, exception: true)
+					system("sudo", "systemctl", "restart", service, exception: true)
 				else
-					system("systemctl", "enable", service, exception: true)
-					system("systemctl", "start", service, exception: true)
+					system("sudo", "systemctl", "enable", service, exception: true)
+					system("sudo", "systemctl", "start", service, exception: true)
 				end
 			end
 		end
@@ -250,7 +254,7 @@ module SaladPrep
 			elsif system("lsof -v", out: File::NULL, err: File::NULL)
 				run_root_block do
 					procId = run_and_get(
-						"lsof", "-i", ":#{port}",
+						"sudo","lsof", "-i", ":#{port}",
 						exception: true
 					).split("\n")[1].split[1]
 					if procId.populated?
@@ -263,22 +267,8 @@ module SaladPrep
 		end
 
 		def self.run_root_block
-			if Process.uid != ROOT_UID
-				raise "This section requires script to be run as root"
-			end
-			if @root_count.nil?
-				@root_count = 1
-			else
-				@root_count += 1
-			end
-			Process::Sys.seteuid(ROOT_UID)
-			result = yield
-			@root_count -= 1
-			if @root_count == 0
-				Process::Sys.seteuid(login_id)
-				Process::Sys.setegid(Etc.getpwuid(login_id).gid)
-			end
-			result
+			#this used to do more
+			yield
 		end
 
 		def setup_app_directories

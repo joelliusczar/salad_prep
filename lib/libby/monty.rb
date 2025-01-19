@@ -183,7 +183,7 @@ module SaladPrep
 		def replace_lib_files
 			regen_lib_supports
 			env_root = File.join(@egg.app_root, @egg.app_trunk)
-			FileHerder.copy_dir(
+			FileHerder.cp_r(
 				@egg.lib_src,
 				libs_dest_dir(env_root) 
 			)
