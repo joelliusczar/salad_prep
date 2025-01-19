@@ -310,11 +310,17 @@ module SaladPrep
 			CODE
 		end
 
-		mark_for(:sh_cmd, :remote)
+		mark_for(:sh_cmd, :remote, :sudo)
 		def_cmd("install") do
 			body = <<~CODE
-				Provincial.installion.root_install
 				Provincial.installion.install_dependencies
+			CODE
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("root_bootstrap") do
+			body = <<~CODE
+				Provincial.installion.root_install
 			CODE
 		end
 
