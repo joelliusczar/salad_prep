@@ -313,6 +313,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("install") do
 			body = <<~CODE
+				Provincial.installion.root_install
 				Provincial.installion.install_dependencies
 			CODE
 		end

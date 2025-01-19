@@ -15,6 +15,15 @@ module SaladPrep
 			raise "install_dependencies not implemented"
 		end
 
+		def root_install
+			BoxBox.run_and_get(
+				"sudo",
+				"bash",
+				"-sl",
+				in_s: Resorcerer.bootstrap_install
+			)
+		end
+
 		def self.curl
 			system("curl -V", exception: true)
 		end
