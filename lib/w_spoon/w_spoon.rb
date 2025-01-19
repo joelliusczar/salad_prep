@@ -74,7 +74,7 @@ module SaladPrep
 					system(
 						"sudo",
 						"sh",
-						"-c"
+						"-c",
 						"printf '127.0.0.1\t#{domain}\n'",
 						exception: true
 					)
@@ -280,7 +280,7 @@ module SaladPrep
 				System(
 					"sudo",
 					"sh",
-					"-c"
+					"-c",
 					"echo '#{content}' > #{policy_file}",
 					exception: true
 				)
@@ -318,7 +318,7 @@ module SaladPrep
 						System(
 							"sudo",
 							"sh",
-							"-c"
+							"-c",
 							"echo '#{content}' > #{policy_file}",
 							exception: true
 						)
