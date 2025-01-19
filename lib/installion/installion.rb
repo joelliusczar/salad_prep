@@ -16,7 +16,7 @@ module SaladPrep
 		end
 
 		def root_install
-			BoxBox.run_and_get(
+			BoxBox.run_and_put(
 				"sudo",
 				"bash",
 				"-sl",
