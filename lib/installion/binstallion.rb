@@ -308,13 +308,6 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd)
-		def_cmd("root_bootstrap") do
-			body = <<~CODE
-				Provincial.installion.root_install()
-			CODE
-		end
-
-		mark_for(:sh_cmd)
 		def_cmd("deploy_install") do
 			body = <<~CODE
 				current_branch = args_hash["-branch"]

@@ -12,7 +12,6 @@ module SaladPrep
 				File.join(@egg.client_src, "build/"),
 				@egg.client_dest
 			)
-			end
 		end
 
 	end
