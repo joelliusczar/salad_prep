@@ -320,7 +320,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("root_bootstrap") do
 			body = <<~CODE
-				Provincial.installion.root_install(root: true)
+				Provincial.installion.root_install()
 			CODE
 		end
 

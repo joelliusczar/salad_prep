@@ -20,7 +20,7 @@ module SaladPrep
 				"sudo",
 				"bash",
 				"-sl",
-				in_s: Resorcerer.bootstrap_install,
+				in_s: Resorcerer.bootstrap_install(root: true),
 				exception: true
 			)
 		end
