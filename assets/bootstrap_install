@@ -1,7 +1,3 @@
-echo "SSH connection? ${SSH_CONNECTION}"
-if [ -z "$SSH_CONNECTION" ]; then
-	exit
-fi
 
 . "$HOME"/.profile
 
