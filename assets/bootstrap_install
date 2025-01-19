@@ -149,7 +149,7 @@ if ! asdf list ruby 3.3.5 >/dev/null 2>&1; then
 fi &&
 
 echo '##### asdf set local ruby version #####' &&
-asdf local ruby 3.3.5
+asdf <%= root ? "global" : "local" %> ruby 3.3.5
 
 
 echo 'The end'

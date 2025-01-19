@@ -13,8 +13,15 @@ module SaladPrep
 			File.open(resource_path(path)).read
 		end
 
-		def self.bootstrap_install
+		def self.bootstrap_install_template
 			open_text("#{ASSETS_DIR}bootstrap_install")
+		end
+
+		def self.bootstrap_install(root: false)
+			template = ERB.new(bootstrap_install_template, trim_mode:"<>")
+			template.result_with_hash({
+				root: root
+			})
 		end
 
 		def self.nginx_template
