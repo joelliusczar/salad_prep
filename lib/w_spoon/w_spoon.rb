@@ -237,8 +237,13 @@ module SaladPrep
 						if cert_name.zero?
 							cert_name = common_name
 						end
+						cert_name.domain_name_check
 						BoxBox.run_root_block do
-							FileUtils.rm(Dir.glob("#{cert_dir}/#{cert_name}*.crt"))
+							system(
+								"sudo",
+								"rm",
+								"#{cert_dir}/#{cert_name}*.crt"
+							)
 							system(
 								"sudo",
 								"update-ca-certificates",

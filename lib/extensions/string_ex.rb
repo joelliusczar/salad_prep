@@ -71,6 +71,12 @@ module SaladPrep
 				start_with?("~") ? sub("~", ENV["HOME"]) : self
 			end
 
+			def domain_name_check
+				if ! (/[a-zA-Z0-9_\-\.]+/ =~ self)
+					raise "domain_name #{self} is using illegal characters"
+				end
+			end
+
 		end
 
 		refine Symbol do
