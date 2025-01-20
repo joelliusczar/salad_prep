@@ -302,8 +302,8 @@ module SaladPrep
 				installed.push(public_key_file_path)
 			end
 			pem_file = public_key_file_path.gsub(/.crt$/, ".pem")
-			unless installed.include?("/etc/ssl/certs/#{pemFile}")
-				installed.push("/etc/ssl/certs/#{pemFile}")
+			unless installed.include?("/etc/ssl/certs/#{pem_file}")
+				installed.push("/etc/ssl/certs/#{pem_file}")
 			end
 			config.to_json
 		end
