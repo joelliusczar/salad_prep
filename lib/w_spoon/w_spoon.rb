@@ -282,7 +282,7 @@ module SaladPrep
 			}
 			POLICY
 			BoxBox.run_root_block do
-				System(
+				system(
 					"sudo",
 					"sh",
 					"-c",
@@ -320,7 +320,7 @@ module SaladPrep
 							public_key_file_path,
 							File.open(policy_file).read
 						)
-						System(
+						system(
 							"sudo",
 							"sh",
 							"-c",
