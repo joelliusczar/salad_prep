@@ -213,10 +213,13 @@ module SaladPrep
 			body = <<~CODE
 				root_script = Provincial.egg.env_exports
 				root_script ^= "asdf shell ruby <%= @ruby_version %>"
-				root_script ^= wrap_ruby <<~ROOT
+				root_script ^= wrap_ruby(<<~ROOT, sudo:true, redirect_outs: false)
 					Provincial.box_box.setup_build
 					Provincial.api_launcher.startup_api
 				ROOT
+
+				system(root_script, exception: true)
+
 			CODE
 		end
 
