@@ -78,9 +78,9 @@ def bin_action_wrap(args_hash)
 	end
 end
 
-def wrap_ruby(content)
+def wrap_ruby(content, sudo: false, redirect_outs: true)
 	body = <<~PRE
-		ruby <<'EOF'
+		<%%= sudo ? "sudo " : "" %>ruby <<'EOF'
 		require 'bundler/inline'
 		require 'bundler'
 
@@ -107,6 +107,7 @@ def wrap_ruby(content)
 		require "tempfile"
 		#{Provincial.egg.app_lvl_definitions_script}
 		Provincial.egg.load_env
+		<%% if redirect_outs %>
 		Tempfile.create do |tmp|
 			Provincial::Toob.register_sub(tmp) do
 				<%% content.split("\n").each do |l| %>
@@ -115,6 +116,12 @@ def wrap_ruby(content)
 				<%% end %>
 			end
 		end
+		<%% else %>
+		<%% content.split("\n").each do |l| %>
+		<%%= l %>
+
+		<%% end %>
+		<%% end %>
 		EOF
 	PRE
 	ERB.new(body, trim_mode:">").result(binding)

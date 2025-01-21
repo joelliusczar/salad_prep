@@ -83,7 +83,7 @@ module SaladPrep
 					Toob.contain_outs do
 						FileUtils.chown_R(
 							BoxBox.login_name,
-							BoxBox.login_group,
+							BoxBox.login_group_name,
 							target_dir,
 							verbose: true
 						)

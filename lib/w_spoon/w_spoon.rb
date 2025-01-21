@@ -266,7 +266,7 @@ module SaladPrep
 						"ImportEnterpriseRoots": true,
 						"Install": [
 							"#{public_key_file_path}",
-							"/etc/ssl/certs/#{pemFile}"
+							"/etc/ssl/certs/#{pem_file}"
 						]
 					}
 				}
