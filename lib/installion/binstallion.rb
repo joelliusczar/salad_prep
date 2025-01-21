@@ -77,13 +77,23 @@ module SaladPrep
 				full_proc_file_content
 			)
 			FileUtils.chmod("a+x", script_path)
+			link_path = File.join("/usr/bin/", script_name)
+			system("sudo", "ln", "-sf", script_path, link_path)
 		end
 
 		def body_builder(name, &block)
+			need_sudo = method_attrs(name.to_sym).include?(:sudo) ? "true" : "false"
 			body = <<~CODE
 				@actions_hash["<%= name %>"] = lambda do |args_hash|
 					cmd_name = "<%= name %>"
+					need_sudo = <%= need_sudo %>
 
+					if need_sudo
+						if Process.uid != 0
+							raise "This proc is required to be run as root"
+						end
+						Process::Sys.seteuid(Provincial.egg.login_id)
+					end
 					bin_action_wrap(args_hash) do
 					<% instance_eval(&block).split("\n").each do |l| %>
 					<%= l %>

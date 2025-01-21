@@ -15,7 +15,7 @@ module SaladPrep
 		def setup_api_dir
 			unless File.directory?(@egg.api_dest)
 				BoxBox.run_root_block do
-					FileHerder.mkdir(@egg.api_dest)
+					FileUtils.mkdir_p(@egg.api_dest)
 				end
 			end
 		end
@@ -25,14 +25,14 @@ module SaladPrep
 		end
 
 		def copy_api_files
-			FileHerder::cp_r(
+			FileHerder::copy_dir(
 				@egg.api_src, 
 				@egg.api_dest
 			)
 		end
 
 		def copy_support_files
-			FileHerder::cp_r(
+			FileHerder::copy_dir(
 				@egg.templates_src, 
 				@egg.template_dest
 			)

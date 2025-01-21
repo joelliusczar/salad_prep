@@ -8,10 +8,14 @@ module SaladPrep
 		end
 
 		def setup_client()
-			FileHerder.cp_r(
-				File.join(@egg.client_src, "build/"),
-				@egg.client_dest
-			)
+			FileHerder.empty_dir(@egg.client_dest)
+			BoxBox.run_root_block do
+				FileUtils.cp_r(
+					File.join(@egg.client_src, "build/"),
+					@egg.client_dest
+				)
+				FileHerder.unroot(@egg.client_dest)
+			end
 		end
 
 	end

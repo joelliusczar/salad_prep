@@ -62,30 +62,9 @@ module SaladPrep
 			rescue Errno::EACCES
 				BoxBox.run_root_block do
 					Toob.contain_outs do
-						system(
-							"sudo", 
-							"cp", 
-							"-rv", 
-							"#{src_dir}/.", 
-							dest_dir, 
-							exception: true
-						)
+						FileUtils.cp_r("#{src_dir}/.", dest_dir, verbose:true)
 					end
 				end
-			end
-		end
-
-		def self.mkdir(new_dir)
-			begin
-				FileUtils.mkdir_p(new_dir)
-			rescue Errno::EACCES
-				system(
-					"sudo",
-					"mkdir",
-					"-p",
-					new_dir,
-					exception: true
-				)
 			end
 		end
 
@@ -102,19 +81,18 @@ module SaladPrep
 			rescue Errno::EACCES
 				BoxBox.run_root_block do
 					Toob.contain_outs do
-						system(
-							"sudo",
-							"chown",
-							"-Rv",
-							"#{BoxBox.login_name}:",
-							target_dir
+						FileUtils.chown_R(
+							BoxBox.login_name,
+							BoxBox.login_group,
+							target_dir,
+							verbose: true
 						)
 					end
 				end
 			end
 		end
 
-		def self.cp_r(src_dir, dest_dir)
+		def self.copy_dir(src_dir, dest_dir)
 			Toob.log&.puts("copying from #{src_dir} to #{dest_dir}")
 			if ! are_paths_allowed("#{src_dir}/.",dest_dir)
 				raise "src_dir: #{src_dir} or dest_dir:#{dest_dir} have errors"

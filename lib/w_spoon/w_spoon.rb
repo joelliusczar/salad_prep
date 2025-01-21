@@ -8,7 +8,6 @@ require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
 require_relative "../egg/egg"
 require_relative "../extensions/string_ex"
-require_relative "../file_herder/file_herder"
 
 module SaladPrep
 	using StringEx
@@ -55,7 +54,7 @@ module SaladPrep
 					#even with sudo, so we're not going to even try
 					#we'll just create missing dir in $sitesFolderPath folder
 					BoxBox.run_root_block do
-						FileHerder.mkdir(abs_path)
+						FileUtils.mkdir_p(abs_path)
 					end
 				end
 				return abs_path
@@ -71,13 +70,7 @@ module SaladPrep
 					raise "#{domain} is not a valid local url"
 				end
 				BoxBox.run_root_block do
-					system(
-						"sudo",
-						"sh",
-						"-c",
-						"printf '127.0.0.1\t#{domain}\n'",
-						exception: true
-					)
+					File.open("/etc/hosts", "a").write("127.0.0.1\t#{domain}\n")
 				end
 			end
 		end
@@ -222,7 +215,6 @@ module SaladPrep
 					if is_cert_expired(cert)
 						BoxBox.run_root_block do
 							system(
-								"sudo",
 								"security", "delete-certificate",
 								"-z", sha_256_value, "-t", keychain_osx,
 								exception: true
@@ -245,7 +237,6 @@ module SaladPrep
 								"#{cert_dir}/#{cert_name}*.crt"
 							)
 							system(
-								"sudo",
 								"update-ca-certificates",
 								exception: true
 							)
@@ -282,13 +273,7 @@ module SaladPrep
 			}
 			POLICY
 			BoxBox.run_root_block do
-				system(
-					"sudo",
-					"sh",
-					"-c",
-					"echo '#{content}' > #{policy_file}",
-					exception: true
-				)
+				File.open(policy_file, "w").write(content)
 			end
 		end
 
@@ -320,13 +305,7 @@ module SaladPrep
 							public_key_file_path,
 							File.open(policy_file).read
 						)
-						system(
-							"sudo",
-							"sh",
-							"-c",
-							"echo '#{content}' > #{policy_file}",
-							exception: true
-						)
+						File.open(policy_file, "w").write(content)
 					end
 				else
 					create_firefox_cert_policy_file(
@@ -372,7 +351,6 @@ module SaladPrep
 		def install_local_cert_osx(public_key_file_path)
 			BoxBox.run_root_block do
 				system(
-					"sudo",
 					"security", "add-trusted-cert", "-p",
 					"ssl", "-d", "-r", "trustRoot",
 					"-k", keychain_osx, public_key_file_path,
@@ -560,12 +538,7 @@ module SaladPrep
 			enable_nginx_include(conf_dir_include, nginx_conf_path)
 			update_nginx_conf("#{conf_dir}/#{@egg.app}.conf", port)
 			BoxBox.run_root_block do
-				system(
-					"sudo",
-					"rm",
-					"-f",
-					File.join(conf_dir, "default")
-				)
+				FileUtils.rm_f(File.join(conf_dir, "default"))
 			end
 			restart_nginx
 		end
