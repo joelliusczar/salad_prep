@@ -218,9 +218,14 @@ module SaladPrep
 					Provincial.api_launcher.startup_api
 				ROOT
 
-				system(root_script, exception: true)
+				Provincial::BoxBox.run_and_put(
+					"sh -s",
+					in_s: root_script,
+					exception: true
+				)
 
 			CODE
+			ERB.new(body, trim_mode:">").result(binding)
 		end
 
 		mark_for(:sh_cmd, :remote)
