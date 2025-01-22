@@ -30,7 +30,7 @@ module SaladPrep
 		end
 
 		def self.login_group_name
-			Etc.getpwuid(login_group_id).name
+			Etc.getpwuid(login_group_id.to_i).name
 		end
 
 		def self.which(cmd)
