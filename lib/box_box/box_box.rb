@@ -26,7 +26,7 @@ module SaladPrep
 		end
 
 		def self.login_group_id
-			ENV["SUDO_GID"] || Etc.getpwuid(login_id).id
+			ENV["SUDO_GID"] || Etc.getpwuid(login_id.to_i).id
 		end
 
 		def self.login_group_name

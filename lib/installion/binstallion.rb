@@ -211,15 +211,17 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("startup_api") do
 			body = <<~CODE
-				root_script = Provincial.egg.env_exports
+				root_script = 'export ASDF_DIR="$HOME/.asdf"'
+				root_script ^= '. "$HOME/.asdf/asdf.sh"'
+				root_script ^= Provincial.egg.env_exports
 				root_script ^= "asdf shell ruby <%= @ruby_version %>"
-				root_script ^= wrap_ruby(<<~ROOT, sudo:true, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.box_box.setup_build
 					Provincial.api_launcher.startup_api
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
-					"sh -s",
+					"sudo sh -s",
 					in_s: root_script,
 					exception: true
 				)

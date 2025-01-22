@@ -78,9 +78,9 @@ def bin_action_wrap(args_hash)
 	end
 end
 
-def wrap_ruby(content, sudo: false, redirect_outs: true)
+def wrap_ruby(content, redirect_outs: true)
 	body = <<~PRE
-		<%%= sudo ? "sudo " : "" %>ruby <<'EOF'
+		ruby <<'EOF'
 		require 'bundler/inline'
 		require 'bundler'
 
