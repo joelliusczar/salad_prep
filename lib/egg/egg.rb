@@ -15,19 +15,28 @@ module SaladPrep
 		extend MethodMarker
 
 		def initialize(**kwargs)
+			default_fns = {}
 			marked_methods(:init_rq).each do |symbol|
 				attrs = method_attrs(symbol)
 				arg = kwargs[symbol]
-				if arg.nil? && ! attrs.include?(:default)
+				if arg.nil? \
+					&& ! attrs.include?(:default) \
+					&& ! attrs.include?(:default_fn)
+				then
 					raise(
 						ArgumentError,
 						"#{symbol} requires value but none was provided"
 					)
 				end
-				instance_variable_set(symbol.instancify, arg || attrs[:default])
+				symbol = symbol.instancify
+				instance_variable_set(symbol, arg || attrs[:default])
+				default_fns[symbol] = attrs[:default_fn] if attrs.include?(:default_fn)
 			end
 			@test_flags = 0
 			@build_dir = "builds"
+			default_fns.each do |sym, fn|
+				instance_variable_set(sym, fn.call(self))
+			end
 		end
 
 
@@ -102,7 +111,11 @@ module SaladPrep
 			"#{repo_path}/test_trash"
 		end
 
-		mark_for(:init_rq, default: ENV["HOME"])
+		mark_for(
+			:init_rq,
+			default_fn: ->(egg){ ENV["#{@env_prefix}_APP_ROOT"] || ENV["HOME"]},
+			prefixed_env_key: "APP_ROOT"
+		)
 		def app_root
 			if @test_flags > 0
 				return test_root
