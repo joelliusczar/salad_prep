@@ -22,15 +22,15 @@ module SaladPrep
 		end
 
 		def self.login_id
-			ENV["SUDO_UID"] || Process::UID.from_name(login_name)
+			(ENV["SUDO_UID"] || Process::UID.from_name(login_name)).to_i
 		end
 
 		def self.login_group_id
-			ENV["SUDO_GID"] || Etc.getpwuid(login_id.to_i).id
+			(ENV["SUDO_GID"] || Etc.getpwuid(login_id).gid).to_i
 		end
 
 		def self.login_group_name
-			Etc.getpwuid(login_group_id.to_i).name
+			Etc.getpwuid(login_group_id).name
 		end
 
 		def self.which(cmd)
