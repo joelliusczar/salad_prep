@@ -69,9 +69,9 @@ module SaladPrep
 			end
 		end
 
-		def env_exports
+		def env_exports(prefer_keys_file: true)
 			exports = ""
-			env_hash.each_pair do |key, value|
+			env_hash(prefer_keys_file:).each_pair do |key, value|
 				exports += "export #{key}='#{value}'; "
 			end
 			exports
