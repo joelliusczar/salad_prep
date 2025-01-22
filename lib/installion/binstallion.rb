@@ -209,28 +209,6 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd, :remote)
-		def_cmd("startup_api") do
-			body = <<~CODE
-				root_script = 'export ASDF_DIR="$HOME/.asdf"'
-				root_script ^= '. "$HOME/.asdf/asdf.sh"'
-				root_script ^= Provincial.egg.env_exports
-				root_script ^= "asdf shell ruby <%= @ruby_version %>"
-				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
-					Provincial.box_box.setup_build
-					Provincial.api_launcher.startup_api
-				ROOT
-
-				Provincial::BoxBox.run_and_put(
-					"sudo sh -s",
-					in_s: root_script,
-					exception: true
-				)
-
-			CODE
-			ERB.new(body, trim_mode:">").result(binding)
-		end
-
-		mark_for(:sh_cmd, :remote)
 		def_cmd("backup_db") do
 			body = <<~CODE
 				output_path = Provincial.dbass.backup_db(
@@ -345,6 +323,28 @@ module SaladPrep
 					Provincial.installion.install_dependencies
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd, :remote)
+		def_cmd("startup_api") do
+			body = <<~CODE
+				root_script = 'export ASDF_DIR="$HOME/.asdf"'
+				root_script ^= '. "$HOME/.asdf/asdf.sh"'
+				root_script ^= Provincial.egg.env_exports(prefer_keys_file: false)
+				root_script ^= "asdf shell ruby <%= @ruby_version %>"
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
+					Provincial.box_box.setup_build
+					Provincial.api_launcher.startup_api
+				ROOT
+
+				Provincial::BoxBox.run_and_put(
+					"sudo sh -s",
+					in_s: root_script,
+					exception: true
+				)
+
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
