@@ -280,7 +280,6 @@ module SaladPrep
 			@root_count -= 1
 			if @root_count == 0
 				Process::Sys.seteuid(login_id)
-				Process::Sys.setegid(Etc.getpwuid(login_id).gid)
 			end
 			result
 		end
