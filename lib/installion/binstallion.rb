@@ -319,7 +319,7 @@ module SaladPrep
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
 				remote_script ^= wrap_ruby <<~REMOTE
-					Provincial.box_box.setup_build
+					Provincial.box_box.setup_build_dir
 					Provincial.installion.install_dependencies
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
@@ -337,7 +337,7 @@ module SaladPrep
 				root_script ^= "export \#{app_home_var}='\#{Provincial.egg.app_root}'"
 				root_script ^= "asdf shell ruby <%= @ruby_version %>"
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
-					Provincial.box_box.setup_build
+					Provincial.box_box.setup_build_dir
 					Provincial.api_launcher.startup_api
 				ROOT
 
@@ -366,7 +366,7 @@ module SaladPrep
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= wrap_ruby <<~REMOTE
-					Provincial.box_box.setup_build
+					Provincial.box_box.setup_build_dir
 					Provincial.api_launcher.startup_api
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
@@ -389,7 +389,7 @@ module SaladPrep
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= wrap_ruby <<~REMOTE
-					Provincial.box_box.setup_build
+					Provincial.box_box.setup_build_dir
 					Provincial.client_launcher.setup_client
 				REMOTE
 				Provincial.remote.run_remote(remote_script)

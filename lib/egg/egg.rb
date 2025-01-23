@@ -183,7 +183,7 @@ module SaladPrep
 		end
 
 		def repo_path
-			if ! local_repo_path.zero?
+			if local_repo_path.populated?
 				return local_repo_path
 			elsif is_current_dir_repo?(Dir.pwd)
 				return Dir.pwd

@@ -309,7 +309,7 @@ module SaladPrep
 			FileUtils.mkdir_p(@egg.repo_path)
 		end
 
-		def setup_build(current_branch: nil)
+		def setup_build_dir(current_branch: nil)
 			@egg.load_env
 			required_env_vars = @egg.server_env_check_required.map do |e|
 				"Required var #{e} not set"
@@ -323,7 +323,7 @@ module SaladPrep
 
 			BoxBox.install_if_missing("git")
 
-			FileUtils.rm_rf(@egg.repo_path)
+			FileUtils.rm_rf(File.join(@egg.build_dir, @egg.project_name_snake))
 
 			Dir.chdir(@egg.build_dir) do 
 				system(
