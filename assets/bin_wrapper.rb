@@ -78,7 +78,7 @@ def bin_action_wrap(args_hash)
 	end
 end
 
-def wrap_ruby(content, redirect_outs: true)
+def wrap_ruby(content, redirect_outs: true, prefer_local: false)
 	body = <<~PRE
 		ruby <<'EOF'
 		require 'bundler/inline'
@@ -87,7 +87,7 @@ def wrap_ruby(content, redirect_outs: true)
 		gemfile do
 			source "https://rubygems.org"
 
-			prefer_local = false
+			prefer_local = #{prefer_local ? "true": "false"}
 			if ! prefer_local
 				gem(
 					"salad_prep",

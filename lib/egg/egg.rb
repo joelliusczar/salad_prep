@@ -113,7 +113,7 @@ module SaladPrep
 
 		mark_for(
 			:init_rq,
-			default_fn: ->(egg){ ENV["#{@env_prefix}_APP_ROOT"] || ENV["HOME"]},
+			default_fn: ->(egg){ ENV["#{egg.env_prefix}_APP_ROOT"] || ENV["HOME"]},
 			prefixed_env_key: "APP_ROOT"
 		)
 		def app_root
