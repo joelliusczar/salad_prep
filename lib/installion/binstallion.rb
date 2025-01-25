@@ -330,7 +330,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("startup_api") do
 			body = <<~CODE
-				root_script = root_script_pre
+				root_script = root_script_pre(@ruby_version)
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.box_box.setup_build_dir
 					Provincial.api_launcher.startup_api
@@ -372,7 +372,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("server_config") do
 			body = <<~CODE
-				root_script = root_script_pre
+				root_script = root_script_pre(@ruby_version)
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					w_spoon = Provincial.w_spoon
 					nginx_conf_path = w_spoon.get_nginx_value
