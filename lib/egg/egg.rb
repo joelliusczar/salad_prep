@@ -242,7 +242,7 @@ module SaladPrep
 		end
 
 		mark_for
-		def full_url
+		def full_url(port: nil)
 			"https://#{domain_name}"
 		end
 
