@@ -118,6 +118,7 @@ def wrap_ruby(content, redirect_outs: true, prefer_local: false)
 		require "tempfile"
 		#{Provincial.egg.app_lvl_definitions_script}
 		Provincial.egg.load_env
+		Process::Sys.seteuid(Provincial.egg.login_id)
 		<%% if redirect_outs %>
 		Tempfile.create do |tmp|
 			Provincial::Toob.register_sub(tmp) do

@@ -1,21 +1,27 @@
 require "fileutils"
 require_relative "./client_launcher"
+require_relative "../box_box/box_box"
+require_relative "../extensions/string_ex"
 require_relative "../file_herder/file_herder"
-require_relative "../arg_checker/arg_checker"
+
 
 module SaladPrep
 	class NodeClientLauncher < ClientLauncher
+		using StringEx
+
 		def initialize(egg, node_version:)
 			super(egg)
 			@node_version = node_version
 		end
 
 		def setup_client
-			ArgChecker.path(@egg.client_dest)
-			ArgChecker.path(@egg.full_url)
-			ArgChecker.api_version(@egg.api_version)
-			ArgChecker.pkg_version(@node_version)
-			FileHerder::empty_dir(@egg.client_dest)
+			@egg.client_dest.path_check
+			@egg.full_url.path_check
+			@egg.api_version.api_version_check
+			@node_version.pkg_version_check
+			BoxBox.run_root_block do
+				FileHerder.empty_dir(@egg.client_dest)
+			end
 			script = <<~CALL
 					asdf local nodejs #{@node_version} &&
 					export VITE_API_VERSION='#{@egg.api_version}' &&
@@ -27,10 +33,13 @@ module SaladPrep
 					npm run --prefix '#{@egg.client_src}' build
 			CALL
 			system(script, exception: true)
-			FileUtils.cp_r(
-				File.join(@egg.client_src, "build/"),
-				@egg.client_dest
-			)
+			BoxBox.run_root_block do
+				FileUtils.cp_r(
+					File.join(@egg.client_src, "build/."),
+					@egg.client_dest
+				)
+				FileHerder.unroot(@egg.client_dest)
+			end
 		end
 
 	end

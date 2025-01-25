@@ -77,6 +77,33 @@ module SaladPrep
 				end
 			end
 
+			def quote_check
+				if ! (/[^'"`]+/ =~ self)
+					raise "value #{self} is using illegal characters"
+				end
+			end
+
+			alias_method :path_check, :quote_check
+
+			def api_version_check
+				if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ self)
+					raise <<~MSG
+						api version is using an illegal form.
+						Please use begin with letter and only use alphanumeric 
+						for rest with a max length of 6
+					MSG
+				end
+			end
+
+			def pkg_version_check
+				if ! (/\d+\.\d+(?:\.\d+)?/ =~ self)
+					raise <<~MSG
+						version is using an illegal form.
+						Please use numbers seperated by dots
+					MSG
+				end
+			end
+
 		end
 
 		refine Symbol do
