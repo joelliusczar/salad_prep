@@ -378,7 +378,7 @@ module SaladPrep
 					nginx_conf_path = w_spoon.get_nginx_value
 					conf_dir_include = w_spoon.get_nginx_conf_dir_include(nginx_conf_path)
 					conf_dir = w_spoon.get_abs_path_from_nginx_include(conf_dir_include)
-					puts("\#{conf_dir}/\#{Provincial.egg.app}.conf")
+					puts("\\\#{conf_dir}/\\\#{Provincial.egg.app}.conf")
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
