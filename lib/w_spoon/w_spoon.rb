@@ -76,7 +76,7 @@ module SaladPrep
 		end
 
 		def localhost_ssh_dir
-			File.join(ENV["HOME"],".ssh")
+			File.join(@egg.app_root,".ssh")
 		end
 
 		def local_nginx_cert_name
