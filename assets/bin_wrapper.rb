@@ -78,6 +78,15 @@ def bin_action_wrap(args_hash)
 	end
 end
 
+def root_script_pre
+	app_home_var = "#{Provincial.egg.env_prefix}_APP_ROOT"
+	root_script = 'export ASDF_DIR="$HOME/.asdf"'
+	root_script ^= '. "$HOME/.asdf/asdf.sh"'
+	root_script ^= Provincial.egg.env_exports(prefer_keys_file: false)
+	root_script ^= "export #{app_home_var}='#{Provincial.egg.app_root}'"
+	root_script ^= "asdf shell ruby <%%= @ruby_version %>"
+end
+
 def wrap_ruby(content, redirect_outs: true, prefer_local: false)
 	body = <<~PRE
 		ruby <<'EOF'
