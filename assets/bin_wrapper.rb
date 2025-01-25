@@ -89,7 +89,8 @@ def root_script_pre(ruby_version)
 	root_script ^= "asdf shell ruby #{ruby_version}"
 end
 
-def wrap_ruby(content, redirect_outs: true, prefer_local: false)
+def wrap_ruby(content, args_hash, redirect_outs: true, )
+	prefer_local = ! args_hash["-local"].nil?
 	body = <<~PRE
 		ruby <<'EOF'
 		require 'bundler/inline'
@@ -119,6 +120,9 @@ def wrap_ruby(content, redirect_outs: true, prefer_local: false)
 		#{Provincial.egg.app_lvl_definitions_script}
 		Provincial.egg.load_env
 		Process::Sys.seteuid(Provincial::BoxBox.login_id)
+		if ! ENV["LOGIN_HOME"].nil? && ENV["LOGIN_HOME"].length > 0
+			ENV["HOME"] = ENV["LOGIN_HOME"]
+		end
 		<%% if redirect_outs %>
 		Tempfile.create do |tmp|
 			Provincial::Toob.register_sub(tmp) do
