@@ -52,7 +52,7 @@ module SaladPrep
 			puts(
 				"Server base is #{Dir.pwd}. Look there for api.out and the log file"
 			)
-			puts("done starting up api. Access at #{@egg.full_url("8080")}")
+			puts("done starting up api. Access at #{@egg.full_url(port: "8080")}")
 		end
 		
 	end
