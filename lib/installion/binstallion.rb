@@ -398,6 +398,7 @@ module SaladPrep
 					exception: true
 				)
 			CODE
+			ERB.new(body, trim_mode:">").result(binding)
 		end
 
 		mark_for(:sh_cmd)
