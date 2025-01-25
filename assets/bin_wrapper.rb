@@ -89,7 +89,7 @@ def root_script_pre(ruby_version)
 	root_script ^= "asdf shell ruby #{ruby_version}"
 end
 
-def wrap_ruby(content, args_hash, redirect_outs: true, )
+def wrap_ruby(content, args_hash, redirect_outs: true)
 	prefer_local = ! args_hash["-local"].nil?
 	body = <<~PRE
 		ruby <<'EOF'
