@@ -79,8 +79,10 @@ def bin_action_wrap(args_hash)
 end
 
 def root_script_pre
-	app_home_var = "#{Provincial.egg.env_prefix}_APP_ROOT"
+	env_prefix = Provincial.egg.env_prefix
+	app_home_var = "#{env_prefix}_APP_ROOT"
 	root_script = 'export ASDF_DIR="$HOME/.asdf"'
+	root_script = "export "#{env_prefix}_ENV"='local'"
 	root_script ^= '. "$HOME/.asdf/asdf.sh"'
 	root_script ^= Provincial.egg.env_exports(prefer_keys_file: false)
 	root_script ^= "export #{app_home_var}='#{Provincial.egg.app_root}'"

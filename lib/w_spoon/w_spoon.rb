@@ -536,7 +536,7 @@ module SaladPrep
 			conf_dir = get_abs_path_from_nginx_include(conf_dir_include)
 			setup_ssl_cert_nginx
 			enable_nginx_include(conf_dir_include, nginx_conf_path)
-			update_nginx_conf("#{conf_dir}/#{@egg.app}.conf", port)
+			update_nginx_conf("#{conf_dir}#{@egg.app}.conf", port)
 			BoxBox.run_root_block do
 				FileUtils.rm_f(File.join(conf_dir, "default"))
 			end
