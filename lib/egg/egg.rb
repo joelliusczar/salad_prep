@@ -188,6 +188,16 @@ module SaladPrep
 			elsif is_current_dir_repo?(Dir.pwd)
 				return Dir.pwd
 			else
+				return "#{build_dir}/#{project_name_snake}"
+			end
+		end
+
+		def repo_fixed_path
+			if local_repo_path.populated?
+				return local_repo_path
+			elsif is_current_dir_repo?(Dir.pwd)
+				return Dir.pwd
+			else
 				return "#{ENV['HOME']}/#{@build_dir}/#{project_name_snake}"
 			end
 		end

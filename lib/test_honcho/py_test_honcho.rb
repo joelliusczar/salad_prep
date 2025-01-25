@@ -19,7 +19,7 @@ module SaladPrep
 				base: @egg.lib_src
 			)
 			requirements_src = File.join(
-				@egg.repo_path,
+				@egg.repo_fixed_path,
 				"requirements.txt"
 			)
 			if 
