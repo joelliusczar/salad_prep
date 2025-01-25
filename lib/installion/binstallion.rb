@@ -372,7 +372,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("server_config") do
 			body = <<~CODE
-				root_script = root_script_pre(@ruby_version)
+				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					w_spoon = Provincial.w_spoon
 					nginx_conf_path = w_spoon.get_nginx_value
