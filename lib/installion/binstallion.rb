@@ -286,18 +286,29 @@ module SaladPrep
 			CODE
 		end
 
-		mark_for(:sh_cmd, :remote)
-		def_cmd("install") do
-			body = <<~CODE
-				Provincial.installion.install_dependencies
-			CODE
-		end
-
 		mark_for(:sh_cmd)
 		def_cmd("root_bootstrap") do
 			body = <<~CODE
 				Provincial.installion.root_install()
 			CODE
+		end
+
+		mark_for(:sh_cmd, :remote)
+		def_cmd("install") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
+					Provincial.installion.install_dependencies
+				ROOT
+
+				Provincial::BoxBox.run_and_put(
+					"sudo sh -s",
+					in_s: root_script,
+					exception: true
+				)
+				
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
 		end
 
 		mark_for(:sh_cmd)
