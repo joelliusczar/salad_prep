@@ -202,13 +202,6 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd, :remote)
-		def_cmd("setup_client") do
-			body = <<~CODE
-				Provincial.client_launcher.setup_client
-			CODE
-		end
-
-		mark_for(:sh_cmd, :remote)
 		def_cmd("backup_db") do
 			body = <<~CODE
 				output_path = Provincial.dbass.backup_db(
@@ -389,6 +382,22 @@ module SaladPrep
 
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd, :remote)
+		def_cmd("setup_client") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
+					Provincial.client_launcher.setup_client
+				ROOT
+				
+				Provincial::BoxBox.run_and_put(
+					"sudo sh -s",
+					in_s: root_script,
+					exception: true
+				)
+			CODE
 		end
 
 		mark_for(:sh_cmd)
