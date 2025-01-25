@@ -302,7 +302,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
-					"sudo LOGIN_HOME="$HOME" sh -s",
+					'sudo LOGIN_HOME="$HOME" sh -s',
 					in_s: root_script,
 					exception: true
 				)
@@ -341,7 +341,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
-					"sudo LOGIN_HOME="$HOME" sh -s",
+					'sudo LOGIN_HOME="$HOME" sh -s',
 					in_s: root_script,
 					exception: true
 				)
@@ -386,7 +386,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
-					"sudo LOGIN_HOME="$HOME" sh -s",
+					'sudo LOGIN_HOME="$HOME" sh -s',
 					in_s: root_script,
 					exception: true
 				)
@@ -404,7 +404,7 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.run_and_put(
-					"sudo LOGIN_HOME="$HOME" sh -s",
+					'sudo LOGIN_HOME="$HOME" sh -s',
 					in_s: root_script,
 					exception: true
 				)
