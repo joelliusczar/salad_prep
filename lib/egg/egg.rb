@@ -211,6 +211,11 @@ module SaladPrep
 			@local_repo_path
 		end
 
+		mark_for(:init_rq, default: 8080)
+		def main_port
+			@main_port
+		end
+
 		mark_for(:init_rq, default: 8032)
 		def api_port
 			@api_port
@@ -242,7 +247,8 @@ module SaladPrep
 		end
 
 		mark_for
-		def full_url(port: nil)
+		def full_url
+			port = main_port
 			"https://#{domain_name(port:)}"
 		end
 
