@@ -303,6 +303,9 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("install") do
 			body = <<~CODE
+
+				Provincial.installion.install_local_dependencies
+			
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
 					Provincial.installion.install_dependencies
