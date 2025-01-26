@@ -288,8 +288,8 @@ module SaladPrep
 			result = yield
 			@root_count -= 1
 			if @root_count == 0
-				Process::Sys.seteuid(login_id)
 				Process::Sys.setegid(login_group_id)
+				Process::Sys.seteuid(login_id)
 			end
 			result
 		end

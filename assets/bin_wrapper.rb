@@ -119,8 +119,8 @@ def wrap_ruby(content, args_hash, redirect_outs: true)
 		require "tempfile"
 		#{Provincial.egg.app_lvl_definitions_script}
 		Provincial.egg.load_env
-		Process::Sys.seteuid(Provincial::BoxBox.login_id)
 		Process::Sys.setegid(Provincial::BoxBox.login_group_id)
+		Process::Sys.seteuid(Provincial::BoxBox.login_id)
 		if ! ENV["LOGIN_HOME"].nil? && ENV["LOGIN_HOME"].length > 0
 			ENV["HOME"] = ENV["LOGIN_HOME"]
 		end
