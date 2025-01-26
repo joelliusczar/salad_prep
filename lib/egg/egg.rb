@@ -216,12 +216,12 @@ module SaladPrep
 			@main_port
 		end
 
-		mark_for(:init_rq, default: 8032)
+		mark_for(:init_rq, default: 8033)
 		def api_port
 			@api_port
 		end
 
-		mark_for(:init_rq, default: 8033)
+		mark_for(:init_rq, default: 8032)
 		def test_port
 			@test_port
 		end
