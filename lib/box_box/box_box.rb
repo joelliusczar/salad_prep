@@ -82,29 +82,35 @@ module SaladPrep
 					IO.pipe do |r, w|
 						spawn("yes", input, out: r)
 						r.close
+						run_root_block do
+							system(
+								"pacman", "-S", pkg,
+								in: w,
+								exception: true
+							)
+						end
+					end
+				elsif is_installed?(Enums::PackageManagers::APTGET)
+					run_root_block do
 						system(
-							"pacman", "-S", pkg,
-							in: w,
+							{ "DEBIAN_FRONTEND" => "noninteractive"},
+							"apt-get", "-y",
+							"install", pkg,
 							exception: true
 						)
 					end
-				elsif is_installed?(Enums::PackageManagers::APTGET)
-					system(
-						{ "DEBIAN_FRONTEND" => "noninteractive"},
-						"apt-get", "-y",
-						"install", pkg,
-						exception: true
-					)
 				end
 			when Enums::BoxOSes::MACOS
 				IO.pipe do |r, w|
 					spawn("yes", out: r)
 					r.close
-					system(
-						"brew", "install", pkg,
-						in: w,
-						exception: true
-					)
+					run_root_block do
+						system(
+							"brew", "install", pkg,
+							in: w,
+							exception: true
+						)
+					end
 				end
 			end
 		end
@@ -278,10 +284,12 @@ module SaladPrep
 				@root_count += 1
 			end
 			Process::Sys.seteuid(ROOT_UID)
+			Process::Sys.setegid(ROOT_UID)
 			result = yield
 			@root_count -= 1
 			if @root_count == 0
 				Process::Sys.seteuid(login_id)
+				Process::Sys.setegid(login_group_id)
 			end
 			result
 		end
