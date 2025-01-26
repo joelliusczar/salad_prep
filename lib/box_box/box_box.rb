@@ -111,7 +111,9 @@ module SaladPrep
 
 		def self.install_if_missing(pkg)
 			if ! BoxBox.is_installed?(pkg)
-				BoxBox.install_package(pkg)
+				run_root_block do
+					BoxBox.install_package(pkg)
+				end
 			end
 		end
 
