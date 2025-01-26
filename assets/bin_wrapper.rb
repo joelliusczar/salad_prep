@@ -124,6 +124,9 @@ def wrap_ruby(content, args_hash, redirect_outs: true)
 		if ! ENV["LOGIN_HOME"].nil? && ENV["LOGIN_HOME"].length > 0
 			ENV["HOME"] = ENV["LOGIN_HOME"]
 		end
+		if ! ENV["PATH_ADD"].nil? && ENV["PATH_ADD"].length > 0
+			ENV["PATH"] = "\#{ENV['PATH']}:\#{ENV['PATH_ADD']}"
+		end
 		<%% if redirect_outs %>
 		Tempfile.create do |tmp|
 			Provincial::Toob.register_sub(tmp) do
