@@ -79,7 +79,7 @@ module SaladPrep
 			FileUtils.chmod("a+x", script_path)
 		end
 
-		def build_sudo_line
+		def sudo_line
 			line = 'sudo '
 			line += 'LOGIN_HOME="$HOME" '
 			line += 'PATH_ADDS="$HOME"/.local/bin '
@@ -87,7 +87,6 @@ module SaladPrep
 		end
 
 		def body_builder(name, &block)
-			sudo_line = build_sudo_line
 			body = <<~CODE
 				@actions_hash["<%= name %>"] = lambda do |args_hash|
 					cmd_name = "<%= name %>"
@@ -310,7 +309,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
-					'<%%= sudo_line %>',
+					'<%= sudo_line %>',
 					in_s: root_script,
 					exception: true
 				)
@@ -349,7 +348,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
-					'<%%= sudo_line %>',
+					'<%= sudo_line %>',
 					in_s: root_script,
 					exception: true
 				)
@@ -394,7 +393,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
-					'<%%= sudo_line %>',
+					'<%= sudo_line %>',
 					in_s: root_script,
 					exception: true
 				)
@@ -412,7 +411,7 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.run_and_put(
-					'<%%= sudo_line %>',
+					'<%= sudo_line %>',
 					in_s: root_script,
 					exception: true
 				)
