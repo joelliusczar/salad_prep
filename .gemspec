@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.28.39"
+	s.version = "0.28.40"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
 		"lib/w_spoon/w_spoon.rb"
 	]
 	s.homepage = "https://github.com/joelliusczar/salad_prep"
-	s.required_ruby_version = ">= 3.3.0"
+	s.required_ruby_version = ">= 3.3.5"
 	s.license = "MIT"
 	s.add_dependency "base64", "~> 0.2"
 	s.add_dependency "ostruct", "~> 0.6" #this must be used internally?

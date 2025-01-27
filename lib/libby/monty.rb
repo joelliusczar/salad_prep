@@ -1,6 +1,5 @@
 require "fileutils"
 require "tempfile"
-require_relative "../arg_checker/arg_checker"
 require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
 require_relative "../extensions/array_ex"
@@ -82,7 +81,7 @@ module SaladPrep
 
 		def python_command
 			env_prefix = @egg.env_prefix.dup
-			ArgChecker.env_prefix(env_prefix)
+			env_prefix.env_prefix_check
 			"#{env_prefix}-python".downcase
 		end
 
@@ -119,8 +118,8 @@ module SaladPrep
 				env_root = File.join(@egg.app_root, @egg.app_trunk)
 			end
 			py_env_dir = File.join(env_root, "#{@egg.file_prefix}")
-			ArgChecker.path(py_env_dir)
-			ArgChecker.path(requirements_path)
+			py_env_dir.path_check
+			requirements_path.path_check
 			system(
 				python_command,
 				"-m",
@@ -209,7 +208,7 @@ module SaladPrep
 		def activate_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
-			ArgChecker.path(activate)
+			activate.path_check
 			exec(". '#{activate}'")
 		end
 
@@ -217,7 +216,7 @@ module SaladPrep
 			@egg.load_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
-			ArgChecker.path(activate)
+			activate.path_check
 			exec(". '#{activate}' && python")
 		end
 
@@ -225,7 +224,7 @@ module SaladPrep
 			@egg.load_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
-			ArgChecker.path(activate)
+			activate.path_check
 			BoxBox.run_and_get(". '#{activate}' && python /dev/stdin", 
 				in_s: script,
 				exception:

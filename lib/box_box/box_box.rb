@@ -333,7 +333,7 @@ module SaladPrep
 
 			BoxBox.install_if_missing("git")
 
-			FileUtils.rm_rf(File.join(@egg.build_dir, @egg.project_name_snake))
+			FileUtils.rm_r(File.join(@egg.build_dir, @egg.project_name_snake))
 
 			Dir.chdir(@egg.build_dir) do 
 				system(

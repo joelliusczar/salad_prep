@@ -104,6 +104,14 @@ module SaladPrep
 				end
 			end
 
+			def env_prefix_check
+				if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ self)
+					raise "env prefix is using an illegal form. "
+						"Please use begin with letter and only use alphanumeric "
+						"for rest with a max length of 6"
+				end
+			end
+
 		end
 
 		refine Symbol do
