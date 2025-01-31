@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.28.42"
+	s.version = "0.28.43"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -49,6 +49,7 @@ Gem::Specification.new do |s|
 	s.add_dependency "ostruct", "~> 0.6" #this must be used internally?
 	s.add_dependency "ruby-mysql", "~> 4.1"
 	s.add_dependency "bigdecimal", "~> 3.1"
+	s.add_dependency "digest/sha2"
 	s.metadata = { 
 		"source_code_uri" => "https://github.com/joelliusczar/salad_prep"
 	}

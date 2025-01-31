@@ -15,22 +15,23 @@ module SaladPrep
 			raise "install_dependencies not implemented"
 		end
 
-		def self.asdf(root: false)
+		def install_local_dependencies
 			BoxBox.run_and_put(
-				"sudo",
 				"bash",
 				"-sl",
-				in_s: Resorcerer.bootstrap_install(root:),
+				in_s: Resorcerer.bootstrap_install,
 				exception: true
 			)
 		end
 
-		def install_local_dependencies
-			self.class.asdf
-		end
-
 		def root_install
-			self.class.asdf
+			BoxBox.run_and_put(
+				"sudo",
+				"bash",
+				"-sl",
+				in_s: Resorcerer.bootstrap_install(root: true),
+				exception: true
+			)
 		end
 
 		def self.curl
