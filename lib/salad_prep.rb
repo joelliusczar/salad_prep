@@ -29,3 +29,7 @@ require_relative "test_honcho/py_test_honcho"
 require_relative "toob/toob"
 require_relative "unrooter/unrooter"
 require_relative "w_spoon/w_spoon"
+
+
+require "digest"
+Digest::SHA256
