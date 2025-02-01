@@ -227,7 +227,7 @@ module SaladPrep
 
 			if options.include?(:in_s)
 				IO.pipe do |r,w|
-					w.write(in_s)
+					w.write(options[:in_s])
 					w.close
 					options_to_pass = options.to_h do |k, v|
 						return [:in, r] if k == :in_s
