@@ -334,7 +334,7 @@ module SaladPrep
 				file.rewind
 				system(
 					"openssl", "req","-x509", "-sha256", "-new", "-nodes", "-newkey",
-					"rsa:2048", "-days", 7,
+					"rsa:2048", "-days", "7",
 					"-subj", "/C=US/ST=CA/O=fake/CN=#{common_name}",
 					"-reqexts", "SAN", "-extensions", "SAN",
 					"-config", file.path, 
