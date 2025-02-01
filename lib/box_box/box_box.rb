@@ -188,7 +188,7 @@ module SaladPrep
 				end
 		end
 
-		def self.twig_run(*args **options)
+		def self.twig_run(*args, **options)
 			if args.zero?
 				raise "No arguments provided. 1 or 2 expected."
 			end
@@ -217,7 +217,7 @@ module SaladPrep
 			end
 		end
 
-		def self.twig_spawn(*args **options)
+		def self.twig_spawn(*args, **options)
 			if args.zero?
 				raise "No arguments provided. 1 or 2 expected."
 			end
