@@ -138,7 +138,7 @@ module SaladPrep
 				python -m pip install --upgrade setuptools
 				python -m pip install -r '#{requirements_path}'
 			CALL
-			system(script, exception: true)
+			BoxBox.twig_run(script, exception: true)
 		end
 
 		def regen_lib_supports

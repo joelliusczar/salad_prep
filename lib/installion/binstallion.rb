@@ -499,5 +499,14 @@ module SaladPrep
 			CODE
 		end
 
+		#use this to download the latest locally, so
+		#I don't have to run an action without the local flag first
+		mark_for(:sh_cmd, :remote)
+		def_cmd("no_op") do
+			body = <<~CODE
+			CODE
+		end
+
+
 	end
 end

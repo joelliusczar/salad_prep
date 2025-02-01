@@ -32,7 +32,7 @@ module SaladPrep
 					#build code (transpile it)
 					npm run --prefix '#{@egg.client_src}' build
 			CALL
-			system(script, exception: true)
+			BoxBox.twig_run(script, exception: true)
 			BoxBox.run_root_block do
 				FileUtils.cp_r(
 					File.join(@egg.client_src, "build/."),

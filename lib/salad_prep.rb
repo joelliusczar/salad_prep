@@ -30,6 +30,31 @@ require_relative "toob/toob"
 require_relative "unrooter/unrooter"
 require_relative "w_spoon/w_spoon"
 
+#this is needed because I was running into a bizare case
+#where Digest::SHA256 would cause a load error
+#minimal code to duplicate issue
+# require "tempfile"
 
+# sub = <<~SUB
+# 	export ASDF_DIR="$HOME/.asdf"
+# 	. "$HOME/.asdf/asdf.sh"
+# 	asdf shell ruby 3.3.5
+# 	ruby <<EOF
+# 		require 'bundler'
+# 		require 'bundler/inline'
+# 		gemfile do
+# 				source "https://rubygems.org"
+# 				gem 'digest', require: 'digest/sha2'
+# 		end	
+
+# 		require "digest"
+# 		# p Digest::SHA256
+# 		Process::Sys.seteuid(1000)
+# 		p Digest::SHA256
+# 		puts("howdy")
+# 	EOF
+# SUB
+# #p Digest::SHA256
+#system("sudo", "sh", "-c", sub)
 require "digest"
 Digest::SHA256

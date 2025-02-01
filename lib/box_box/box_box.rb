@@ -188,6 +188,65 @@ module SaladPrep
 				end
 		end
 
+		def self.twig_run(*args **options)
+			if args.zero?
+				raise "No arguments provided. 1 or 2 expected."
+			end
+
+			if args.length == 1
+				if ! args[0].kind_of?(String)
+					raise "No script or command provided"
+				end
+				system(
+					"sudo","-u", login_name, "sh", "-c", args[0],
+					**options
+				)
+			elsif args.length == 2
+				if ! args[0].kind_of?(Hash)
+					raise "first argument is expected to be a hash."
+				end
+				if ! args[1].kind_of?(String)
+					raise "No script or command provided"
+				end
+				system(
+					arg[0], "sudo","-u", login_name, "sh", "-c", args[1],
+					**options
+				)
+			else 
+				raise "Too many arguments provided. Expected 1 or 2."
+			end
+		end
+
+		def self.twig_spawn(*args **options)
+			if args.zero?
+				raise "No arguments provided. 1 or 2 expected."
+			end
+
+			if args.length == 1
+				if ! args[0].kind_of?(String)
+					raise "No script or command provided"
+				end
+				spawn(
+					"sudo","-u", login_name, "sh", "-c", args[0],
+					**options
+				)
+			elsif args.length == 2
+				if ! args[0].kind_of?(Hash)
+					raise "first argument is expected to be a hash."
+				end
+				if ! args[1].kind_of?(String)
+					raise "No script or command provided"
+				end
+				spawn(
+					arg[0], "sudo","-u", login_name, "sh", "-c", args[1],
+					**options
+				)
+			else 
+				raise "Too many arguments provided. Expected 1 or 2."
+			end
+
+		end
+
 		def self.run_and_put(*cmds, in_s:nil, exception: false)
 			IO.pipe do |r,w|
 				w.write(in_s)
