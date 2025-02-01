@@ -188,19 +188,16 @@ module SaladPrep
 				end
 		end
 
-		def self.twig_run(*args, **options)
-			if args.zero?
-				raise "No arguments provided. 1 or 2 expected."
+		def self.__script_arg_juggle__(*args, **options)
+			cmd_arr = ["sh", "-c"]
+			if options .fetch(:avoid_root, true)
+				cmd_arr.insert(0, "sudo","-u", login_name,)
 			end
-
 			if args.length == 1
 				if ! args[0].kind_of?(String)
 					raise "No script or command provided"
 				end
-				system(
-					"sudo","-u", login_name, "sh", "-c", args[0],
-					**options
-				)
+				cmd_arr.push(args[0])
 			elsif args.length == 2
 				if ! args[0].kind_of?(Hash)
 					raise "first argument is expected to be a hash."
@@ -208,43 +205,57 @@ module SaladPrep
 				if ! args[1].kind_of?(String)
 					raise "No script or command provided"
 				end
-				system(
-					arg[0], "sudo","-u", login_name, "sh", "-c", args[1],
-					**options
-				)
-			else 
+				cmd_arr = [arg[0], *cmd_arr, arg[1]]
+			else
 				raise "Too many arguments provided. Expected 1 or 2."
+			end
+
+			yield(*cmd_arr, **options)
+		end
+
+		def self.__script_wrap__(*args, **options, &block)
+			if args.zero?
+				raise "No arguments provided. 1 or 2 expected."
+			end
+
+			if options.include?(:in) && options.include?(:in_s)
+				raise <<~ERR
+					:in and :in_s are mutually exclusive and cannot 
+					be passed to the same call.
+				ERR
+			end
+
+			if options.include?(:in_s)
+				IO.pipe do |r,w|
+					w.write(in_s)
+					w.close
+					options_to_pass = options.to_h do |k, v|
+						return [:in, r] if k == :in_s
+						return [k,v]
+					end
+					__script_arg_juggle__(*args, **options_to_pass, &block)
+				end
+			else
+				__script_arg_juggle__(*args, **options, &block)
 			end
 		end
 
-		def self.twig_spawn(*args, **options)
-			if args.zero?
-				raise "No arguments provided. 1 or 2 expected."
-			end
-
-			if args.length == 1
-				if ! args[0].kind_of?(String)
-					raise "No script or command provided"
-				end
-				spawn(
-					"sudo","-u", login_name, "sh", "-c", args[0],
-					**options
+		def self.script_run(*args, **options)
+			__script_wrap__(*args, **options) do |*args1, **options1|
+				system(
+					*args1,
+					**options1
 				)
-			elsif args.length == 2
-				if ! args[0].kind_of?(Hash)
-					raise "first argument is expected to be a hash."
-				end
-				if ! args[1].kind_of?(String)
-					raise "No script or command provided"
-				end
-				spawn(
-					arg[0], "sudo","-u", login_name, "sh", "-c", args[1],
-					**options
-				)
-			else 
-				raise "Too many arguments provided. Expected 1 or 2."
 			end
+		end
 
+		def self.script_spawn(*args, **options)
+			__script_wrap__(*args, **options) do |*args1, **options1|
+				spawn(
+					*args1,
+					**options1
+				)
+			end
 		end
 
 		def self.run_and_put(*cmds, in_s:nil, exception: false)

@@ -138,7 +138,7 @@ module SaladPrep
 				python -m pip install --upgrade setuptools
 				python -m pip install -r '#{requirements_path}'
 			CALL
-			BoxBox.twig_run(script, exception: true)
+			BoxBox.script_run(script, exception: true)
 		end
 
 		def regen_lib_supports
@@ -186,7 +186,6 @@ module SaladPrep
 				@egg.lib_src,
 				libs_dest_dir(env_root) 
 			)
-
 		end
 
 		def create_py_env_in_app_trunk
@@ -225,7 +224,7 @@ module SaladPrep
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
 			activate.path_check
-			BoxBox.run_and_get(". '#{activate}' && python /dev/stdin", 
+			BoxBox.script_run(". '#{activate}' && python /dev/stdin", 
 				in_s: script,
 				exception:
 			)

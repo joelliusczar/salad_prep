@@ -47,7 +47,7 @@ module SaladPrep
 				--port #{@egg.api_port} \
 				"index:app"
 			CALL
-			pid = BoxBox.twig_spawn(
+			pid = BoxBox.script_spawn(
 				script,
 				in: File::NULL,
 				out: api_out,

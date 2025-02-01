@@ -43,7 +43,7 @@ module SaladPrep
 					pytest -s
 				CALL
 				Dir.chdir(File.join(@egg.src, "tests")) do 
-					BoxBox.twig_run({
+					BoxBox.script_run({
 						"#{@egg.env_prefix}_AUTH_SECRET_KEY" => @egg.api_auth_key,
 						"PYTHONPATH" => "#{@egg.src}:#{@egg.src}/api"
 						}, 
