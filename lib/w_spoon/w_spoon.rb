@@ -8,6 +8,7 @@ require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
 require_relative "../egg/egg"
 require_relative "../extensions/string_ex"
+require_relative "../toob/toob"
 
 module SaladPrep
 	using StringEx
@@ -421,7 +422,7 @@ module SaladPrep
 					|| is_cert_expired(File.open(public_key_file_path).read)\
 					|| force_replace
 				then
-					puts("downloading new certs")
+					Toob.log&.putz("downloading new certs")
 					cert_hash = ssl_vars
 					File.open(private_key_file_path, "w")
 						.write(cert_hash["privatekey"].chomp)
