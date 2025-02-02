@@ -209,6 +209,8 @@ module SaladPrep
 		end
 
 		def clean_up_invalid_cert(common_name, cert_name = nil)
+			Toob.log&.puts("common name: #{common_name}")
+			Toob.log&.puts("cert name: #{cert_name}")
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::MACOS
 				certs_matching_name(common_name).each do |cert|
@@ -226,6 +228,7 @@ module SaladPrep
 			when Enums::BoxOSes::LINUX
 				certs_matching_name(common_name).each do |cert|
 					if is_cert_expired(cert)
+						Toob.log("A cert is experiered for #{common_name}")
 						cert_dir="/usr/local/share/ca-certificates"
 						if cert_name.zero?
 							cert_name = common_name
@@ -329,16 +332,16 @@ module SaladPrep
 			public_key_file_path,
 			private_key_file_path
 		)
-			Tempfile.create do |file|
-				file.write(File.open(openssl_default_conf).read)
-				file.write("[SAN]\nsubjectAltName=DNS:#{domain},IP:127.0.0.1")
-				file.rewind
+			Tempfile.create do |tmp|
+				tmp.write(File.open(openssl_default_conf).read)
+				tmp.write("[SAN]\nsubjectAltName=DNS:#{domain},IP:127.0.0.1")
+				tmp.rewind
 				system(
 					"openssl", "req","-x509", "-sha256", "-new", "-nodes", "-newkey",
 					"rsa:2048", "-days", "7",
 					"-subj", "/C=US/ST=CA/O=fake/CN=#{common_name}",
 					"-reqexts", "SAN", "-extensions", "SAN",
-					"-config", file.path, 
+					"-config", tmp.path, 
 					"-keyout", private_key_file_path, "-out", private_key_file_path,
 					exception: true
 				)
