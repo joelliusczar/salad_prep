@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-<= bundle_section %>
+<%= bundle_section %>
 
 require "salad_prep"
 require_relative "./provincial"
