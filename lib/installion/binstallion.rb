@@ -535,6 +535,23 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+		mark_for(:sh_cmd, :remote)
+		def_cmd("irb_root") do
+			body = <<~CODE
+					script = root_script_pre("<%= @ruby_version %>")
+
+					script ^= "irb "
+					script += "-r\#{File.join(File.expand_path("..", __FILE__),'bundle.rb')}"
+					script += " -r\#{Provincial.egg.app_lvl_definitions_script_path}"
+					Provincial::BoxBox.run_and_put(
+						'<%= sudo_line %>',
+						in_s: script,
+						exception: true
+					)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
 
 		#use this to download the latest locally, so
 		#I don't have to run an action without the local flag first

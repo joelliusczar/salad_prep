@@ -27,7 +27,6 @@ require_relative "remote/remote"
 require_relative "test_honcho/test_honcho"
 require_relative "test_honcho/py_test_honcho"
 require_relative "toob/toob"
-require_relative "unrooter/unrooter"
 require_relative "w_spoon/w_spoon"
 
 #this is needed because I was running into a bizare case
