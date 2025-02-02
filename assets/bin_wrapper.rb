@@ -44,7 +44,7 @@ def root_script_pre(ruby_version)
 end
 
 def bundle_section(args_hash)
-	prefer_local = ! args_hash["-local"].nil?prefer_local = ! args_hash["-local"].nil?
+	prefer_local = ! args_hash["-local"].nil?
 	bundle = <<~BUNDLE
 		require 'bundler/inline'
 		require 'bundler'

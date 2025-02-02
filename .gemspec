@@ -1,12 +1,13 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.28.60"
+	s.version = "0.28.61"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
 	s.files = [
 		"assets/bin_wrapper.rb",
 		"assets/bootstrap_install",
+		"assets/bundle_section.rb",
 		"assets/nginx_evil.conf",
 		"assets/nginx_template.conf",
 		"lib/api_launcher/api_launcher.rb",
