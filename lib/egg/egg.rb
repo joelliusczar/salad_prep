@@ -86,8 +86,12 @@ module SaladPrep
 			exports
 		end
 
+		def app_lvl_definitions_script_path
+			"raise 'app_lvl_definitions_script_path not implemented'"
+		end
+
 		def app_lvl_definitions_script
-			"raise 'app_lvl_definitions_script not implemented'"
+			File.open(app_lvl_definitions_script_path).read
 		end
 
 		def is_current_dir_repo? (dir)
