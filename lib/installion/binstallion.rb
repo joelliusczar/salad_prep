@@ -521,13 +521,9 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("irb") do
 			body = <<~CODE
-				require "tempfile"
-				Tempfile.create do |tmp|
-					tmp.write(Provincial.egg.app_lvl_definitions_script)
-					tmp.rewind
 					script = root_script_pre("<%= @ruby_version %>")
-					script ^= "irb -r\#{tmp.path}"
-				end
+					script ^= "irb -r\#{Provincial.egg.app_lvl_definitions_script_path}"
+					system(script)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
