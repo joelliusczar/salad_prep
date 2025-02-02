@@ -68,6 +68,10 @@ module SaladPrep
 			File.open(provincial_path, "w").write(
 				File.open(@template_context_path).read
 			)
+			bundle_section_path = File.join(@egg.dev_ops_bin, "bundle.rb")
+			File.open(bundle_section_path, "w").write(
+				Resorcerer.bundle_section
+			)
 			script_name = "#{@egg.env_prefix.downcase}_dev"
 			script_path = File.join(
 				@egg.dev_ops_bin,
@@ -522,7 +526,10 @@ module SaladPrep
 		def_cmd("irb") do
 			body = <<~CODE
 					script = root_script_pre("<%= @ruby_version %>")
-					script ^= "irb -r\#{Provincial.egg.app_lvl_definitions_script_path}"
+
+					script ^= "bundle exec irb "
+					script += "-r\#{Provincial.Resorcerer.bundle_section_path}"
+					script += "-r\#{Provincial.egg.app_lvl_definitions_script_path}"
 					system(script)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)

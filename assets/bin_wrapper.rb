@@ -1,52 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'bundler/inline'
-require 'bundler'
-
-cmd = ARGV[0]
-
-if ARGV.empty?
-	show_commands
-	exit
-end
-
-args_hash = {}
-idx = 0
-ARGV.drop(1).each do |arg| #drop 0 since that's the command itself
-	if arg.include?("=")
-		split = arg.split("=")
-		args_hash[split[0].strip.downcase] = split[1].strip
-	else
-		args_hash[idx] = arg
-		args_hash[arg] = true
-		idx += 1
-	end
-end
-ARGV.clear
-
-if cmd == "spit_procs"
-	args_hash["-local"] = true
-end
-
-
-gemfile do
-	source "https://rubygems.org"
-
-	prefer_local = ! args_hash["-local"].nil?
-	if ! prefer_local || cmd == "refresh_bins"
-		gem(
-			"salad_prep",
-			git: "https://github.com/joelliusczar/salad_prep"
-		)
-	else
-		git_hash = `git ls-remote https://github.com/joelliusczar/salad_prep.git`
-			.split.first[0,12]
-		gem(
-			"salad_prep",
-			path: "#{Bundler.bundle_path.to_path}/bundler/gems/salad_prep-#{git_hash}"
-		)
-	end
-end
+<= bundle_section %>
 
 require "salad_prep"
 require_relative "./provincial"
@@ -89,10 +43,9 @@ def root_script_pre(ruby_version)
 	root_script ^= "asdf shell ruby #{ruby_version}"
 end
 
-def wrap_ruby(content, args_hash, redirect_outs: true)
-	prefer_local = ! args_hash["-local"].nil?
-	body = <<~PRE
-		ruby <<'EOF'
+def bundle_section(args_hash)
+	prefer_local = ! args_hash["-local"].nil?prefer_local = ! args_hash["-local"].nil?
+	bundle = <<~BUNDLE
 		require 'bundler/inline'
 		require 'bundler'
 
@@ -116,6 +69,15 @@ def wrap_ruby(content, args_hash, redirect_outs: true)
 		end
 
 		require "salad_prep"
+	BUNDLE
+end
+
+def wrap_ruby(content, args_hash, redirect_outs: true)
+	
+	body = <<~PRE
+		ruby <<'EOF'
+
+		#{bundle_section(args_hash)}
 		require "tempfile"
 		#{Provincial.egg.app_lvl_definitions_script}
 		Provincial.egg.load_env

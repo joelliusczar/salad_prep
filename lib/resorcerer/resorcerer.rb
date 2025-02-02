@@ -32,14 +32,24 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}nginx_evil.conf")
 		end
 
+		def bundle_section_path
+			"#{ASSETS_DIR}bundle_section.rb"
+		end
+
+		def bundle_section
+			open_text("#{ASSETS_DIR}bundle_section.rb")
+		end
+
 		def self.bin_wrapper_template
 			open_text("#{ASSETS_DIR}bin_wrapper.rb")
 		end
 
 		def self.bin_wrapper_template_compile(actions_body)
+			
 			template = ERB.new(bin_wrapper_template, trim_mode:"<>")
 			template.result_with_hash({
-				actions_body: actions_body
+				actions_body: actions_body,
+				bundle_section: bundle_section
 			})
 		end
 
