@@ -228,7 +228,7 @@ module SaladPrep
 			when Enums::BoxOSes::LINUX
 				certs_matching_name(common_name).each do |cert|
 					if is_cert_expired(cert)
-						Toob.log&.puts("A cert is experiered for #{common_name}")
+						Toob.log&.puts("A cert is expired for #{common_name}")
 						cert_dir="/usr/local/share/ca-certificates"
 						if cert_name.zero?
 							cert_name = common_name

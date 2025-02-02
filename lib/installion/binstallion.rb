@@ -518,6 +518,21 @@ module SaladPrep
 			CODE
 		end
 
+		mark_for(:sh_cmd, :remote)
+		def_cmd("irb") do
+			body = <<~CODE
+				require "tempfile"
+				Tempfile.create do |tmp|
+					tmp.write(Provincial.egg.app_lvl_definitions_script)
+					tmp.rewind
+					script = root_script_pre("<%= @ruby_version %>")
+					script ^= "irb -r\#{tmp.path}"
+				end
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+
 		#use this to download the latest locally, so
 		#I don't have to run an action without the local flag first
 		mark_for(:sh_cmd, :remote)
