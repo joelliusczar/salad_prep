@@ -528,7 +528,7 @@ module SaladPrep
 					script = root_script_pre("<%= @ruby_version %>")
 
 					script ^= "irb "
-					script += "-r#{File.join(File.expand_path("..", __FILE__),'bundle.rb')}"
+					script += "-r\#{File.join(File.expand_path("..", __FILE__),'bundle.rb')}"
 					script += " -r\#{Provincial.egg.app_lvl_definitions_script_path}"
 					system(script)
 			CODE
