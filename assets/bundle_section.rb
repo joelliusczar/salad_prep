@@ -3,10 +3,10 @@ require 'bundler'
 
 cmd = ARGV[0]
 
-if ARGV.empty?
+if ARGV.empty? && defined?(show_commands)
 	show_commands
 	exit
-end
+end	
 
 args_hash = {}
 idx = 0

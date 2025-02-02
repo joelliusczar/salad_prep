@@ -528,7 +528,7 @@ module SaladPrep
 					script = root_script_pre("<%= @ruby_version %>")
 
 					script ^= "bundle exec irb "
-					script += "-r\#{Provincial.Resorcerer.bundle_section_path}"
+					script += "-r\#{Provincial::Resorcerer.bundle_section_path}"
 					script += "-r\#{Provincial.egg.app_lvl_definitions_script_path}"
 					system(script)
 			CODE

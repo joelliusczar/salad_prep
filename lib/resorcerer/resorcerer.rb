@@ -33,7 +33,7 @@ module SaladPrep
 		end
 
 		def self.bundle_section_path
-			"#{ASSETS_DIR}bundle_section.rb"
+			File.absolute_path("#{ASSETS_DIR}bundle_section.rb")
 		end
 
 		def self.bundle_section
