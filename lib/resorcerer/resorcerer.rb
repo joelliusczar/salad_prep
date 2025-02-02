@@ -32,11 +32,11 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}nginx_evil.conf")
 		end
 
-		def bundle_section_path
+		def self.bundle_section_path
 			"#{ASSETS_DIR}bundle_section.rb"
 		end
 
-		def bundle_section
+		def self.bundle_section
 			open_text("#{ASSETS_DIR}bundle_section.rb")
 		end
 
