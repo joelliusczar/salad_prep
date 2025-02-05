@@ -385,7 +385,7 @@ module SaladPrep
 			BoxBox.run_root_block do
 				FileUtils.cp(public_key_file_path, "/usr/local/share/ca-certificates")
 				system(
-					"sudo", "update-ca-certificates",
+					"update-ca-certificates",
 					exception: true
 				)
 			end
