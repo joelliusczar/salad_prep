@@ -4,6 +4,7 @@ require 'json'
 require 'net/http'
 require "open3"
 require "tempfile"
+require_relative "./cert_info"
 require_relative "../box_box/box_box"
 require_relative "../box_box/enums"
 require_relative "../egg/egg"
@@ -136,7 +137,29 @@ module SaladPrep
 			end
 		end
 
-		def scan_pems_file_for_common_name(common_name, certs_file)
+		def extract_subject_from_cert(cert)
+			IO.popen(["openssl", "x509", "-subject"], "r+") do |p|
+				p.write(cert)
+				p.close_write
+				p.read
+			end
+		end
+
+		def extract_common_name_from_cert(cert)
+			output = extract_subject_from_cert(cert)
+			output[%r{CN *= *([^/\n]+)},1]
+		end
+
+		def extract_enddate_from_cert(cert)
+			output = IO.popen(["openssl", "x509", "-enddate"], "r+") do |p|
+				p.write(cert)
+				p.close_write
+				p.read
+			end
+			output.match(/notAfter *= *([a-zA-Z0-9: ]+)/)[1]
+		end
+
+		def scan_pems_file(certs_file)
 			cert = "".b
 			lines = File.open(certs_file, "rb").readlines
 			Enumerator.new do |yielder|
@@ -144,23 +167,32 @@ module SaladPrep
 					next if line == "-----BEGIN CERTIFICATE-----".b
 					if line == "-----END CERTIFICATE-----".b
 						decoded = Base64.decode64(cert)
-						output = IO.popen(["openssl", "x509", "-subject"], "r+") do |p|
-							cert = "-----BEGIN CERTIFICATE-----\n".b \
-							+ cert \
-							+ "-----END CERTIFICATE-----".b
-							p.write(cert)
-							p.close_write
-							p.read
-						end
-						
-						if /CN *= *#{common_name}/ =~ output
-							yielder << cert
-						end
+						cert = "-----BEGIN CERTIFICATE-----\n".b \
+						+ cert \
+						+ "-----END CERTIFICATE-----".b
+
+						yielder << cert
 						cert = "".b
 						next
 					end
 					cert += (line + "\n".b)
 				end
+			end
+		end
+
+		def scan_pems_file_for_common_name(common_name, certs_file)
+			scan_pems_file.filter do |cert|
+				subject = extract_subject_from_cert(cert)
+				/CN *= *#{common_name}/ =~ subject
+			end
+		end
+
+		def pems_to_objs
+			scan_pems_file do |cert|
+				CertInfo.new(
+					extract_subject_from_cert(cert),
+					extract_enddate_from_cert(cert)
+				)
 			end
 		end
 
@@ -179,19 +211,6 @@ module SaladPrep
 			else
 				raise "OS not configured"
 			end
-		end
-
-		def extract_subject_from_cert(cert)
-			IO.popen(["openssl", "x509", "-subject"], "r+") do |p|
-				p.write(cert)
-				p.close_write
-				p.read
-			end
-		end
-
-		def extract_common_name_from_cert(cert)
-			output = extract_subject_from_cert(cert)
-			output[%r{CN *= *([^/\n]+)},1]
 		end
 
 		def any_certs_matching_name_exact(common_name)
