@@ -181,7 +181,7 @@ module SaladPrep
 		end
 
 		def scan_pems_file_for_common_name(common_name, certs_file)
-			scan_pems_file.filter do |cert|
+			scan_pems_file(certs_file).filter do |cert|
 				subject = extract_subject_from_cert(cert)
 				/CN *= *#{common_name}/ =~ subject
 			end
