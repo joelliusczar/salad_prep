@@ -254,7 +254,10 @@ module SaladPrep
 						end
 						cert_name.domain_name_check
 						BoxBox.run_root_block do
-							FileUtils.rm(Dir.glob("#{cert_dir}/#{cert_name}*.crt"))
+							FileUtils.rm(
+								Dir.glob("#{cert_dir}/#{cert_name}*.crt"),
+								verbose: true
+							)
 							system(
 								"update-ca-certificates",
 								exception: true
