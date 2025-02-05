@@ -188,7 +188,7 @@ module SaladPrep
 		end
 
 		def pems_to_objs(certs_file)
-			scan_pems_file(certs_file) do |cert|
+			scan_pems_file(certs_file).map do |cert|
 				CertInfo.new(
 					extract_subject_from_cert(cert),
 					extract_enddate_from_cert(cert)
