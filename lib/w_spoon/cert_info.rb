@@ -1,3 +1,3 @@
 module SaladPrep
-	CertInfo = Struct.new(:subject, :enddate)
+	CertInfo = Struct.new(:common_name, :enddate)
 end

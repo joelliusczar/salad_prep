@@ -156,7 +156,7 @@ module SaladPrep
 				p.close_write
 				p.read
 			end
-			output.match(/notAfter *= *([a-zA-Z0-9: ]+)/)[1]
+			output[/notAfter *= *([a-zA-Z0-9: ]+)/,1]
 		end
 
 		def scan_pems_file(certs_file)
@@ -188,9 +188,9 @@ module SaladPrep
 		end
 
 		def pems_to_objs(certs_file)
-			scan_pems_file(certs_file).map do |cert|
+			scan_pems_file(certs_file).lazy.map do |cert|
 				CertInfo.new(
-					extract_subject_from_cert(cert),
+					extract_common_name_from_cert(cert),
 					extract_enddate_from_cert(cert)
 				)
 			end
