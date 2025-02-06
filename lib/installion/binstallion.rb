@@ -535,6 +535,59 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+		mark_for(:sh_cmd, :remote)
+		def_cmd("setup_debug") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+					Provincial.w_spoon.setup_ssl_cert_local_debug
+				ROOT
+				
+				Provincial::BoxBox.run_and_put(
+					'<%= sudo_line %>',
+					in_s: root_script,
+					exception: true
+				)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd, :remote)
+		def_cmd("setup_server") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+					port = Provincial.egg.api_port.to_s
+					Provincial.w_spoon.setup_nginx_confs(port)
+				ROOT
+				
+				Provincial::BoxBox.run_and_put(
+					'<%= sudo_line %>',
+					in_s: root_script,
+					exception: true
+				)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd, :remote)
+		def_cmd("refresh_certs") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+					Provincial.w_spoon.setup_ssl_cert_nginx
+					Provincial.w_spoon.restart_nginx
+				ROOT
+				
+				Provincial::BoxBox.run_and_put(
+					'<%= sudo_line %>',
+					in_s: root_script,
+					exception: true
+				)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
 		#use this to download the latest locally, so
 		#I don't have to run an action without the local flag first
 		mark_for(:sh_cmd, :remote)
