@@ -23,6 +23,8 @@ module SaladPrep
 				FileHerder.empty_dir(@egg.client_dest)
 			end
 			script = <<~CALL
+					export ASDF_DIR="$HOME/.asdf"
+					. "$HOME/.asdf/asdf.sh"
 					asdf local nodejs #{@node_version} &&
 					export VITE_API_VERSION='#{@egg.api_version}' &&
 					export VITE_BASE_ADDRESS='#{@egg.full_url}' &&
