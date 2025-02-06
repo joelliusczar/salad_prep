@@ -205,7 +205,7 @@ module SaladPrep
 				if ! args[1].kind_of?(String)
 					raise "No script or command provided"
 				end
-				cmd_arr = [arg[0], *cmd_arr, arg[1]]
+				cmd_arr = [args[0], *cmd_arr, args[1]]
 			else
 				raise "Too many arguments provided. Expected 1 or 2."
 			end
