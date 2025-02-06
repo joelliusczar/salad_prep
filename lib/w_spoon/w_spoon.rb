@@ -16,6 +16,8 @@ module SaladPrep
 
 	class WSpoon
 
+		CERT_DIR = "/usr/local/share/ca-certificates"
+
 		def initialize(egg, resourcerer)
 			@egg = egg
 			@resourcerer = resourcerer
@@ -248,7 +250,7 @@ module SaladPrep
 				certs_matching_name(common_name).each do |cert|
 					if is_cert_expired(cert)
 						Toob.log&.puts("A cert is expired for #{common_name}")
-						cert_dir="/usr/local/share/ca-certificates"
+						cert_dir = CERT_DIR
 						if cert_name.zero?
 							cert_name = common_name
 						end
@@ -364,7 +366,7 @@ module SaladPrep
 					"-subj", "/C=US/ST=CA/O=fake/CN=#{common_name}",
 					"-reqexts", "SAN", "-extensions", "SAN",
 					"-config", tmp.path, 
-					"-keyout", private_key_file_path, "-out", private_key_file_path,
+					"-keyout", private_key_file_path, "-out", public_key_file_path,
 					exception: true
 				)
 			end
@@ -383,7 +385,11 @@ module SaladPrep
 
 		def install_local_cert_debian(public_key_file_path)
 			BoxBox.run_root_block do
-				FileUtils.cp(public_key_file_path, "/usr/local/share/ca-certificates")
+				FileUtils.cp(
+					public_key_file_path,
+					CERT_DIR,
+					verbose: true
+				)
 				system(
 					"update-ca-certificates",
 					exception: true
