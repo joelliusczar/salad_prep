@@ -588,6 +588,24 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+		mark_for(:sh_cmd, :remote)
+		def_cmd("kill_server") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+					port = args_hash["-port"] || 8032
+					Provincial.box_box.kill_process_using_port()
+				ROOT
+				
+				Provincial::BoxBox.run_and_put(
+					'<%= sudo_line %>',
+					in_s: root_script,
+					exception: true
+				)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
 		#use this to download the latest locally, so
 		#I don't have to run an action without the local flag first
 		mark_for(:sh_cmd, :remote)
