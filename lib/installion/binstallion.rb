@@ -594,7 +594,7 @@ module SaladPrep
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
 					port = args_hash["-port"] || 8032
-					Provincial.box_box.kill_process_using_port()
+					Provincial::BoxBox.kill_process_using_port(port)
 				ROOT
 				
 				Provincial::BoxBox.run_and_put(

@@ -320,14 +320,16 @@ module SaladPrep
 
 		def self.kill_process_using_port(port)
 			if system("ss -V", out: File::NULL, err: File::NULL)
-				result = run_and_get(
-					"ss", "-lpn", "sport = :#{port}",
-					exception: true
-				)
-				match = result&.match(/pid=(\d+)/)
-				procId = match.embodied? ? match[1] : nil
-				if procId.populated?
-					Process.kill(15, procId.to_i)
+				run_root_block do
+					result = run_and_get(
+						"ss", "-lpn", "sport = :#{port}",
+						exception: true
+					)
+					match = result&.match(/pid=(\d+)/)
+					procId = match.embodied? ? match[1] : nil
+					if procId.populated?
+						Process.kill(15, procId.to_i)
+					end
 				end
 			elsif system("lsof -v", out: File::NULL, err: File::NULL)
 				run_root_block do
