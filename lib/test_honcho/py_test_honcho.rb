@@ -1,6 +1,7 @@
 require "fileutils"
 require_relative "../arg_checker/arg_checker"
 require_relative "./test_honcho"
+require_relative "../toob/toob"
 
 module SaladPrep
 	class PyTestHoncho < TestHoncho
@@ -28,7 +29,7 @@ module SaladPrep
 			then
 				@monty.create_py_env_in_app_trunk
 			else
-				log&.puts("Skipping create_py_env_in_app_trunk")
+				Toob.log&.puts("Skipping create_py_env_in_app_trunk")
 			end
 		end
 
