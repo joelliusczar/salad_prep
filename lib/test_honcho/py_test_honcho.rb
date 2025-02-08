@@ -1,4 +1,5 @@
 require "fileutils"
+require_relative "../extensions/string_ex"
 require_relative "./test_honcho"
 require_relative "../toob/toob"
 
