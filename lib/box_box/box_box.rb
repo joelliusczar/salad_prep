@@ -206,7 +206,7 @@ module SaladPrep
 					raise "No script or command provided"
 				end
 				env_args = args[0].map do |k,v|
-					"'#{k.to_s.gsub("'","\'")}'='#{v.to_s.gsub("'","\'")}'"
+					"#{k.to_s.gsub("'","\'")}='#{v.to_s.gsub("'","\'")}'"
 				end
 				if options.fetch(:avoid_root, true)
 					cmd_arr.insert(-3, *env_args)
