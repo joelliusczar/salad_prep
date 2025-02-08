@@ -399,7 +399,10 @@ module SaladPrep
 			"#{repo_path}/templates"
 		end
 
-		mark_for(fixed_dir: false, prefixed_env_key: "TEMPLATES_DEST")
+		mark_for(
+			fixed_dir: false,
+			prefixed_env_key: "TEMPLATES_DEST"
+		)
 		def template_dest(abs:true)
 			suffix = File.join(app_trunk, "templates")
 			abs_suffix(suffix, abs)
