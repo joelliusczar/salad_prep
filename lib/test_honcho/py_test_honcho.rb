@@ -5,6 +5,7 @@ require_relative "../toob/toob"
 
 module SaladPrep
 	class PyTestHoncho < TestHoncho
+		using StringEx
 
 		def initialize(monty:, **rest)
 			super(**rest)
