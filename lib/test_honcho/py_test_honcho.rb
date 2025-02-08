@@ -46,9 +46,8 @@ module SaladPrep
 				CALL
 				Dir.chdir(File.join(@egg.src, "tests")) do 
 					BoxBox.script_run({
-						"#{@egg.env_prefix}_AUTH_SECRET_KEY" => @egg.api_auth_key,
 						"PYTHONPATH" => "#{@egg.src}:#{@egg.src}/api:#{@egg.src}/tests",
-						"#{@egg.env_prefix}_TEMPLATES_DEST" => @egg.template_dest,
+						**@egg.env_hash(include_dirs: true)
 						}, 
 						script,
 						exception: true
