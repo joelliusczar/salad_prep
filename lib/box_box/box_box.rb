@@ -208,7 +208,12 @@ module SaladPrep
 				env_args = args[0].map do |k,v|
 					"'#{k.to_s.gsub("'","\'")}'='#{v.to_s.gsub("'","\'")}'"
 				end
-				cmd_arr = [*cmd_arr, *env_args, args[1]]
+				if options.fetch(:avoid_root, true)
+					cmd_arr.insert(-3, *env_args)
+				else
+					cmd_arr.insert(0, args[0])
+				end
+				cmd_arr = [*cmd_arr, args[1]]
 			else
 				raise "Too many arguments provided. Expected 1 or 2."
 			end
