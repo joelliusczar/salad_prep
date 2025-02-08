@@ -190,7 +190,7 @@ module SaladPrep
 
 		def self.__script_arg_juggle__(*args, **options)
 			cmd_arr = ["sh", "-c"]
-			if options .fetch(:avoid_root, true)
+			if options.fetch(:avoid_root, true)
 				cmd_arr.insert(0, "sudo","-u", login_name,)
 			end
 			if args.length == 1
@@ -205,7 +205,10 @@ module SaladPrep
 				if ! args[1].kind_of?(String)
 					raise "No script or command provided"
 				end
-				cmd_arr = [args[0], *cmd_arr, args[1]]
+				env_args = args[0].map do |k,v|
+					"'#{k.to_s.gsub("'","\'")}'='#{v.to_s.gsub("'","\'")}'"
+				end
+				cmd_arr = [*cmd_arr, *env_args, args[1]]
 			else
 				raise "Too many arguments provided. Expected 1 or 2."
 			end
@@ -374,7 +377,7 @@ module SaladPrep
 		end
 
 		def setup_env_api_file
-			puts("setting up .env file")
+			Toob.log&.puts("setting up .env file")
 			env_file = "#{@egg.config_dir}/.env"
 			env_file_src = "#{@egg.templates_src}/.env_api"
 			if !FileHerder::is_path_allowed(env_file)

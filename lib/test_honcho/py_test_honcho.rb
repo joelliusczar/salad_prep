@@ -1,5 +1,4 @@
 require "fileutils"
-require_relative "../arg_checker/arg_checker"
 require_relative "./test_honcho"
 require_relative "../toob/toob"
 
@@ -38,7 +37,7 @@ module SaladPrep
 				setup_unit_test_env
 				py_activate = @monty.py_env_activate_path
 
-				ArgChecker.path(py_activate)
+				py_activate.path_check
 				script = <<~CALL
 					. '#{py_activate}' &&
 					pytest -s

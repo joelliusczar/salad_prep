@@ -1,7 +1,6 @@
 require "date"
 require "fileutils"
 require 'mysql'
-require_relative "../arg_checker/arg_checker"
 require_relative "../box_box/enums"
 require_relative "./dbass"
 require_relative "./enums"
