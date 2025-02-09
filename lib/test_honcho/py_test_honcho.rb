@@ -47,8 +47,7 @@ module SaladPrep
 				Dir.chdir(File.join(@egg.src, "tests")) do 
 					BoxBox.script_run({
 						"PYTHONPATH" => "#{@egg.src}:#{@egg.src}/api:#{@egg.src}/tests",
-						"#{@egg.env_prefix}_APP_ROOT" => @egg.app_root,
-						**@egg.env_hash(prefer_keys_file: false, include_dirs: true)
+						"#{@egg.env_prefix}_APP_ROOT" => @egg.app_root
 						}, 
 						script,
 						exception: true

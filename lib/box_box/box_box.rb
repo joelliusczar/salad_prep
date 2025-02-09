@@ -191,7 +191,7 @@ module SaladPrep
 		def self.__script_arg_juggle__(*args, **options)
 			cmd_arr = ["sh", "-c"]
 			if options.fetch(:avoid_root, true)
-				cmd_arr.insert(0, "sudo","-u", login_name,)
+				cmd_arr.insert(0, "sudo","-E","-u", login_name,)
 			end
 			if args.length == 1
 				if ! args[0].kind_of?(String)
