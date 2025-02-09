@@ -435,6 +435,7 @@ module SaladPrep
 				add_test_url_to_hosts(domain)
 				public_key_file_path = "#{local_nginx_cert_path}.public.key.crt"
 				private_key_file_path = "#{local_nginx_cert_path}.private.key.pem"
+				certificate_chain_file_path = "#{local_nginx_cert_path}.chain.key.crt"
 				clean_up_invalid_cert(domain, local_nginx_cert_name)
 				if ! any_certs_matching_name_exact(domain)
 					setup_ssl_cert_local(
@@ -458,6 +459,8 @@ module SaladPrep
 					File.open(private_key_file_path, "w")
 						.write(cert_hash["privatekey"].chomp)
 					File.open(public_key_file_path, "w")
+						.write(cert_hash["publickey"].chomp)
+					File.open(certificate_chain_file_path, "w")
 						.write(cert_hash["certificatechain"].chomp)
 				end
 			end
