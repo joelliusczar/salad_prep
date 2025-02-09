@@ -119,7 +119,7 @@ module SaladPrep
 				}
 			DATA
 
-			path = "/api/json/v3/ssl/retrieve/#{@egg.domain_name}"
+			path = "/api/json/v3/ssl/retrieve/#{"#{@egg.url_base}.#{@egg.tld}"}"
 			res = Net::HTTP.start("api.porkbun.com", :use_ssl => true) do |http|
 				http.post2(path, data)
 			end
