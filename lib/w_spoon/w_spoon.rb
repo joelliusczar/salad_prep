@@ -103,12 +103,16 @@ module SaladPrep
 			"/Library/Keychains/System.keychain"
 		end
 
-		def remote_public_key()
+		def remote_public_key
 			"/etc/ssl/certs/#{@egg.project_name_snake}.public.key.pem"
 		end
 
-		def remote_private_key()
+		def remote_private_key
 			"/etc/ssl/private/#{@egg.project_name_snake}.private.key.pem"
+		end
+
+		def remote_cert_chain_key
+			""
 		end
 
 		def ssl_vars()
@@ -435,7 +439,6 @@ module SaladPrep
 				add_test_url_to_hosts(domain)
 				public_key_file_path = "#{local_nginx_cert_path}.public.key.crt"
 				private_key_file_path = "#{local_nginx_cert_path}.private.key.pem"
-				certificate_chain_file_path = "#{local_nginx_cert_path}.chain.key.crt"
 				clean_up_invalid_cert(domain, local_nginx_cert_name)
 				if ! any_certs_matching_name_exact(domain)
 					setup_ssl_cert_local(
@@ -449,6 +452,7 @@ module SaladPrep
 			else
 				public_key_file_path = "#{remote_public_key}"
 				private_key_file_path = "#{remote_private_key}"
+				certificate_chain_file_path = remote_cert_chain_key
 				if ! File.file?(public_key_file_path) \
 					|| !File.file?(private_key_file_path)\
 					|| is_cert_expired(File.open(public_key_file_path).read)\
@@ -460,8 +464,9 @@ module SaladPrep
 						.write(cert_hash["privatekey"].chomp)
 					File.open(public_key_file_path, "w")
 						.write(cert_hash["publickey"].chomp)
-					File.open(certificate_chain_file_path, "w")
-						.write(cert_hash["certificatechain"].chomp)
+					#does not appear to be used
+					# File.open(certificate_chain_file_path, "w")
+					# 	.write(cert_hash["certificatechain"].chomp)
 				end
 			end
 		end
