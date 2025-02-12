@@ -1,7 +1,7 @@
 require_relative "./api_launcher"
 
 module SaladPrep
-	class StaticApiLauncher < APILauncher
+	class StaticAPILauncher < APILauncher
 
 		def copy_api_files
 		end
