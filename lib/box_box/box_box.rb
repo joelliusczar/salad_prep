@@ -385,7 +385,7 @@ module SaladPrep
 			Toob.log&.puts("setting up .env file")
 			env_file = "#{@egg.config_dir}/.env"
 			env_file_src = "#{@egg.templates_src}/.env_api"
-			if !FileHerder::is_path_allowed(env_file)
+			if !FileHerder.is_path_allowed(env_file)
 				raise "env_file file path has potential errors: #{env_file}"
 			end
 			contents = ""

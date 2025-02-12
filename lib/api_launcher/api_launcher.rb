@@ -26,7 +26,7 @@ module SaladPrep
 
 		def copy_api_files
 			BoxBox.run_root_block do
-				FileHerder::copy_dir(
+				FileHerder.copy_dir(
 					@egg.api_src, 
 					@egg.api_dest
 				)
@@ -34,7 +34,7 @@ module SaladPrep
 		end
 
 		def copy_support_files
-			FileHerder::copy_dir(
+			FileHerder.copy_dir(
 				@egg.templates_src, 
 				@egg.template_dest
 			)

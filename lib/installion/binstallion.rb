@@ -65,9 +65,15 @@ module SaladPrep
 			FileHerder.empty_dir(@egg.dev_ops_bin)
 			BoxBox.path_append(@egg.dev_ops_bin)
 			provincial_path = File.join(@egg.dev_ops_bin, "provincial.rb")
+			provincial_src = File.join(@template_context_path, "dev_ops.rb")
 			File.open(provincial_path, "w").write(
-				File.open(@template_context_path).read
+				File.open(provincial_src).read
 			)
+			app_assets_src_dir = File.join(@template_context_path, "assets")
+			app_assets_dest_dir = File.join(@egg.dev_ops_bin, "assets")
+			if File.directory?(app_assets_src_dir)
+				FileHerder.copy_dir(app_assets_src_dir, )
+			end
 			bundle_section_path = File.join(@egg.dev_ops_bin, "bundle.rb")
 			File.open(bundle_section_path, "w").write(
 				Resorcerer.bundle_section
