@@ -72,7 +72,7 @@ module SaladPrep
 			app_assets_src_dir = File.join(@template_context_path, "assets")
 			app_assets_dest_dir = File.join(@egg.dev_ops_bin, "assets")
 			if File.directory?(app_assets_src_dir)
-				FileHerder.copy_dir(app_assets_src_dir, )
+				FileHerder.copy_dir(app_assets_src_dir, app_assets_dest_dir)
 			end
 			bundle_section_path = File.join(@egg.dev_ops_bin, "bundle.rb")
 			File.open(bundle_section_path, "w").write(
