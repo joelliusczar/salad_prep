@@ -463,7 +463,7 @@ module SaladPrep
 					File.open(private_key_file_path, "w")
 						.write(cert_hash["privatekey"].chomp)
 					File.open(public_key_file_path, "w")
-						.write(cert_hash["publickey"].chomp)
+						.write(cert_hash["certificatechain"].chomp)
 					#does not appear to be used
 					# File.open(certificate_chain_file_path, "w")
 					# 	.write(cert_hash["certificatechain"].chomp)

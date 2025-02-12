@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.28.96"
+	s.version = "0.28.97"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
 		"assets/nginx_template.conf",
 		"lib/api_launcher/api_launcher.rb",
 		"lib/api_launcher/py_api_launcher.rb",
+		"lib/api_launcher/static_api_launcher.rb",
 		"lib/arg_checker/arg_checker.rb",
 		"lib/box_box/box_box.rb",
 		"lib/box_box/enums.rb",

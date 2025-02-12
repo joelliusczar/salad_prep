@@ -1,5 +1,6 @@
 require_relative "api_launcher/api_launcher"
 require_relative "api_launcher/py_api_launcher"
+require_relative "api_launcher/static_api_launcher"
 require_relative "arg_checker/arg_checker"
 require_relative "box_box/box_box"
 require_relative "box_box/enums"
