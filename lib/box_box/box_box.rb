@@ -401,6 +401,7 @@ module SaladPrep
 
 		def setup_build_dir(current_branch: nil)
 			@egg.load_env
+			Toob.diag&.puts("current_branch: #{current_branch}")
 			required_env_vars = @egg.server_env_check_required.map do |e|
 				"Required var #{e} not set"
 			end

@@ -43,6 +43,12 @@ def root_script_pre(ruby_version)
 	root_script ^= "asdf shell ruby #{ruby_version}"
 end
 
+def get_current_branch
+	Dir.chdir(Provincial.egg.local_repo_path) do 
+		`git branch --show-current 2>/dev/null`.strip
+	end
+end
+
 def bundle_section(args_hash)
 	prefer_local = ! args_hash["-local"].nil?
 	bundle = <<~BUNDLE

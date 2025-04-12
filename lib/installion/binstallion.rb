@@ -355,7 +355,7 @@ module SaladPrep
 			body = <<~CODE
 				current_branch = args_hash["-branch"]
 				if current_branch.zero?
-					current_branch = `git branch --show-current 2>/dev/null`.strip
+					current_branch = get_current_branch
 				end
 				Provincial.egg.load_env
 				return unless Provincial.remote.pre_deployment_check(current_branch:)
@@ -394,7 +394,7 @@ module SaladPrep
 			body = <<~CODE
 				current_branch = args_hash["-branch"]
 				if current_branch.zero?
-					current_branch = `git branch --show-current 2>/dev/null`.strip
+					current_branch = get_current_branch
 				end
 				Provincial.egg.load_env
 				return unless Provincial.remote.pre_deployment_check(
@@ -456,7 +456,7 @@ module SaladPrep
 			body = <<~CODE
 				current_branch = args_hash["-branch"]
 				if current_branch.zero?
-					current_branch = `git branch --show-current 2>/dev/null`.strip
+					current_branch = get_current_branch
 				end
 				Provincial.egg.load_env
 				return unless Provincial.remote.pre_deployment_check(
