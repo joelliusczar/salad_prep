@@ -67,9 +67,9 @@ module SaladPrep
 			content
 		end
 
-		def install_bins
+		def install_bins(args_hash)
 			Toob.log&.puts("Installing procs in #{@template_context_path}")
-			if Dir.pwd.start_with?(@template_context_path)
+			if args_hash["--dev"].populated?
 				provincial_path = File.join(@template_context_path, "provincial.rb")
 				provincial_src = File.join(@template_context_path, "dev_ops.rb")
 				File.open(provincial_path, "w").write(
@@ -150,7 +150,7 @@ module SaladPrep
 
 		def_cmd("refresh_procs") do
 			body = <<~CODE
-				Provincial.binstallion.install_bins
+				Provincial.binstallion.install_bins(args_hash)
 				puts("\#{Provincial::Canary.version}")
 			CODE
 		end
