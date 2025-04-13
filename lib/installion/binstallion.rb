@@ -415,18 +415,21 @@ module SaladPrep
 		def_cmd("deploy_api") do
 			body = <<~CODE
 				current_branch = args_hash["-branch"]
+				skip_tests = args_hash["-skip-tests"]
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
 				Provincial.egg.load_env
 				return unless Provincial.remote.pre_deployment_check(
 					current_branch:,
-					test_honcho: Provincial.test_honcho
+					test_honcho: skip_tests.zero? Provincial.test_honcho : nil
 				)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= wrap_ruby(<<~REMOTE, args_hash)
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
+					$stdout.puts("test out")
+					$stderr.puts("test err")
 					Provincial.api_launcher.startup_api
 				REMOTE
 				Provincial.remote.run_remote(remote_script)

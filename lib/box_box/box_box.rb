@@ -191,6 +191,7 @@ module SaladPrep
 		def self.__script_arg_juggle__(*args, **options)
 			cmd_arr = ["sh", "-c"]
 			if options.fetch(:avoid_root, true)
+				#E preserves the env
 				cmd_arr.insert(0, "sudo","-E","-u", login_name,)
 			end
 			if args.length == 1
@@ -306,8 +307,9 @@ module SaladPrep
 						et.join
 						if t.value.exitstatus == 0
 							if err_lines.populated?
-								Toob.error&.puts("errors on:")
+								Toob.error&.puts("errors on success:")
 								Toob.error&.puts(err_lines * "")
+								Toob.error&.puts("_" * 12)
 							end
 							out_lines * ""
 						else
