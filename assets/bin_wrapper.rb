@@ -7,6 +7,7 @@ require_relative "./provincial"
 
 using SaladPrep::StringEx
 using SaladPrep::HashEx
+using SaladPrep::PrimitiveEx
 
 Provincial::Toob.set_all(Provincial.egg.env_prefix)
 
