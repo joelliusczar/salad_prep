@@ -59,6 +59,20 @@ module SaladPrep
 
 		def run_remote(script)
 			Toob.huge&.write(script)
+			BoxBox.run_and_put(
+				"ssh",
+				"-i",
+				@egg.ssh_id_file,
+				"root@#{@egg.ssh_address}",
+				"bash",
+				"-sl",
+				in_s: script,
+				exception: true
+			)
+		end
+
+		def run_remote_get(script)
+			Toob.huge&.write(script)
 			BoxBox.run_and_get(
 				"ssh",
 				"-i",

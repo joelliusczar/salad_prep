@@ -15,8 +15,8 @@ ARGV.drop(1).each do |arg| #drop 0 since that's the command itself
 		split = arg.split("=")
 		args_hash[split[0].strip.downcase] = split[1].strip
 	else
-		args_hash[idx.to_s] = arg
-		args_hash[arg] = "true"
+		args_hash[idx] = arg
+		args_hash[arg] = true
 		idx += 1
 	end
 end

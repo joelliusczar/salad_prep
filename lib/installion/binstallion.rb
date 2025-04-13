@@ -209,7 +209,7 @@ module SaladPrep
 						puts(egg.dev_ops_bin)
 					EOF1
 				REMOTE1
-				remote_path = Provincial.remote.run_remote(remote_script).chomp
+				remote_path = Provincial.remote.run_remote_get(remote_script).chomp
 				Provincial.remote.push_files(
 					"<%= @template_context_path %>",
 					"\#{remote_path}/provincial.rb"
@@ -274,7 +274,7 @@ module SaladPrep
 					puts(out_path) #doesn't print to screen. This is returned
 				REMOTE
 	
-				remote_out_path = Provincial.remote.run_remote(remote_script).chomp
+				remote_out_path = Provincial.remote.run_remote_get(remote_script).chomp
 				puts("Remote path: \#{remote_out_path}")
 				if remote_out_path.zero?
 					raise "Server provided output path is blank."
@@ -511,7 +511,7 @@ module SaladPrep
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= args_hash[0]
 				Provincial.egg.load_env
-				puts(Provincial.remote.run_remote(remote_script))
+				Provincial.remote.run_remote(remote_script)
 			CODE
 		end
 

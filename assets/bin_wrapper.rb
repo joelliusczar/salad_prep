@@ -87,7 +87,8 @@ def wrap_ruby(content, args_hash, redirect_outs: true)
 
 		args_hash = {
 			<%% args_hash.each do |k,v| %>
-				"<%%=k.gsub('"','\"') %>" => "<%%=v.gsub('"','\"') %>",
+				"<%%=k.is_a?(String) ? k.gsub('"','\"') : k %>" =>
+					"<%%=v.is_a?(String) ? v.gsub('"','\"') : v %>",
 			<%% end %>
 		}
 
