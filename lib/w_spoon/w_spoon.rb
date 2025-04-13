@@ -472,7 +472,7 @@ module SaladPrep
 		end
 
 		def setup_client_env_debug
-			env_file = File.join(@gg.client_src, ".env.local")
+			env_file = File.join(@egg.client_src, ".env.local")
 			File.open(env_file, "w") do |f|
 				f.puts("VITE_API_VERSION=#{@egg.api_version}")
 				f.puts("VITE_BASE_ADDRESS=https://localhost:#{@egg.test_port}")
