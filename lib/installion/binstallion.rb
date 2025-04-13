@@ -62,31 +62,52 @@ module SaladPrep
 		end
 
 		def install_bins
-			FileHerder.empty_dir(@egg.dev_ops_bin)
-			BoxBox.path_append(@egg.dev_ops_bin)
-			provincial_path = File.join(@egg.dev_ops_bin, "provincial.rb")
-			provincial_src = File.join(@template_context_path, "dev_ops.rb")
-			File.open(provincial_path, "w").write(
-				File.open(provincial_src).read
-			)
-			app_assets_src_dir = File.join(@template_context_path, "assets")
-			app_assets_dest_dir = File.join(@egg.dev_ops_bin, "assets")
-			if File.directory?(app_assets_src_dir)
-				FileHerder.copy_dir(app_assets_src_dir, app_assets_dest_dir)
+			if Dir.pwd.start_with?(@template_context_path)
+				provincial_path = File.join(@template_context_path, "provincial.rb")
+				provincial_src = File.join(@template_context_path, "dev_ops.rb")
+				File.open(provincial_path, "w").write(
+					File.open(provincial_src).read
+				)
+				bundle_section_path = File.join(@template_context_path, "bundle.rb")
+				File.open(bundle_section_path, "w").write(
+					Resorcerer.bundle_section
+				)
+				script_name = "#{@egg.env_prefix.downcase}_dev_dev"
+				script_path = File.join(
+					@template_context_path,
+					script_name
+				)
+				File.open(script_path, "w").write(
+					full_proc_file_content
+				)
+				FileUtils.chmod("a+x", script_path)
+			else
+				FileHerder.empty_dir(@egg.dev_ops_bin)
+				BoxBox.path_append(@egg.dev_ops_bin)
+				provincial_path = File.join(@egg.dev_ops_bin, "provincial.rb")
+				provincial_src = File.join(@template_context_path, "dev_ops.rb")
+				File.open(provincial_path, "w").write(
+					File.open(provincial_src).read
+				)
+				app_assets_src_dir = File.join(@template_context_path, "assets")
+				app_assets_dest_dir = File.join(@egg.dev_ops_bin, "assets")
+				if File.directory?(app_assets_src_dir)
+					FileHerder.copy_dir(app_assets_src_dir, app_assets_dest_dir)
+				end
+				bundle_section_path = File.join(@egg.dev_ops_bin, "bundle.rb")
+				File.open(bundle_section_path, "w").write(
+					Resorcerer.bundle_section
+				)
+				script_name = "#{@egg.env_prefix.downcase}_dev"
+				script_path = File.join(
+					@egg.dev_ops_bin,
+					script_name
+				)
+				File.open(script_path, "w").write(
+					full_proc_file_content
+				)
+				FileUtils.chmod("a+x", script_path)
 			end
-			bundle_section_path = File.join(@egg.dev_ops_bin, "bundle.rb")
-			File.open(bundle_section_path, "w").write(
-				Resorcerer.bundle_section
-			)
-			script_name = "#{@egg.env_prefix.downcase}_dev"
-			script_path = File.join(
-				@egg.dev_ops_bin,
-				script_name
-			)
-			File.open(script_path, "w").write(
-				full_proc_file_content
-			)
-			FileUtils.chmod("a+x", script_path)
 		end
 
 		def sudo_line
