@@ -53,7 +53,7 @@ module SaladPrep
 			actions_body ^= 'Toob.error&.puts("Error while trying to create bin file.")'
 			actions_body ^= 'Toob.error&.puts(e.backtrace * "\n")'
 			actions_body ^= 'Toob.error&.puts(e.message)'
-			actions_body ^= "end"
+			actions_body ^= "end\n"
 			actions_body
 		end
 
