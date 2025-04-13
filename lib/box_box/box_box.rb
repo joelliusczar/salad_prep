@@ -306,6 +306,7 @@ module SaladPrep
 						et.join
 						if t.value.exitstatus == 0
 							if err_lines.populated?
+								Toob.error&.puts("errors on:")
 								Toob.error&.puts(err_lines * "")
 							end
 							out_lines * ""

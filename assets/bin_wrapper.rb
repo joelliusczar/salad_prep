@@ -78,7 +78,7 @@ def bundle_section(args_hash)
 	BUNDLE
 end
 
-def wrap_ruby(content, args_hash, redirect_outs: false)
+def wrap_ruby(content, args_hash, redirect_outs: true)
 	
 	body = <<~PRE
 		ruby <<'EOF'
@@ -102,13 +102,15 @@ def wrap_ruby(content, args_hash, redirect_outs: false)
 			ENV["PATH"] = "\#{ENV['PATH']}:\#{ENV['PATH_ADDS']}"
 		end
 		<%% if redirect_outs %>
-		Tempfile.create do |tmp|
-			Provincial::Toob.register_sub(tmp) do
+		
+		File.open("supressed_output", "a") do |file|
+			Provincial::Toob.register_sub(file) do
 				<%% content.split("\n").each do |l| %>
 				<%%= l %>
 
 				<%% end %>
 			end
+
 		end
 		<%% else %>
 		<%% content.split("\n").each do |l| %>
