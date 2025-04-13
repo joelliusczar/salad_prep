@@ -381,7 +381,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_install") do
 			body = <<~CODE
-				current_branch = args_hash["-branch"]
+				current_branch = args_hash["--branch"]
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
@@ -420,7 +420,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_api") do
 			body = <<~CODE
-				current_branch = args_hash["-branch"]
+				current_branch = args_hash["--branch"]
 				skip_tests = args_hash["--skip-tests"]
 				if current_branch.zero?
 					current_branch = get_current_branch
@@ -485,7 +485,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_client") do
 			body = <<~CODE
-				current_branch = args_hash["-branch"]
+				current_branch = args_hash["--branch"]
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end

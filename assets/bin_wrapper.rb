@@ -24,6 +24,7 @@ def show_commands
 end
 
 def bin_action_wrap(args_hash)
+	Provincial::Toob.diag&.puts(args_hash)
 	if args_hash.include?("-testing")
 		Provincial.egg.run_test_block do
 			yield
