@@ -62,6 +62,7 @@ module SaladPrep
 		end
 
 		def install_bins
+			Toob.diag&.log("Installing procs in #{@template_context_path}")
 			if Dir.pwd.start_with?(@template_context_path)
 				provincial_path = File.join(@template_context_path, "provincial.rb")
 				provincial_src = File.join(@template_context_path, "dev_ops.rb")
