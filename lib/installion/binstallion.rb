@@ -24,6 +24,7 @@ module SaladPrep
 			actions_body = ""
 			actions_body ^= refresh_procs
 			actions_body ^= spit_procs
+			actions_body ^= "begin\n"
 			begin
 				marked = marked_methods(:sh_cmd)
 				Toob.warning&.puts("No symbols") if marked.none?
@@ -48,6 +49,11 @@ module SaladPrep
 				Toob.error&.puts(e.backtrace * "\n")
 				Toob.error&.puts(e.message)
 			end
+			actions_body ^= "rescue => e"
+			actions_body ^= 'Toob.error&.puts("Error while trying to create bin file.")'
+			actions_body ^= 'Toob.error&.puts(e.backtrace * "\n")'
+			actions_body ^= 'Toob.error&.puts(e.message)'
+			actions_body ^= "end"
 			actions_body
 		end
 
@@ -62,7 +68,7 @@ module SaladPrep
 		end
 
 		def install_bins
-			Toob.diag&.puts("Installing procs in #{@template_context_path}")
+			Toob.log&.puts("Installing procs in #{@template_context_path}")
 			if Dir.pwd.start_with?(@template_context_path)
 				provincial_path = File.join(@template_context_path, "provincial.rb")
 				provincial_src = File.join(@template_context_path, "dev_ops.rb")
