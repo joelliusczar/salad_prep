@@ -217,7 +217,7 @@ module SaladPrep
 			else
 				raise "Too many arguments provided. Expected 1 or 2."
 			end
-
+			Toob.diag&.puts("process: #{cmd_arg} with options #{options}")
 			yield(*cmd_arr, **options)
 		end
 
