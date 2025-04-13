@@ -78,7 +78,7 @@ def bundle_section(args_hash)
 	BUNDLE
 end
 
-def wrap_ruby(content, args_hash, redirect_outs: true)
+def wrap_ruby(content, args_hash, redirect_outs: false)
 	
 	body = <<~PRE
 		ruby <<'EOF'
