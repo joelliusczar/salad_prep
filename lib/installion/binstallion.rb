@@ -638,6 +638,23 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd, :remote)
+		def_cmd("restart_server") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+					Provincial.w_spoon.restart_nginx
+				ROOT
+				
+				Provincial::BoxBox.run_and_put(
+					'<%= sudo_line %>',
+					in_s: root_script,
+					exception: true
+				)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd, :remote)
 		def_cmd("kill_server") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
