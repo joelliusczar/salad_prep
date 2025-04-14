@@ -93,7 +93,7 @@ module SaladPrep
 
 		def install_bins(args_hash)
 			Toob.log&.puts("Installing procs in #{@template_context_path}")
-			if args_hash["--dev"].populated?
+			if Dir.pwd.start_with?(@template_context_path)
 				provincial_path = File.join(@template_context_path, "provincial.rb")
 				provincial_src = File.join(@template_context_path, "dev_ops.rb")
 				File.open(provincial_path, "w").write(
@@ -112,13 +112,12 @@ module SaladPrep
 					full_proc_file_content
 				)
 				FileUtils.chmod("a+x", script_path)
-			else
-				Binstallion.install_bins(
-					@template_context_path,
-					@egg.dev_ops_bin,
-					full_proc_file_content
-				)
 			end
+			Binstallion.install_bins(
+				@template_context_path,
+				@egg.dev_ops_bin,
+				full_proc_file_content
+			)
 		end
 
 		def sudo_line
