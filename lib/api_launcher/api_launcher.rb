@@ -50,7 +50,10 @@ module SaladPrep
 		end
 
 		def startup_api(skip_setup:false)
-			return if skip_setup
+			if skip_setup
+				clean_up_running_processes
+				return
+			end
 			setup_api
 		end
 
