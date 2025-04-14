@@ -608,6 +608,16 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd, :remote)
+		def_cmd("setup_tests") do
+			body = <<~CODE
+				Provincial.egg.run_test_block do
+					Provincial.test_honcho.setup_unit_test_env
+				end
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd, :remote)
 		def_cmd("refresh_certs") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
