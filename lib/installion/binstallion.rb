@@ -211,9 +211,19 @@ module SaladPrep
 				REMOTE1
 				remote_path = Provincial.remote.run_remote_get(remote_script).chomp
 				Provincial.remote.push_files(
-					"<%= @template_context_path %>",
+					"<%= @template_context_path %>/dev_ops.rb",
 					"\#{remote_path}/provincial.rb"
 				)
+				Tempfile.create do |tmp|
+					tmp.write(
+						Resorcerer.bundle_section
+					)
+					tmp.rewind
+					Provincial.remote.push_files(
+						tmp.path,
+						"\#{remote_path}/bundle.rb",
+					)
+				end
 				gen_out_path = "\#{remote_path}/<%= @egg.env_prefix.downcase %>_dev"
 				Tempfile.create do |tmp|
 					tmp.write(
