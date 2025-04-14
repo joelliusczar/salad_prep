@@ -409,11 +409,30 @@ module SaladPrep
 		end
 
 		mark_for(:sh_cmd, :remote)
-		def_cmd("startup_api") do
+		def_cmd("restart_api") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
-					Provincial.box_box.setup_build_dir
+					Provincial.api_launcher.restart_api
+				ROOT
+
+				Provincial::BoxBox.run_and_put(
+					'<%= sudo_line %>',
+					in_s: root_script,
+					exception: true
+				)
+
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd, :remote)
+		def_cmd("startup_api") do
+			body = <<~CODE
+				current_branch = args_hash["--branch"]
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
 					Provincial.api_launcher.startup_api
 				ROOT
 
