@@ -12,8 +12,8 @@ module SaladPrep
 			@monty = monty
 		end
 
-		def setup_unit_test_env
-			super
+		def setup_unit_test_env(overrides = {})
+			super(overrides)
 			py_env_path = @monty.py_env_path
 			src_files = Dir.glob(
 				"**/*",

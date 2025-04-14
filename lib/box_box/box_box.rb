@@ -384,7 +384,7 @@ module SaladPrep
 			FileUtils.mkdir_p(@egg.build_dir)
 		end
 
-		def setup_env_api_file
+		def setup_env_api_file(overrides = {})
 			Toob.log&.puts("setting up .env file")
 			env_file = "#{@egg.config_dir}/.env"
 			env_file_src = "#{@egg.templates_src}/.env_api"
@@ -392,7 +392,8 @@ module SaladPrep
 				raise "env_file file path has potential errors: #{env_file}"
 			end
 			contents = ""
-			@egg.env_hash(include_dirs: true).each_pair do |key, value|
+			@egg.env_hash(include_dirs: true).merge(overrides)
+				.each_pair do |key, value|
 				contents ^= "#{key}='#{value}'"
 			end
 			File.open(env_file, "w") { |f| f.write(contents)}

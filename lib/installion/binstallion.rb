@@ -611,7 +611,9 @@ module SaladPrep
 		def_cmd("setup_tests") do
 			body = <<~CODE
 				Provincial.egg.run_test_block do
-					Provincial.test_honcho.setup_unit_test_env
+					Provincial.test_honcho.setup_unit_test_env({
+						"__TEST_FLAG__" => "true"
+					})
 				end
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
