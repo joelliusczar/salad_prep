@@ -7,6 +7,7 @@ using SaladPrep::StringEx
 using SaladPrep::HashEx
 using SaladPrep::PrimitiveEx
 
+@backup_env_prefix = "<%= backup_env_prefix %>"
 @backup_src = "<%= backup_src %>"
 @backup_dest = "<%= backup_dest %>"
 
@@ -51,7 +52,7 @@ end
 
 
 begin
-	
+
 require_relative "./provincial"
 
 

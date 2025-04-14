@@ -63,7 +63,7 @@ module SaladPrep
 			content
 		end
 
-		def self.install_bins(src, dest, proc_content)
+		def self.install_bins(env_prefix, src, dest, proc_content)
 			FileHerder.empty_dir(dest)
 			BoxBox.path_append(dest)
 			provincial_path = File.join(dest, "provincial.rb")
@@ -80,7 +80,7 @@ module SaladPrep
 			File.open(bundle_section_path, "w").write(
 				Resorcerer.bundle_section
 			)
-			script_name = "#{@egg.env_prefix.downcase}_dev"
+			script_name = "#{env_prefix.downcase}_dev"
 			script_path = File.join(
 				dest,
 				script_name
@@ -114,6 +114,7 @@ module SaladPrep
 				FileUtils.chmod("a+x", script_path)
 			end
 			Binstallion.install_bins(
+				@egg.env_prefix,
 				@template_context_path,
 				@egg.dev_ops_bin,
 				full_proc_file_content
