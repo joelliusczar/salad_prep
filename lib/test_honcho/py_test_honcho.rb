@@ -13,7 +13,10 @@ module SaladPrep
 		end
 
 		def setup_unit_test_env(overrides = {})
-			super(overrides)
+			super(overrides.merge({
+				"PYTHONPATH" => "#{@egg.src}:#{@egg.src}/api:#{@egg.src}/tests",
+				"#{@egg.env_prefix}_APP_ROOT" => @egg.app_root
+			}))
 			py_env_path = @monty.py_env_path
 			src_files = Dir.glob(
 				"**/*",
@@ -45,7 +48,7 @@ module SaladPrep
 					pytest -s
 				CALL
 				Dir.chdir(File.join(@egg.src, "tests")) do 
-					BoxBox.script_run({
+					BoxBox.script_run({ #this hash may not be needed anymore
 						"PYTHONPATH" => "#{@egg.src}:#{@egg.src}/api:#{@egg.src}/tests",
 						"#{@egg.env_prefix}_APP_ROOT" => @egg.app_root
 						}, 
