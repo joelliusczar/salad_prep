@@ -44,12 +44,14 @@ module SaladPrep
 			open_text("#{ASSETS_DIR}bin_wrapper.rb")
 		end
 
-		def self.bin_wrapper_template_compile(actions_body)
+		def self.bin_wrapper_template_compile(actions_body, backup_src, backup_dest)
 			
 			template = ERB.new(bin_wrapper_template, trim_mode:"<>")
 			template.result_with_hash({
 				actions_body: actions_body,
-				bundle_section: bundle_section
+				bundle_section: bundle_section,
+				backup_src: backup_src,
+				backup_dest: backup_dest
 			})
 		end
 

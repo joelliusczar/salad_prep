@@ -3,54 +3,12 @@
 <%= bundle_section %>
 
 require "salad_prep"
-require_relative "./provincial"
-
 using SaladPrep::StringEx
 using SaladPrep::HashEx
 using SaladPrep::PrimitiveEx
 
-Provincial::Toob.set_all(Provincial.egg.env_prefix)
-
-@actions_hash = {}
-
-<%= actions_body %>
-
-def show_commands
-	puts("any of the following are valid commands")
-	puts("-V : Prints the salad prep version")
-	@actions_hash.keys.sort.each do |key|
-		puts(key)
-	end
-end
-
-def bin_action_wrap(args_hash)
-	Provincial::Toob.diag&.puts(args_hash)
-	if args_hash.include?("-testing")
-		Provincial.egg.run_test_block do
-			yield
-		end
-	else
-		yield
-	end
-end
-
-def root_script_pre(ruby_version)
-	env_prefix = Provincial.egg.env_prefix
-	env_name = Provincial.egg.current_env
-	app_home_var = "#{env_prefix}_APP_ROOT"
-	root_script = 'export ASDF_DIR="$HOME/.asdf"'
-	root_script ^= "export #{env_prefix}_ENV='#{env_name}'"
-	root_script ^= '. "$HOME/.asdf/asdf.sh"'
-	root_script ^= Provincial.egg.env_exports(prefer_keys_file: false)
-	root_script ^= "export #{app_home_var}='#{Provincial.egg.app_root}'"
-	root_script ^= "asdf shell ruby #{ruby_version}"
-end
-
-def get_current_branch
-	Dir.chdir(Provincial.egg.local_repo_path) do 
-		`git branch --show-current 2>/dev/null`.strip
-	end
-end
+@backup_src = "<%= backup_src %>"
+@backup_dest = "<%= backup_dest %>"
 
 def bundle_section(args_hash)
 	prefer_local = ! args_hash["-local"].nil?
@@ -80,6 +38,50 @@ def bundle_section(args_hash)
 		require "salad_prep"
 	BUNDLE
 end
+
+@actions_hash = {}
+
+def show_commands
+	puts("any of the following are valid commands")
+	puts("-V : Prints the salad prep version")
+	@actions_hash.keys.sort.each do |key|
+		puts(key)
+	end
+end
+
+
+begin
+require_relative "./provincial"
+
+
+Provincial::Toob.set_all(Provincial.egg.env_prefix)
+
+
+
+
+
+<%= actions_body %>
+
+
+
+def root_script_pre(ruby_version)
+	env_prefix = Provincial.egg.env_prefix
+	env_name = Provincial.egg.current_env
+	app_home_var = "#{env_prefix}_APP_ROOT"
+	root_script = 'export ASDF_DIR="$HOME/.asdf"'
+	root_script ^= "export #{env_prefix}_ENV='#{env_name}'"
+	root_script ^= '. "$HOME/.asdf/asdf.sh"'
+	root_script ^= Provincial.egg.env_exports(prefer_keys_file: false)
+	root_script ^= "export #{app_home_var}='#{Provincial.egg.app_root}'"
+	root_script ^= "asdf shell ruby #{ruby_version}"
+end
+
+def get_current_branch
+	Dir.chdir(Provincial.egg.local_repo_path) do 
+		`git branch --show-current 2>/dev/null`.strip
+	end
+end
+
 
 def wrap_ruby(content, args_hash, redirect_outs: true)
 	
@@ -125,6 +127,24 @@ def wrap_ruby(content, args_hash, redirect_outs: true)
 		EOF
 	PRE
 	ERB.new(body, trim_mode:">").result(binding)
+end
+
+rescue => e
+
+
+
+	@actions_hash["refresh_procs"] = lambda do |args_hash|
+		SaladPrep::Binstallion.install_bins(
+			@backup_src,
+			@backup_dest,
+			""
+		)
+		puts("#{SaladPrep::Canary.version}")
+	end
+
+	$stderr.puts("Error while trying to create bin file.")
+	$stderr.puts(e.backtrace * "\n")
+	$stderr.puts(e.message)
 end
 
 if cmd == "-V"

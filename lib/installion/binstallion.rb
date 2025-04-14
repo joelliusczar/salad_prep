@@ -24,7 +24,6 @@ module SaladPrep
 			actions_body = ""
 			actions_body ^= refresh_procs
 			actions_body ^= spit_procs
-			actions_body ^= "begin\n"
 			begin
 				marked = marked_methods(:sh_cmd)
 				Toob.warning&.puts("No symbols") if marked.none?
@@ -49,22 +48,47 @@ module SaladPrep
 				Toob.error&.puts(e.backtrace * "\n")
 				Toob.error&.puts(e.message)
 			end
-			actions_body ^= "rescue => e"
-			actions_body ^= 'Toob.error&.puts("Error while trying to create bin file.")'
-			actions_body ^= 'Toob.error&.puts(e.backtrace * "\n")'
-			actions_body ^= 'Toob.error&.puts(e.message)'
-			actions_body ^= "end\n"
 			actions_body
 		end
 
 		def full_proc_file_content(show_whitespace:false)
 			content = Resorcerer.bin_wrapper_template_compile(
-				concat_actions(is_local: true)
+				concat_actions(is_local: true),
+				@template_context_path,
+				@egg.dev_ops_bin
 			)
 			if show_whitespace
 				content.gsub!("\t", "\\t").gsub!(" ", "^")
 			end
 			content
+		end
+
+		def self.install_bins(src, dest, proc_content)
+			FileHerder.empty_dir(dest)
+			BoxBox.path_append(dest)
+			provincial_path = File.join(dest, "provincial.rb")
+			provincial_src = File.join(src, "dev_ops.rb")
+			File.open(provincial_path, "w").write(
+				File.open(provincial_src).read
+			)
+			app_assets_src_dir = File.join(src, "assets")
+			app_assets_dest_dir = File.join(dest, "assets")
+			if File.directory?(app_assets_src_dir)
+				FileHerder.copy_dir(app_assets_src_dir, app_assets_dest_dir)
+			end
+			bundle_section_path = File.join(dest, "bundle.rb")
+			File.open(bundle_section_path, "w").write(
+				Resorcerer.bundle_section
+			)
+			script_name = "#{@egg.env_prefix.downcase}_dev"
+			script_path = File.join(
+				dest,
+				script_name
+			)
+			File.open(script_path, "w").write(
+				proc_content
+			)
+			FileUtils.chmod("a+x", script_path)
 		end
 
 		def install_bins(args_hash)
@@ -89,31 +113,11 @@ module SaladPrep
 				)
 				FileUtils.chmod("a+x", script_path)
 			else
-				FileHerder.empty_dir(@egg.dev_ops_bin)
-				BoxBox.path_append(@egg.dev_ops_bin)
-				provincial_path = File.join(@egg.dev_ops_bin, "provincial.rb")
-				provincial_src = File.join(@template_context_path, "dev_ops.rb")
-				File.open(provincial_path, "w").write(
-					File.open(provincial_src).read
-				)
-				app_assets_src_dir = File.join(@template_context_path, "assets")
-				app_assets_dest_dir = File.join(@egg.dev_ops_bin, "assets")
-				if File.directory?(app_assets_src_dir)
-					FileHerder.copy_dir(app_assets_src_dir, app_assets_dest_dir)
-				end
-				bundle_section_path = File.join(@egg.dev_ops_bin, "bundle.rb")
-				File.open(bundle_section_path, "w").write(
-					Resorcerer.bundle_section
-				)
-				script_name = "#{@egg.env_prefix.downcase}_dev"
-				script_path = File.join(
+				Binstallion.install_bins(
+					@template_context_path,
 					@egg.dev_ops_bin,
-					script_name
-				)
-				File.open(script_path, "w").write(
 					full_proc_file_content
 				)
-				FileUtils.chmod("a+x", script_path)
 			end
 		end
 
