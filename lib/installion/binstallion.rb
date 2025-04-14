@@ -216,7 +216,7 @@ module SaladPrep
 				)
 				Tempfile.create do |tmp|
 					tmp.write(
-						Resorcerer.bundle_section
+						SaladPrep::Resorcerer.bundle_section
 					)
 					tmp.rewind
 					Provincial.remote.push_files(
