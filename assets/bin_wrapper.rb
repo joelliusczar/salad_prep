@@ -11,7 +11,7 @@ using SaladPrep::PrimitiveEx
 def bundle_section
 	prefer_local = ! @args_hash["-local"].nil?
 	bundle = <<~BUNDLE
-		require 'bundler/inline
+		require 'bundler/inline'
 		require 'bundler'
 
 		gemfile do
@@ -112,9 +112,6 @@ def wrap_ruby(content, redirect_outs: true)
 		Process::Sys.seteuid(Provincial::BoxBox.login_id)
 		if ! ENV["LOGIN_HOME"].nil? && ENV["LOGIN_HOME"].length > 0
 			ENV["HOME"] = ENV["LOGIN_HOME"]
-		end
-		if ! ENV["PATH_ADDS"].nil? && ENV["PATH_ADDS"].length > 0
-			ENV["PATH"] = "\#{ENV['PATH']}:\#{ENV['PATH_ADDS']}"
 		end
 		<%% if redirect_outs %>
 		
