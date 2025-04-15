@@ -32,7 +32,7 @@ prefer_local = ! @args_hash["-local"].nil?
 gemfile do
 	source "https://rubygems.org"
 
-	if ! prefer_local || cmd == "refresh_bins"
+	if ! prefer_local || cmd == "refresh_procs"
 		gem(
 			"salad_prep",
 			git: "https://github.com/joelliusczar/salad_prep"

@@ -148,8 +148,23 @@ module SaladPrep
 
 		def_cmd("refresh_procs") do
 			body = <<~CODE
-				Provincial.binstallion.install_bins
-				puts("\#{Provincial::Canary.version}")
+				begin
+					Provincial.binstallion.install_bins
+					puts("\#{Provincial::Canary.version}")
+				rescue => e
+							$stderr.puts(
+								"Error while trying to create bin file. Installing backup"
+							)
+							$stderr.puts(e.backtrace * "\n")
+							$stderr.puts(e.message)
+							SaladPrep::Binstallion.install_bins(
+							"<%= backup_env_prefix %>",
+							"<%= backup_src %>",
+							"<%= backup_dest %>",
+							""
+						)
+						puts("#{SaladPrep::Canary.version}")
+				end
 			CODE
 		end
 

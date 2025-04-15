@@ -147,7 +147,7 @@ rescue => e
 		puts("#{SaladPrep::Canary.version}")
 	end
 
-	$stderr.puts("Error while trying to create bin file.")
+	$stderr.puts("Error while trying to create bin file. Installing backup")
 	$stderr.puts(e.backtrace * "\n")
 	$stderr.puts(e.message)
 end
