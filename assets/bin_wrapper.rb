@@ -59,6 +59,16 @@ require_relative "./provincial"
 Provincial::Toob.set_all(Provincial.egg.env_prefix)
 
 
+def bin_action_wrap(args_hash)
+	Provincial::Toob.diag&.puts(args_hash)
+	if args_hash.include?("-testing")
+		Provincial.egg.run_test_block do
+			yield
+		end
+	else
+		yield
+	end
+end
 
 
 
