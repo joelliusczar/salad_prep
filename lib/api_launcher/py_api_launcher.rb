@@ -47,6 +47,7 @@ module SaladPrep
 				--port #{@egg.api_port} \
 				"index:app"
 			CALL
+			Toob.diag&.puts("PATH: " + ENV["PATH"])
 			pid = BoxBox.script_spawn(
 				script,
 				in: File::NULL,
