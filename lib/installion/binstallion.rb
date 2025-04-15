@@ -54,6 +54,7 @@ module SaladPrep
 		def full_proc_file_content(show_whitespace:false)
 			content = Resorcerer.bin_wrapper_template_compile(
 				concat_actions(is_local: true),
+				@egg.env_prefix,
 				@template_context_path,
 				@egg.dev_ops_bin
 			)
@@ -232,7 +233,10 @@ module SaladPrep
 				Tempfile.create do |tmp|
 					tmp.write(
 						SaladPrep::Resorcerer.bin_wrapper_template_compile(
-							Provincial.binstallion.concat_actions(is_local: false)
+							Provincial.binstallion.concat_actions(is_local: false),
+							Provincial.egg.env_prefix,
+							"<%= @template_context_path %>"
+							Provincial.egg.dev_ops_bin
 						)
 					)
 					tmp.rewind
