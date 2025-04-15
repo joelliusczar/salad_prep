@@ -162,7 +162,7 @@ if cmd == "-V"
 elsif cmd == "-h"
 	show_commands
 else
-	instance_eval(@actions_hash[cmd])
+	instance_eval(&@actions_hash[cmd])
 end
 
 
