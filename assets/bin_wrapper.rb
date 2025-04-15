@@ -7,15 +7,11 @@ using SaladPrep::StringEx
 using SaladPrep::HashEx
 using SaladPrep::PrimitiveEx
 
-@backup_env_prefix = "<%= backup_env_prefix %>"
-@backup_src = "<%= backup_src %>"
-@backup_dest = "<%= backup_dest %>"
-@path_additions = [ "#{ENV['HOME']}/.local" ]
 
-def bundle_section(args_hash)
-	prefer_local = ! args_hash["-local"].nil?
+def bundle_section
+	prefer_local = ! @args_hash["-local"].nil?
 	bundle = <<~BUNDLE
-		require 'bundler/inline'
+		require 'bundler/inline
 		require 'bundler'
 
 		gemfile do
@@ -60,9 +56,9 @@ require_relative "./provincial"
 Provincial::Toob.set_all(Provincial.egg.env_prefix)
 
 
-def bin_action_wrap(args_hash)
-	Provincial::Toob.diag&.puts(args_hash)
-	if args_hash.include?("-testing")
+def bin_action_wrap()
+	Provincial::Toob.diag&.puts(@args_hash)
+	if @args_hash.include?("-testing")
 		Provincial.egg.run_test_block do
 			yield
 		end
@@ -96,19 +92,19 @@ def get_current_branch
 end
 
 
-def wrap_ruby(content, args_hash, redirect_outs: true)
+def wrap_ruby(content, redirect_outs: true)
 	
 	body = <<~PRE
 		ruby <<'EOF'
 
 		args_hash = {
-			<%% args_hash.each do |k,v| %>
+			<%% @args_hash.each do |k,v| %>
 				"<%%=k.is_a?(String) ? k.gsub('"','\"') : k %>" =>
 					"<%%=v.is_a?(String) ? v.gsub('"','\"') : v %>",
 			<%% end %>
 		}
 
-		#{bundle_section(args_hash)}
+		#{bundle_section}
 		require "tempfile"
 		#{Provincial.egg.app_lvl_definitions_script}
 		Provincial.egg.load_env
@@ -145,11 +141,12 @@ end
 rescue => e
 
 
-
-	@actions_hash["refresh_procs"] = lambda do |args_hash|
+	#backup refresh_procs
+	@actions_hash["refresh_procs"] = proc do
 		SaladPrep::Binstallion.install_bins(
-			@backup_src,
-			@backup_dest,
+			"<%= backup_env_prefix %>",
+			"<%= backup_src %>",
+			"<%= backup_dest %>",
 			""
 		)
 		puts("#{SaladPrep::Canary.version}")
@@ -165,7 +162,7 @@ if cmd == "-V"
 elsif cmd == "-h"
 	show_commands
 else
-	@actions_hash[cmd].call(args_hash)
+	instance_eval(@actions_hash[cmd])
 end
 
 

@@ -18,6 +18,7 @@ module SaladPrep
 			@ruby_version = ruby_version
 			#this is the path to the app defined code	
 			@template_context_path = template_context_path
+			@path_additions = %Q([ "#{ENV['HOME']}/.local" ])
 		end
 
 		def concat_actions(is_local:)
@@ -92,7 +93,7 @@ module SaladPrep
 			FileUtils.chmod("a+x", script_path)
 		end
 
-		def install_bins(args_hash)
+		def install_bins
 			Toob.log&.puts("Installing procs in #{@template_context_path}")
 			if Dir.pwd.start_with?(@template_context_path)
 				provincial_path = File.join(@template_context_path, "provincial.rb")
@@ -131,10 +132,10 @@ module SaladPrep
 
 		def body_builder(name, &block)
 			body = <<~CODE
-				@actions_hash["<%= name %>"] = lambda do |args_hash|
+				@actions_hash["<%= name %>"] = proc do
 					cmd_name = "<%= name %>"
 
-					bin_action_wrap(args_hash) do
+					bin_action_wrap do
 					<% instance_eval(&block).split("\n").each do |l| %>
 					<%= l %>
 
@@ -155,14 +156,14 @@ module SaladPrep
 
 		def_cmd("refresh_procs") do
 			body = <<~CODE
-				Provincial.binstallion.install_bins(args_hash)
+				Provincial.binstallion.install_bins
 				puts("\#{Provincial::Canary.version}")
 			CODE
 		end
 
 		def_cmd("spit_procs") do
 			body = <<~CODE
-				show_whitespace = args_hash["-ws"].populated?
+				show_whitespace = \@args_hash["-ws"].populated?
 				print(Provincial.binstallion.full_proc_file_content(show_whitespace:))
 			CODE
 		end
@@ -268,7 +269,7 @@ module SaladPrep
 		def_cmd("backup_db") do
 			body = <<~CODE
 				output_path = Provincial.dbass.backup_db(
-					backup_lvl:args_hash["-backuplvl"]
+					backup_lvl:\@args_hash["-backuplvl"]
 				)
 				puts("SQL dumped at '\#{output_path}'")
 			CODE
@@ -277,7 +278,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("tape_db") do
 			body = <<~CODE
-				local_out_path = args_hash.coalesce("-o", "-out", "-output")
+				local_out_path = \@args_hash.coalesce("-o", "-out", "-output")
 				if local_out_path.zero?
 					raise "Output path not provided"
 				end
@@ -285,9 +286,9 @@ module SaladPrep
 
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
-				remote_script ^= wrap_ruby(<<~REMOTE, args_hash)
+				remote_script ^= wrap_ruby(<<~REMOTE)
 					out_path = Provincial.dbass.backup_db(
-						backup_lvl: '\#{args_hash["-backuplvl"]}'
+						backup_lvl: '\#{\@args_hash["-backuplvl"]}'
 					)
 					puts(out_path) #doesn't print to screen. This is returned
 				REMOTE
@@ -305,9 +306,9 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_db") do
 			body = <<~CODE
-				if args_hash["-clean"].populated?
+				if \@args_hash["-clean"].populated?
 					Provincial.dbass.teardown_db(
-						force: args_hash.include?("-force", "-f")
+						force: \@args_hash.include?("-force", "-f")
 					)
 				end
 				Provincial.dbass.setup_db
@@ -331,7 +332,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("env_hash") do
 			body = <<~CODE
-				prefer_keys_file = args_hash[0] == "-key-file"
+				prefer_keys_file = \@args_hash[0] == "-key-file"
 				Provincial.egg.env_hash(
 					include_dirs: true,
 					prefer_keys_file:
@@ -344,7 +345,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("egg") do
 			body = <<~CODE
-				prefer_keys_file = args_hash[0] == "-key-file"
+				prefer_keys_file = \@args_hash[0] == "-key-file"
 				puts(Provincial.egg.to_s(prefer_keys_file:))
 			CODE
 		end
@@ -354,7 +355,7 @@ module SaladPrep
 
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					puts(Provincial.egg.to_s)
 				ROOT
 
@@ -382,7 +383,7 @@ module SaladPrep
 				Provincial.installion.install_local_dependencies
 			
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.installion.install_dependencies
 				ROOT
 
@@ -399,7 +400,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_install") do
 			body = <<~CODE
-				current_branch = args_hash["--branch"]
+				current_branch = \@args_hash["--branch"]
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
@@ -407,7 +408,7 @@ module SaladPrep
 				return unless Provincial.remote.pre_deployment_check(current_branch:)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
-				remote_script ^= wrap_ruby(<<~REMOTE, args_hash, redirect_outs: false)
+				remote_script ^= wrap_ruby(<<~REMOTE, redirect_outs: false)
 					Provincial.box_box.setup_build_dir("current_branch: \#{current_branch}")
 					Provincial.installion.install_dependencies
 				REMOTE
@@ -420,8 +421,8 @@ module SaladPrep
 		def_cmd("restart_api") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
-					Provincial.api_launcher.restart_api(path_additions: @path_additions)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
+					Provincial.api_launcher.restart_api(path_additions: <%= @path_additions %>)
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
@@ -437,11 +438,11 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("startup_api") do
 			body = <<~CODE
-				current_branch = args_hash["--branch"]
+				current_branch = \@args_hash["--branch"]
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
-					Provincial.api_launcher.startup_api(path_additions: @path_additions)
+					Provincial.api_launcher.startup_api(path_additions: <%= @path_additions %>)
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
@@ -457,8 +458,8 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_api") do
 			body = <<~CODE
-				current_branch = args_hash["--branch"]
-				skip_tests = args_hash["--skip-tests"].zero?
+				current_branch = \@args_hash["--branch"]
+				skip_tests = \@args_hash["--skip-tests"].zero?
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
@@ -469,9 +470,9 @@ module SaladPrep
 				)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
-				remote_script ^= wrap_ruby(<<~REMOTE, args_hash, redirect_outs: false)
+				remote_script ^= wrap_ruby(<<~REMOTE, redirect_outs: false)
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
-					Provincial.api_launcher.startup_api(path_additions: @path_additions)
+					Provincial.api_launcher.startup_api(path_additions: <%= @path_additions %>)
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE
@@ -482,7 +483,7 @@ module SaladPrep
 		def_cmd("server_config") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					w_spoon = Provincial.w_spoon
 					nginx_conf_path = w_spoon.get_nginx_value
 					conf_dir_include = w_spoon.get_nginx_conf_dir_include(nginx_conf_path)
@@ -504,7 +505,7 @@ module SaladPrep
 		def_cmd("setup_client") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.client_launcher.setup_client
 				ROOT
 				
@@ -520,7 +521,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_client") do
 			body = <<~CODE
-				current_branch = args_hash["--branch"]
+				current_branch = \@args_hash["--branch"]
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
@@ -531,7 +532,7 @@ module SaladPrep
 				)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
-				remote_script ^= wrap_ruby(<<~REMOTE, args_hash)
+				remote_script ^= wrap_ruby(<<~REMOTE)
 					Provincial.box_box.setup_build_dir("current_branch: \#{current_branch}")
 					Provincial.client_launcher.setup_client
 				REMOTE
@@ -544,7 +545,7 @@ module SaladPrep
 		def_cmd("deploy_snippet") do
 			body = <<~CODE
 				remote_script = Provincial.egg.env_exports
-				remote_script ^= args_hash[0]
+				remote_script ^= \@args_hash[0]
 				Provincial.egg.load_env
 				Provincial.remote.run_remote(remote_script)
 			CODE
@@ -553,12 +554,12 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_files") do
 			body = <<~CODE
-				local_in_path = args_hash.coalesce("-in", "-input")
+				local_in_path = \@args_hash.coalesce("-in", "-input")
 				if local_in_path.zero?
 					raise "Input path not provided"
 				end
 
-				remote_out_path = args_hash.coalesce("-o", "-out", "-output")
+				remote_out_path = \@args_hash.coalesce("-o", "-out", "-output")
 				if remote_out_path.zero?
 					raise "Output path not provided"
 				end
@@ -566,7 +567,7 @@ module SaladPrep
 				Provincial.remote.push_files(
 					local_in_path,
 					remote_out_path,
-					recursive: args_hash.include?("-r")
+					recursive: \@args_hash.include?("-r")
 				)
 			CODE
 		end
@@ -611,7 +612,7 @@ module SaladPrep
 		def_cmd("setup_debug") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.w_spoon.setup_ssl_cert_local_debug
 				ROOT
 				
@@ -628,7 +629,7 @@ module SaladPrep
 		def_cmd("setup_server") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					port = Provincial.egg.api_port.to_s
 					Provincial.w_spoon.setup_nginx_confs(port)
 				ROOT
@@ -658,7 +659,7 @@ module SaladPrep
 		def_cmd("refresh_certs") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.w_spoon.setup_ssl_cert_nginx
 					Provincial.w_spoon.restart_nginx
 				ROOT
@@ -676,7 +677,7 @@ module SaladPrep
 		def_cmd("restart_server") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.w_spoon.restart_nginx
 				ROOT
 				
@@ -693,8 +694,8 @@ module SaladPrep
 		def_cmd("kill_server") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
-				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
-					port = args_hash["-port"] || 8032
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
+					port = \@args_hash["-port"] || 8032
 					Provincial::BoxBox.kill_process_using_port(port)
 				ROOT
 				

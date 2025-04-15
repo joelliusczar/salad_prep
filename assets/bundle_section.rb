@@ -8,15 +8,15 @@ if ARGV.empty? && defined?(show_commands)
 	exit
 end	
 
-args_hash = {}
+@args_hash = {}
 idx = 0
 ARGV.drop(1).each do |arg| #drop 0 since that's the command itself
 	if arg.include?("=")
 		split = arg.split("=")
-		args_hash[split[0].strip.downcase] = split[1].strip
+		@args_hash[split[0].strip.downcase] = split[1].strip
 	else
-		args_hash[idx] = arg
-		args_hash[arg] = true
+		@args_hash[idx] = arg
+		@args_hash[arg] = true
 		idx += 1
 	end
 end
