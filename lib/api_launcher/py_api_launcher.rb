@@ -44,6 +44,7 @@ module SaladPrep
 			script = <<~CALL
 				. #{py_activate}
 				export PATH="$PATH:#{path_additions * ":"}"
+				echo "$PATH"
 				uvicorn --app-dir #{app_dir} \
 				--root-path /api/#{@egg.api_version} \
 				--host 0.0.0.0 \
