@@ -41,7 +41,7 @@ module SaladPrep
 			api_out = File.open("api.out", "a")
 			script = <<~CALL
 				. #{py_activate}
-				echo "################# $PATH"
+				echo \"################# \$PATH\"
 				uvicorn --app-dir #{app_dir} \
 				--root-path /api/#{@egg.api_version} \
 				--host 0.0.0.0 \
