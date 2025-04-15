@@ -1,10 +1,11 @@
 require "fileutils"
 require_relative "./api_launcher"
 require_relative "../libby/monty"
-require_relative "../arg_checker/arg_checker"
+require_relative "../extensions/string_ex"
 
 module SaladPrep
 	class PyAPILauncher < APILauncher
+		using StringEx
 
 		def initialize(monty:, **rest)
 			super(**rest)
