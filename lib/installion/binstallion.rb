@@ -18,7 +18,6 @@ module SaladPrep
 			@ruby_version = ruby_version
 			#this is the path to the app defined code	
 			@template_context_path = template_context_path
-			@path_additions = %Q([ "#{ENV['HOME']}/.local" ])
 		end
 
 		def concat_actions(is_local:)
@@ -121,13 +120,6 @@ module SaladPrep
 				@egg.dev_ops_bin,
 				full_proc_file_content
 			)
-		end
-
-		def sudo_line
-			line = 'sudo '
-			line += 'LOGIN_HOME="$HOME" '
-			line += 'PATH_ADDS="$HOME"/.local/bin '
-			line += 'sh -s'
 		end
 
 		def body_builder(name, &block)
@@ -359,10 +351,11 @@ module SaladPrep
 					puts(Provincial.egg.to_s)
 				ROOT
 
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 
 			CODE
@@ -387,10 +380,11 @@ module SaladPrep
 					Provincial.installion.install_dependencies
 				ROOT
 
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 				
 			CODE
@@ -422,13 +416,15 @@ module SaladPrep
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
-					Provincial.api_launcher.restart_api(path_additions: <%= @path_additions %>)
+					path_additions = [ "\#{ENV['HOME']}/.local/bin"]
+					Provincial.api_launcher.restart_api
 				ROOT
 
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 
 			CODE
@@ -442,13 +438,14 @@ module SaladPrep
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
-					Provincial.api_launcher.startup_api(path_additions: <%= @path_additions %>)
+					Provincial.api_launcher.startup_api
 				ROOT
 
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 
 			CODE
@@ -459,20 +456,21 @@ module SaladPrep
 		def_cmd("deploy_api") do
 			body = <<~CODE
 				current_branch = @args_hash["--branch"]
-				skip_tests = @args_hash["--skip-tests"].zero?
+				run_tests? = @args_hash["--skip-tests"].zero?
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
 				Provincial.egg.load_env
 				return unless Provincial.remote.pre_deployment_check(
 					current_branch:,
-					test_honcho: skip_tests ? Provincial.test_honcho : nil
+					test_honcho: run_tests? ? Provincial.test_honcho : nil
 				)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= wrap_ruby(<<~REMOTE, redirect_outs: false)
+					path_additions = [ "\#{ENV['HOME']}/.local/bin"]
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
-					Provincial.api_launcher.startup_api(path_additions: <%= @path_additions %>)
+					Provincial.api_launcher.startup_api(path_additions: path_additions)
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE
@@ -491,10 +489,11 @@ module SaladPrep
 					puts("\\\#{conf_dir}/\\\#{Provincial.egg.app}.conf")
 				ROOT
 
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 
 			CODE
@@ -509,10 +508,11 @@ module SaladPrep
 					Provincial.client_launcher.setup_client
 				ROOT
 				
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
@@ -616,10 +616,11 @@ module SaladPrep
 					Provincial.w_spoon.setup_ssl_cert_local_debug
 				ROOT
 				
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
@@ -634,10 +635,11 @@ module SaladPrep
 					Provincial.w_spoon.setup_nginx_confs(port)
 				ROOT
 				
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
@@ -664,10 +666,11 @@ module SaladPrep
 					Provincial.w_spoon.restart_nginx
 				ROOT
 				
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
@@ -681,10 +684,11 @@ module SaladPrep
 					Provincial.w_spoon.restart_nginx
 				ROOT
 				
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
@@ -699,10 +703,11 @@ module SaladPrep
 					Provincial::BoxBox.kill_process_using_port(port)
 				ROOT
 				
-				Provincial::BoxBox.run_and_put(
-					'<%= sudo_line %>',
-					in_s: root_script,
-					exception: true
+				Provincial::BoxBox.sudo_run_and_put(
+					root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)

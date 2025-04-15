@@ -277,6 +277,25 @@ module SaladPrep
 			end
 		end
 
+		def self.sudo_run_and_put(
+			*cmds,
+			in_s:nil,
+			exception: false,
+			home: nil,
+			path_additions: []
+		)
+			sudo_args = ["sudo"]
+			sudo_args.push("HOME='#{home || ENV['HOME']}'")
+			if path_additions.populated?
+				sudo_args.push(path_additions * ":")
+			end
+			sudo_args.push("sh")
+			sudo_args.push("-s")
+			cmds.insert(0, *sudo_args)
+
+			run_and_put(cmds, in_s)
+		end
+
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
 			Tempfile.create do |tmp|
 				Toob.register_sub(tmp) do

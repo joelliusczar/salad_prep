@@ -110,13 +110,7 @@ def wrap_ruby(content, redirect_outs: true)
 		Provincial.egg.load_env
 		Process::Sys.setegid(Provincial::BoxBox.login_group_id)
 		Process::Sys.seteuid(Provincial::BoxBox.login_id)
-		if ! ENV["LOGIN_HOME"].nil? && ENV["LOGIN_HOME"].length > 0
-			ENV["HOME"] = ENV["LOGIN_HOME"]
-		end
-		if ! ENV["PATH_ADDS"].nil? && ENV["PATH_ADDS"].length > 0
-			ENV["PATH"] = "\#{ENV['PATH']}:\#{ENV['PATH_ADDS']}"
-		end
-		
+
 		<%% if redirect_outs %>
 		
 		File.open("supressed_output", "a") do |file|
