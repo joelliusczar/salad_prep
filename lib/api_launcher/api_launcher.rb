@@ -57,8 +57,8 @@ module SaladPrep
 			setup_api
 		end
 
-		def restart_api
-			startup_api(skip_setup: true)
+		def restart_api(path_additions: [])
+			startup_api(skip_setup: true, path_additions:)
 		end
 
 	end

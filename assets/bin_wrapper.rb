@@ -10,6 +10,7 @@ using SaladPrep::PrimitiveEx
 @backup_env_prefix = "<%= backup_env_prefix %>"
 @backup_src = "<%= backup_src %>"
 @backup_dest = "<%= backup_dest %>"
+@path_additions = [ "#{ENV['HOME']}/.local" ]
 
 def bundle_section(args_hash)
 	prefer_local = ! args_hash["-local"].nil?

@@ -210,7 +210,9 @@ module SaladPrep
 					"#{k.to_s}=#{v.to_s}"
 				end
 				if options.fetch(:avoid_root, true)
-					cmd_arr.insert(-3, *env_args)
+					#insert before sh
+					# [sudo, -E, -u, login_name, ^right here^, sh, -c, script]
+					cmd_arr.insert(-3, *env_args) 
 				else
 					cmd_arr.insert(0, args[0])
 				end

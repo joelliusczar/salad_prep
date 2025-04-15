@@ -407,7 +407,7 @@ module SaladPrep
 				return unless Provincial.remote.pre_deployment_check(current_branch:)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= Provincial::Resorcerer.bootstrap_install
-				remote_script ^= wrap_ruby(<<~REMOTE, args_hash)
+				remote_script ^= wrap_ruby(<<~REMOTE, args_hash, redirect_outs: false)
 					Provincial.box_box.setup_build_dir("current_branch: \#{current_branch}")
 					Provincial.installion.install_dependencies
 				REMOTE
@@ -421,7 +421,7 @@ module SaladPrep
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
-					Provincial.api_launcher.restart_api
+					Provincial.api_launcher.restart_api(path_additions: @path_additions)
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
@@ -441,7 +441,7 @@ module SaladPrep
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, args_hash, redirect_outs: false)
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
-					Provincial.api_launcher.startup_api
+					Provincial.api_launcher.startup_api(path_additions: @path_additions)
 				ROOT
 
 				Provincial::BoxBox.run_and_put(
@@ -469,11 +469,9 @@ module SaladPrep
 				)
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
-				remote_script ^= wrap_ruby(<<~REMOTE, args_hash)
+				remote_script ^= wrap_ruby(<<~REMOTE, args_hash, redirect_outs: false)
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
-					$stdout.puts("test out")
-					$stderr.puts("test err")
-					Provincial.api_launcher.startup_api
+					Provincial.api_launcher.startup_api(path_additions: @path_additions)
 				REMOTE
 				Provincial.remote.run_remote(remote_script)
 			CODE
