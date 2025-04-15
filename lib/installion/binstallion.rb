@@ -163,7 +163,7 @@ module SaladPrep
 
 		def_cmd("spit_procs") do
 			body = <<~CODE
-				show_whitespace = \@args_hash["-ws"].populated?
+				show_whitespace = @args_hash["-ws"].populated?
 				print(Provincial.binstallion.full_proc_file_content(show_whitespace:))
 			CODE
 		end
@@ -269,7 +269,7 @@ module SaladPrep
 		def_cmd("backup_db") do
 			body = <<~CODE
 				output_path = Provincial.dbass.backup_db(
-					backup_lvl:\@args_hash["-backuplvl"]
+					backup_lvl:@args_hash["-backuplvl"]
 				)
 				puts("SQL dumped at '\#{output_path}'")
 			CODE
@@ -278,7 +278,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("tape_db") do
 			body = <<~CODE
-				local_out_path = \@args_hash.coalesce("-o", "-out", "-output")
+				local_out_path = @args_hash.coalesce("-o", "-out", "-output")
 				if local_out_path.zero?
 					raise "Output path not provided"
 				end
@@ -288,7 +288,7 @@ module SaladPrep
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= wrap_ruby(<<~REMOTE)
 					out_path = Provincial.dbass.backup_db(
-						backup_lvl: '\#{\@args_hash["-backuplvl"]}'
+						backup_lvl: '\#{@args_hash["-backuplvl"]}'
 					)
 					puts(out_path) #doesn't print to screen. This is returned
 				REMOTE
@@ -306,9 +306,9 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_db") do
 			body = <<~CODE
-				if \@args_hash["-clean"].populated?
+				if @args_hash["-clean"].populated?
 					Provincial.dbass.teardown_db(
-						force: \@args_hash.include?("-force", "-f")
+						force: @args_hash.include?("-force", "-f")
 					)
 				end
 				Provincial.dbass.setup_db
@@ -332,7 +332,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("env_hash") do
 			body = <<~CODE
-				prefer_keys_file = \@args_hash[0] == "-key-file"
+				prefer_keys_file = @args_hash[0] == "-key-file"
 				Provincial.egg.env_hash(
 					include_dirs: true,
 					prefer_keys_file:
@@ -345,7 +345,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("egg") do
 			body = <<~CODE
-				prefer_keys_file = \@args_hash[0] == "-key-file"
+				prefer_keys_file = @args_hash[0] == "-key-file"
 				puts(Provincial.egg.to_s(prefer_keys_file:))
 			CODE
 		end
@@ -400,7 +400,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_install") do
 			body = <<~CODE
-				current_branch = \@args_hash["--branch"]
+				current_branch = @args_hash["--branch"]
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
@@ -438,7 +438,7 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("startup_api") do
 			body = <<~CODE
-				current_branch = \@args_hash["--branch"]
+				current_branch = @args_hash["--branch"]
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
@@ -458,8 +458,8 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_api") do
 			body = <<~CODE
-				current_branch = \@args_hash["--branch"]
-				skip_tests = \@args_hash["--skip-tests"].zero?
+				current_branch = @args_hash["--branch"]
+				skip_tests = @args_hash["--skip-tests"].zero?
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
@@ -521,7 +521,7 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_client") do
 			body = <<~CODE
-				current_branch = \@args_hash["--branch"]
+				current_branch = @args_hash["--branch"]
 				if current_branch.zero?
 					current_branch = get_current_branch
 				end
@@ -545,7 +545,7 @@ module SaladPrep
 		def_cmd("deploy_snippet") do
 			body = <<~CODE
 				remote_script = Provincial.egg.env_exports
-				remote_script ^= \@args_hash[0]
+				remote_script ^= @args_hash[0]
 				Provincial.egg.load_env
 				Provincial.remote.run_remote(remote_script)
 			CODE
@@ -554,12 +554,12 @@ module SaladPrep
 		mark_for(:sh_cmd)
 		def_cmd("deploy_files") do
 			body = <<~CODE
-				local_in_path = \@args_hash.coalesce("-in", "-input")
+				local_in_path = @args_hash.coalesce("-in", "-input")
 				if local_in_path.zero?
 					raise "Input path not provided"
 				end
 
-				remote_out_path = \@args_hash.coalesce("-o", "-out", "-output")
+				remote_out_path = @args_hash.coalesce("-o", "-out", "-output")
 				if remote_out_path.zero?
 					raise "Output path not provided"
 				end
@@ -567,7 +567,7 @@ module SaladPrep
 				Provincial.remote.push_files(
 					local_in_path,
 					remote_out_path,
-					recursive: \@args_hash.include?("-r")
+					recursive: @args_hash.include?("-r")
 				)
 			CODE
 		end
@@ -695,7 +695,7 @@ module SaladPrep
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
-					port = \@args_hash["-port"] || 8032
+					port = @args_hash["-port"] || 8032
 					Provincial::BoxBox.kill_process_using_port(port)
 				ROOT
 				

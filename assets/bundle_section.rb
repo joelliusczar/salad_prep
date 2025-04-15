@@ -23,14 +23,14 @@ end
 ARGV.clear
 
 if cmd == "spit_procs"
-	args_hash["--local"] = "true"
+	@args_hash["--local"] = "true"
 end
 
 
 gemfile do
 	source "https://rubygems.org"
 
-	prefer_local = ! args_hash["-local"].nil?
+	prefer_local = ! @args_hash["-local"].nil?
 	if ! prefer_local || cmd == "refresh_bins"
 		gem(
 			"salad_prep",
