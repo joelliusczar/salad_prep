@@ -235,7 +235,7 @@ module SaladPrep
 						SaladPrep::Resorcerer.bin_wrapper_template_compile(
 							Provincial.binstallion.concat_actions(is_local: false),
 							Provincial.egg.env_prefix,
-							"<%= @template_context_path %>"
+							"<%= @template_context_path %>",
 							Provincial.egg.dev_ops_bin
 						)
 					)
