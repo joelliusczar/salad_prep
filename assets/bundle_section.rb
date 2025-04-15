@@ -27,10 +27,11 @@ if cmd == "spit_procs"
 end
 
 
+prefer_local = ! @args_hash["-local"].nil?
+
 gemfile do
 	source "https://rubygems.org"
 
-	prefer_local = ! @args_hash["-local"].nil?
 	if ! prefer_local || cmd == "refresh_bins"
 		gem(
 			"salad_prep",
