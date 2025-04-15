@@ -483,7 +483,7 @@ module SaladPrep
 				remote_script = Provincial.egg.env_exports
 				remote_script ^= "asdf shell ruby <%= @ruby_version %>"
 				remote_script ^= wrap_ruby(<<~REMOTE, redirect_outs: false)
-					path_additions = [ "\#{ENV['HOME']}/.local/bin"]
+					path_additions = [ "\\\#{ENV['HOME']}/.local/bin"]
 					Provincial.box_box.setup_build_dir(current_branch: "\#{current_branch}")
 					Provincial.api_launcher.startup_api(path_additions: path_additions)
 				REMOTE
