@@ -285,6 +285,7 @@ module SaladPrep
 			home: nil,
 			path_additions: []
 		)
+			Toob.diag&.puts("sudo_run_and_put: #{cmds}")
 			sudo_args = ["sudo"]
 			sudo_args.push("HOME='#{home || ENV['HOME']}'")
 			if path_additions.populated?
