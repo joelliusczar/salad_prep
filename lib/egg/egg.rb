@@ -470,7 +470,7 @@ module SaladPrep
 
 		mark_for
 		def dev_ops_bin
-			abs_suffix(".#{env_prefix}_bin", abs: true)
+			File.join(bin_dir,"#{env_prefix}_bin")
 		end
 
 		mark_for
