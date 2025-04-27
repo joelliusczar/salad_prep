@@ -271,6 +271,7 @@ module SaladPrep
 
 		def self.run_and_put(*cmds, in_s:nil, exception: false)
 			Toob.diag&.puts("process: #{cmds}")
+			IO.pipe do |r,w|
 				w.write(in_s)
 				w.close
 				system(*cmds, in: r, exception:)
