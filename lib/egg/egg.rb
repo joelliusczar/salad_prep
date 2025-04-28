@@ -280,16 +280,17 @@ module SaladPrep
 			"#{app_root}/keys/#{project_name_snake}"
 		end
 
-		mark_for(:server_rq, :deploy_rq, :env_enum)
+		mark_for(:server_rq, :deploy_rq, :env_enum, :sanitize)
 		def_env_find(:pb_secret, "PB_SECRET", nil, :env_key)
 
-		mark_for(:server_rq, :deploy_rq, :env_enum)
+		mark_for(:server_rq, :deploy_rq, :env_enum, :sanitize)
 		def_env_find(:pb_api_key, "PB_API_KEY", nil, :env_key)
 
 		mark_for(
 			:server_rq,
 			:deploy_rq,
 			:env_enum,
+			:sanitize,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:api_auth_key, "AUTH_SECRET_KEY", /AUTH_SECRET_KEY=(\w+)/)
@@ -298,6 +299,7 @@ module SaladPrep
 			:server_rq,
 			:deploy_rq,
 			:env_enum,
+			:sanitize,
 			gen_key: SecureRandom.uuid
 		)
 		def_env_find(:namespace_uuid, "NAMESPACE_UUID", /NAMESPACE_UUID=([\w\-]+)/)
@@ -305,6 +307,7 @@ module SaladPrep
 		mark_for(
 			:deploy_sg,
 			:env_enum,
+			:sanitize,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:db_setup_key, "DB_PASS_SETUP", /DB_PASS_SETUP=(\w+)/)
@@ -317,6 +320,7 @@ module SaladPrep
 		mark_for(
 			:deploy_sg,
 			:env_enum,
+			:sanitize,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:db_owner_key, "DB_PASS_OWNER", /DB_PASS_OWNER=(\w+)/)
@@ -325,11 +329,12 @@ module SaladPrep
 			:server_rq,
 			:deploy_rq,
 			:env_enum,
+			:sanitize,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:api_db_user_key, "DB_PASS_API", /DB_PASS_API=(\w+)/)
  
-		mark_for(:server_rq, :deploy_rq, :env_enum)
+		mark_for(:server_rq, :deploy_rq, :env_enum, :sanitize)
 		def_env_find(
 			:janitor_db_user_key,
 			"DB_PASS_JANITOR",
@@ -348,12 +353,12 @@ module SaladPrep
 		mark_for(:deploy_sg, :env_enum)
 		def_env_find(:build_huge_log_dest, "HUGE_LOG_DEST")
 
-		mark_for(:env_enum, prefixed_env_key: "DATABASE_NAME")
+		mark_for(:env_enum, :sanitize, prefixed_env_key: "DATABASE_NAME")
 		def db_name
 			"#{project_name_snake}_db"
 		end
 
-		mark_for(:deploy_rq)
+		mark_for(:deploy_rq, :sanitize)
 		def ssh_address
 			ENV["#{@env_prefix}_SERVER_SSH_ADDRESS"]
 		end
@@ -535,6 +540,18 @@ module SaladPrep
 			).reject {|k, v| v.zero? }
 		end
 
+		def sanitized_words
+			marked_methods(:sanitize).map do |symbol|
+				m = method(symbol)
+				if m.parameters.none?
+					send(symbol)
+				elsif m.parameters.any? {|p| p[1] == :prefer_keys_file} 
+					send(symbol, prefer_keys_file: true)
+				else
+					""
+				end
+			end
+		end
 
 		def load_env
 			env_hash(
@@ -545,7 +562,7 @@ module SaladPrep
 			end
 			ENV["#{env_prefix}_APP_ROOT"] = @app_root
 			ENV["__TEST_FLAG__"] = @test_flags > 0 ? "true" : ""
-			Toob.set_all(@env_prefix)
+			Toob.set_all(@env_prefix, sanitized_words:)
 		end
 
 		def server_env_check_recommended

@@ -18,10 +18,18 @@ module SaladPrep
 			end
 
 			def true?
-				if is_kind_of?(String)
+				if kind_of?(String)
 					downcase == "true"
 				else
 					false
+				end
+			end
+
+			def or_blank
+				if self == ""
+					nil
+				else
+					self
 				end
 			end
 

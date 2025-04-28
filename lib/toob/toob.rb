@@ -2,6 +2,49 @@ require_relative "../extensions/string_ex"
 require_relative "../extensions/object_ex"
 
 module SaladPrep
+
+	class SanitizedFile
+		def initialize(file, sanitized_words = [])
+			@sanitized_words = sanitized_words
+			@file = file
+		end
+
+		def sanitize_string(s)
+			s2 = s
+			@sanitized_words.each do |w|
+				s2 = s2.gsub(w, "***")
+			end
+			s2
+		end
+
+		def sanitize(o)
+			if o.kind_of?(String)
+				sanitize_string(o)
+			elsif o.kind_of?(Array)
+				raise "We don't want to process arrays through the diagnostic channel"
+			else
+				sanitize_string(o.to_s)
+			end
+		end
+
+		def puts(*objects)
+			@file.puts(objects.map{|o| sanitize(o)})
+		end
+
+		def print(*objects)
+			@file.print(objects.map{|o| sanitize(o)})
+		end
+
+		def write(*objects)
+			@file.write(objects.map{|o| sanitize(o)})
+		end
+
+		def rewind
+			@file.rewind
+		end
+		
+	end
+
 	module Toob
 		using StringEx
 		using ObjectEx
@@ -13,6 +56,8 @@ module SaladPrep
 		@diag = nil
 		@huge = nil
 		@alt_outs = []
+		@sanitize_outputs = true
+
 
 		def self.register_sub(alt_out)
 			raise "Cannot redirect to stdout" if alt_out == $stdout
@@ -107,8 +152,11 @@ module SaladPrep
 			access(:@huge)
 		end
 
-		def self.log_dest(name="")
-			value = ENV["#{@env_prefix}#{name}_LOG_DEST"]
+
+
+		def self.log_dest(name="", filename: "", sanitized_words: [])
+			value = ENV["#{@env_prefix}#{name}_LOG_DEST"].or_blank || filename
+			
 			if value.zero?
 				nil
 			elsif value.downcase == "stdout" 
@@ -116,16 +164,36 @@ module SaladPrep
 			elsif value.downcase == "stderr"
 					$stderr 
 			else
-				File.open(value, "a")
+				file = File.open(value, "a")
+				if sanitized_words.populated?
+					return SanitizedFile.new(file, sanitized_words)
+				end
+				file
 			end
 		end
 
-		def self.set_all(env_prefix)
+		def self.set_all(
+			env_prefix,
+			sanitized_words: [],
+			log_dest_override: "",
+			warning_dest_override: "",
+			diag_dest_override: "",
+			huge_dest_override: ""
+		)
 			@env_prefix = env_prefix
-			self.log = log_dest
-			self.warning = log_dest("_WARN")
-			self.diag = log_dest("_DIAG")
-			self.huge = log_dest("_HUGE")
+			@sanitized_words = sanitized_words
+			self.log = log_dest(filename: log_dest_override)
+			self.warning = log_dest("_WARN", filename: warning_dest_override)
+			self.diag = log_dest(
+				"_DIAG",
+				filename: diag_dest_override,
+				sanitized_words:
+			)
+			self.huge = log_dest(
+				"_HUGE",
+				filename: huge_dest_override,
+				sanitized_words:
+			)
 			self.error = $stderr
 		end
 

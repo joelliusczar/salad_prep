@@ -53,7 +53,10 @@ begin
 require_relative "./provincial"
 
 
-Provincial::Toob.set_all(Provincial.egg.env_prefix)
+Provincial::Toob.set_all(
+	Provincial.egg.env_prefix,
+	sanitized_words: Provincial.egg.sanitized_words
+)
 
 
 def bin_action_wrap()

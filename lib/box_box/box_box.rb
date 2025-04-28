@@ -270,7 +270,6 @@ module SaladPrep
 		end
 
 		def self.run_and_put(*cmds, in_s:nil, exception: false)
-			Toob.diag&.puts("process: #{cmds}")
 			IO.pipe do |r,w|
 				w.write(in_s)
 				w.close
@@ -285,7 +284,6 @@ module SaladPrep
 			home: nil,
 			path_additions: []
 		)
-			Toob.diag&.puts("sudo_run_and_put: #{cmds}")
 			sudo_args = ["sudo"]
 			sudo_args.push("HOME='#{home || ENV['HOME']}'")
 			if path_additions.populated?
@@ -295,7 +293,7 @@ module SaladPrep
 			sudo_args.push("-s")
 			cmds.insert(0, *sudo_args)
 
-			run_and_put(cmds, in_s)
+			run_and_put(*cmds, in_s)
 		end
 
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
