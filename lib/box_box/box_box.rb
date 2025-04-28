@@ -293,7 +293,7 @@ module SaladPrep
 			sudo_args.push("-s")
 			cmds.insert(0, *sudo_args)
 
-			run_and_put(*cmds, in_s)
+			run_and_put(*cmds, in_s:)
 		end
 
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
