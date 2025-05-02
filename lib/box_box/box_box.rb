@@ -285,14 +285,13 @@ module SaladPrep
 			path_additions: []
 		)
 			sudo_args = ["sudo"]
-			sudo_args.push("HOME='#{home || ENV['HOME']}'")
+			sudo_args.push("HOME=#{home || ENV['HOME']}")
 			if path_additions.populated?
 				sudo_args.push('PATH="$PATH":' + (path_additions * ":"))
 			end
 			sudo_args.push("sh")
 			sudo_args.push("-s")
 			cmds.insert(0, *sudo_args)
-			Toob.diag&.puts(cmds)
 			run_and_put(*cmds, in_s:, exception:)
 		end
 
