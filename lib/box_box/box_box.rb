@@ -287,7 +287,7 @@ module SaladPrep
 			sudo_args = ["sudo"]
 			sudo_args.push("HOME=#{home || ENV['HOME']}")
 			if path_additions.populated?
-				sudo_args.push('PATH="$PATH":' + (path_additions * ":"))
+				sudo_args.push('PATH_ADDITIONS=' + (path_additions * ":"))
 			end
 			sudo_args.push("sh")
 			sudo_args.push("-sl")

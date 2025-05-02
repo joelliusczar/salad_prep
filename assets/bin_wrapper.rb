@@ -114,6 +114,12 @@ def wrap_ruby(content, redirect_outs: true)
 		Process::Sys.setegid(Provincial::BoxBox.login_group_id)
 		Process::Sys.seteuid(Provincial::BoxBox.login_id)
 
+		#need to do this with the script, otherwise PATH gets replaced with
+		#the current users PATH instead of the root's
+		if ! ENV["PATH_ADDITIONS"].nil? && ENV["PATH_ADDITIONS"].length > 0
+			ENV["PATH_ADDITIONS"] = "\#{ENV['PATH']}:\#{ENV['PATH_ADDITIONS']}"
+		end
+
 		<%% if redirect_outs %>
 		
 		File.open("supressed_output", "a") do |file|
