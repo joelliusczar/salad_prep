@@ -292,7 +292,7 @@ module SaladPrep
 			sudo_args.push("sh")
 			sudo_args.push("-s")
 			cmds.insert(0, *sudo_args)
-			Toob.diag&.puts(cmd)
+			Toob.diag&.puts(cmds)
 			run_and_put(*cmds, in_s:, exception:)
 		end
 
