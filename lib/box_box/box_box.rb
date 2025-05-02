@@ -290,7 +290,7 @@ module SaladPrep
 				sudo_args.push('PATH="$PATH":' + (path_additions * ":"))
 			end
 			sudo_args.push("sh")
-			sudo_args.push("-s")
+			sudo_args.push("-sl")
 			cmds.insert(0, *sudo_args)
 			run_and_put(*cmds, in_s:, exception:)
 		end
