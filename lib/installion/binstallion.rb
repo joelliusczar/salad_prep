@@ -367,7 +367,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -396,7 +396,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -436,7 +436,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -457,7 +457,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -505,7 +505,7 @@ module SaladPrep
 				ROOT
 
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -524,7 +524,7 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -632,11 +632,12 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
 				)
+				puts("Done setting up https")
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
@@ -651,7 +652,7 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -682,7 +683,7 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -700,7 +701,7 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
@@ -719,7 +720,7 @@ module SaladPrep
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
-					root_script,
+					in_s: root_script,
 					exception: true,
 					home: ENV["HOME"],
 					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
