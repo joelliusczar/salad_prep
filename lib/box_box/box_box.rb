@@ -241,8 +241,8 @@ module SaladPrep
 					w.write(options[:in_s])
 					w.close
 					options_to_pass = options.to_h do |k, v|
-						return [:in, r] if k == :in_s
-						return [k,v]
+						next [:in, r] if k == :in_s
+						next [k,v]
 					end
 					__script_arg_juggle__(*args, **options_to_pass, &block)
 				end
