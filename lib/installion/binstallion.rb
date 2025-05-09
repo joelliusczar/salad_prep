@@ -20,6 +20,7 @@ module SaladPrep
 			@template_context_path = template_context_path
 		end
 
+
 		def concat_actions(is_local:)
 			actions_body = ""
 			actions_body ^= refresh_procs
@@ -51,6 +52,7 @@ module SaladPrep
 			actions_body
 		end
 
+
 		def full_proc_file_content(show_whitespace:false)
 			content = Resorcerer.bin_wrapper_template_compile(
 				concat_actions(is_local: true),
@@ -63,6 +65,7 @@ module SaladPrep
 			end
 			content
 		end
+
 
 		def self.install_bins(env_prefix, src, dest, proc_content)
 			FileHerder.empty_dir(dest)
@@ -91,6 +94,7 @@ module SaladPrep
 			)
 			FileUtils.chmod("a+x", script_path)
 		end
+
 
 		def install_bins
 			Toob.log&.puts("Installing procs in #{@template_context_path}")
@@ -122,6 +126,7 @@ module SaladPrep
 			)
 		end
 
+
 		def body_builder(name, &block)
 			body = <<~CODE
 				@actions_hash["<%= name %>"] = proc do
@@ -140,11 +145,13 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		def self.def_cmd(name, &block)
 			define_method(name) do
 				body_builder(name, &block)
 			end
 		end
+
 
 		def_cmd("refresh_procs") do
 			body = <<~CODE
@@ -168,12 +175,14 @@ module SaladPrep
 			CODE
 		end
 
+
 		def_cmd("spit_procs") do
 			body = <<~CODE
 				show_whitespace = @args_hash["-ws"].populated?
 				print(Provincial.binstallion.full_proc_file_content(show_whitespace:))
 			CODE
 		end
+
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_procs") do
@@ -268,7 +277,7 @@ module SaladPrep
 
 		def_cmd("install_py_env_if_needed") do
 			body = <<~CODE
-				Provincial.monty.install_py_env_if_needed
+				Provincial.libby.install_py_env_if_needed
 			CODE
 		end
 
@@ -281,6 +290,7 @@ module SaladPrep
 				puts("SQL dumped at '\#{output_path}'")
 			CODE
 		end
+
 
 		mark_for(:sh_cmd)
 		def_cmd("tape_db") do
@@ -310,6 +320,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_db") do
 			body = <<~CODE
@@ -322,6 +333,7 @@ module SaladPrep
 			CODE
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("db_run") do
 			body = <<~CODE
@@ -329,12 +341,14 @@ module SaladPrep
 			CODE
 		end
 
+
 		mark_for(:sh_cmd)
 		def_cmd("connect_root") do
 			body = <<~CODE
 				Provincial.remote.connect_root
 			CODE
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("env_hash") do
@@ -349,6 +363,7 @@ module SaladPrep
 			CODE
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("egg") do
 			body = <<~CODE
@@ -356,6 +371,7 @@ module SaladPrep
 				puts(Provincial.egg.to_s(prefer_keys_file:))
 			CODE
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("root_egg") do
@@ -377,12 +393,22 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+		mark_for(:sh_cmd, :remote)
+		def_cmd("regen_files") do
+			body = <<~CODE
+				Provincial.libby.regen_lib_supports
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+
 		mark_for(:sh_cmd)
 		def_cmd("root_bootstrap") do
 			body = <<~CODE
 				Provincial.installion.root_install
 			CODE
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("install") do
@@ -406,6 +432,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd)
 		def_cmd("deploy_install") do
 			body = <<~CODE
@@ -425,6 +452,7 @@ module SaladPrep
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("restart_api") do
@@ -446,6 +474,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("startup_api") do
 			body = <<~CODE
@@ -466,6 +495,7 @@ module SaladPrep
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
+
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_api") do
@@ -492,6 +522,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("server_config") do
 			body = <<~CODE
@@ -515,6 +546,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_client") do
 			body = <<~CODE
@@ -532,6 +564,7 @@ module SaladPrep
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
+
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_client") do
@@ -556,6 +589,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd)
 		def_cmd("deploy_snippet") do
 			body = <<~CODE
@@ -565,6 +599,7 @@ module SaladPrep
 				Provincial.remote.run_remote(remote_script)
 			CODE
 		end
+
 
 		mark_for(:sh_cmd)
 		def_cmd("deploy_files") do
@@ -587,12 +622,14 @@ module SaladPrep
 			CODE
 		end
 
+
 		mark_for(:sh_cmd)
 		def_cmd("connect_root") do
 			body = <<~CODE
 				Provincial.remote.connect_root
 			CODE
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("bundle_path") do
@@ -610,6 +647,7 @@ module SaladPrep
 			CODE
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("irb") do
 			body = <<~CODE
@@ -622,6 +660,7 @@ module SaladPrep
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_debug") do
@@ -642,6 +681,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_server") do
 			body = <<~CODE
@@ -661,6 +701,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_tests") do
 			body = <<~CODE
@@ -672,6 +713,7 @@ module SaladPrep
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("refresh_certs") do
@@ -692,6 +734,7 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("restart_server") do
 			body = <<~CODE
@@ -709,6 +752,7 @@ module SaladPrep
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
+
 
 		mark_for(:sh_cmd, :remote)
 		def_cmd("kill_server") do
@@ -728,6 +772,7 @@ module SaladPrep
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
 		end
+
 
 		#use this to download the latest locally, so
 		#I don't have to run an action without the local flag first
