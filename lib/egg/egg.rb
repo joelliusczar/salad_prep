@@ -565,6 +565,10 @@ module SaladPrep
 			Toob.set_all(@env_prefix, sanitized_words:)
 		end
 
+		def server_env_check_skip(symbol)
+			false
+		end
+
 		def server_env_check_recommended
 			marked_methods(:deploy_sg).filter do |symbol|
 				send(symbol).zero?
@@ -573,6 +577,7 @@ module SaladPrep
 
 		def server_env_check_required
 			marked_methods(:server_rq).filter do |symbol|
+				next false if server_env_check_skip(symbol)
 				m = method(symbol)
 				if m.parameters.none?
 					m.call.zero?
@@ -588,9 +593,14 @@ module SaladPrep
 			end
 		end
 
+		def deployment_env_check_skip(symbol)
+			false
+		end
+
 		def deployment_env_check_required
 			raise "key file not setup #{key_file}" if ! File.size?(key_file)
 			marked_methods(:deploy_rq).filter do |symbol|
+				next false if deployment_env_check_skip(symbol)
 				send(symbol).zero?
 			end
 		end
@@ -601,8 +611,13 @@ module SaladPrep
 			end
 		end
 
+		def dev_env_check_skip(symbol)
+			false
+		end
+
 		def dev_env_check_required
 			marked_methods(:server_rq).filter do |symbol|
+				next false if dev_env_check_skip(symbol)
 				m = method(symbol)
 				if m.parameters.length < 1
 					m.call.zero?

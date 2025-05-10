@@ -120,6 +120,12 @@ module SaladPrep
 				end
 			end
 
+			def db_name_check
+				if ! (/[a-zA-Z0-9_]{1,100}/ =~ self)
+					raise "db_name #{self} is using illegal characters"
+				end
+			end
+
 		end
 
 		refine Symbol do

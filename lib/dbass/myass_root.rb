@@ -18,16 +18,18 @@ module SaladPrep
 		end
 
 		def create_db(db_name)
-			db_name = db_name.dup
-			ArgChecker.db_name(db_name)
+			#copy first to prevent variable being swapped after validation.
+			#though, this would only occur in multi thread situations
+			db_name = db_name.dup 
+			db_name.db_name_check
 			@conn.query("CREATE DATABASE IF NOT EXISTS #{db_name}")
 		end
 
 		def create_db_user(username, host, pass)
 			username = username.dup
 			host = host.dup
-			ArgChecker.db_name(username)
-			ArgChecker.db_name(host)
+			username.db_name_check
+			host.db_name_check
 			script = <<~SQL
 				CREATE USER IF NOT EXISTS `#{username}`@`#{host}` 
 				IDENTIFIED BY ?
@@ -68,8 +70,8 @@ module SaladPrep
 		def grant_owner_roles(db_name)
 			db_name = db_name.dup
 			owner_name = @egg.db_owner_name.dup
-			ArgChecker.db_name(db_name)
-			ArgChecker.db_name(owner_name)
+			db_name.db_name_check
+			owner_name.db_name_check
 			grants = <<~SQL
 				GRANT ALL PRIVILEGES ON #{db_name}.* to
 				#{owner_name} WITH GRANT OPTION
@@ -81,7 +83,7 @@ module SaladPrep
 
 		def drop_database(db_name)
 			db_name = db_name.dup
-			ArgChecker.db_name(db_name)
+			db_name.db_name_check
 			unless db_name.start_with("test_")
 				raise "only test databases can be removed" 
 			end
@@ -106,7 +108,7 @@ module SaladPrep
 
 		def self.set_db_root_initial_password(pass)
 			pass = pass.dup
-			ArgChecker.quote_check(pass)
+			pass.quote_check
 			script = <<~SQL
 				mysql -u root -e \
 				"SET PASSWORD FOR root@localhost = PASSWORD('#{pass}');"
