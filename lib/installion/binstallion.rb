@@ -529,10 +529,7 @@ module SaladPrep
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					w_spoon = Provincial.w_spoon
-					nginx_conf_path = w_spoon.get_nginx_value
-					conf_dir_include = w_spoon.get_nginx_conf_dir_include(nginx_conf_path)
-					conf_dir = w_spoon.get_abs_path_from_nginx_include(conf_dir_include)
-					puts("\\\#{conf_dir}/\\\#{Provincial.egg.app}.conf")
+					puts(w_spoon.server_config_path)
 				ROOT
 
 				Provincial::BoxBox.sudo_run_and_put(
@@ -667,7 +664,7 @@ module SaladPrep
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
-					Provincial.w_spoon.setup_ssl_cert_local_debug
+					Provincial.local_spoon.setup_ssl_cert_local_debug
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
@@ -688,7 +685,7 @@ module SaladPrep
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					port = Provincial.egg.api_port.to_s
-					Provincial.w_spoon.setup_nginx_confs(port)
+					Provincial.w_spoon.setup_server_confs(port)
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
@@ -720,8 +717,7 @@ module SaladPrep
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
-					Provincial.w_spoon.setup_ssl_cert_nginx
-					Provincial.w_spoon.restart_nginx
+					Provincial.w_spoon.refresh_certs
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
@@ -740,7 +736,7 @@ module SaladPrep
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
-					Provincial.w_spoon.restart_nginx
+					Provincial.w_spoon.restart_server
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(

@@ -5,6 +5,9 @@ require_relative "arg_checker/arg_checker"
 require_relative "box_box/box_box"
 require_relative "box_box/enums"
 require_relative "canary/canary"
+require_relative "cert_retriever/cert_keys",
+require_relative "cert_retriever/cert_retriever",
+require_relative "cert_retriever/porkbun_cert_retriever",
 require_relative "client_launcher/client_launcher"
 require_relative "client_launcher/node_client_launcher"
 require_relative "dbass/dbass"
@@ -32,6 +35,16 @@ require_relative "test_honcho/py_test_honcho"
 require_relative "toob/toob"
 require_relative "w_spoon/cert_info"
 require_relative "w_spoon/w_spoon"
+require_relative "w_spoon/spoon/local_spoon",
+require_relative "w_spoon/spoon/remote_spoon",
+require_relative "w_spoon/spoon/where_spoon",
+require_relative "w_spoon/spoon_handle/debian_spoon_handle",
+require_relative "w_spoon/spoon_handle/linux_spoon_handle",
+require_relative "w_spoon/spoon_handle/mac_spoon_handle",
+require_relative "w_spoon/spoon_handle/oa_spoon_handle",
+require_relative "w_spoon/spoon_handle/unix_spoon_handle",
+require_relative "w_spoon/spoon_phone/nginx_phone",
+require_relative "w_spoon/spoon_phone/spoon_phone"
 
 #this is needed because I was running into a bizare case
 #where Digest::SHA256 would cause a load error

@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.33.11"
+	s.version = "0.34.0"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -17,6 +17,9 @@ Gem::Specification.new do |s|
 		"lib/box_box/box_box.rb",
 		"lib/box_box/enums.rb",
 		"lib/canary/canary.rb",
+		"lib/cert_retriever/cert_keys.rb",
+		"lib/cert_retriever/cert_retriever.rb",
+		"lib/cert_retriever/porkbun_cert_retriever.rb",
 		"lib/client_launcher/client_launcher.rb",
 		"lib/client_launcher/node_client_launcher.rb",
 		"lib/dbass/dbass.rb",
@@ -45,6 +48,16 @@ Gem::Specification.new do |s|
 		"lib/toob/toob.rb",
 		"lib/w_spoon/cert_info.rb",
 		"lib/w_spoon/w_spoon.rb"
+		"lib/w_spoon/spoon/local_spoon.rb",
+		"lib/w_spoon/spoon/remote_spoon.rb",
+		"lib/w_spoon/spoon/where_spoon.rb",
+		"lib/w_spoon/spoon_handle/debian_spoon_handle.rb",
+		"lib/w_spoon/spoon_handle/linux_spoon_handle.rb",
+		"lib/w_spoon/spoon_handle/mac_spoon_handle.rb",
+		"lib/w_spoon/spoon_handle/oa_spoon_handle.rb",
+		"lib/w_spoon/spoon_handle/unix_spoon_handle.rb",
+		"lib/w_spoon/spoon_phone/nginx_phone.rb",
+		"lib/w_spoon/spoon_phone/spoon_phone.rb"
 	]
 	s.homepage = "https://github.com/joelliusczar/salad_prep"
 	s.required_ruby_version = ">= 3.3.5"
