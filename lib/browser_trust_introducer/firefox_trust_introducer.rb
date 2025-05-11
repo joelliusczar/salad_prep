@@ -35,6 +35,7 @@ module SaladPrep
 			end
 		end
 
+
 		def get_trusted_by_firefox_json_with_added_cert(
 			public_key_file_path,
 			policy_content
@@ -50,6 +51,7 @@ module SaladPrep
 			end
 			config.to_json
 		end
+
 
 		def set_firefox_cert_policy(public_key_file_path)
 			if /[#"'\\*]/ =~ public_key_file_path
@@ -74,9 +76,11 @@ module SaladPrep
 			end
 		end
 
+
 		def introduce_public_key(path)
 			set_firefox_cert_policy(path)
 		end
+
 
 	end
 end

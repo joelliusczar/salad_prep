@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.34.6"
+	s.version = "0.34.7"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -16,6 +16,8 @@ Gem::Specification.new do |s|
 		"lib/arg_checker/arg_checker.rb",
 		"lib/box_box/box_box.rb",
 		"lib/box_box/enums.rb",
+		"lib/browser_trust_introducer/browser_trust_introducer.rb",
+		"lib/browser_trust_introducer/firefox_trust_introducer.rb",
 		"lib/canary/canary.rb",
 		"lib/cert_retriever/cert_keys.rb",
 		"lib/cert_retriever/cert_retriever.rb",
