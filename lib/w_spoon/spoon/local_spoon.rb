@@ -1,4 +1,4 @@
-require_relative "../box_box/box_box"
+require_relative "../../box_box/box_box"
 require_relative "./where_spoon"
 
 module SaladPrep
