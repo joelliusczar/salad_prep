@@ -37,7 +37,7 @@ module SaladPrep
 				|| !@spoon_handle.cert_matches_common_name(
 							cert_contents,
 							@egg.domain_name
-						)
+						)\
 				|| force_replace
 			then
 				Toob.log&.puts("downloading new certs")
