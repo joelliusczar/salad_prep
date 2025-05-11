@@ -12,8 +12,8 @@ module SaladPrep
 		end
 
 		def setup_api
-			super
 			@client_launcher.setup_client
+			super
 		end
 
 	end
