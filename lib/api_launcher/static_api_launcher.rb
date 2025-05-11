@@ -3,9 +3,9 @@ require_relative "./api_launcher"
 module SaladPrep
 	class StaticAPILauncher < APILauncher
 
-		def initialize(clientLauncher:, **rest)
+		def initialize(client_launcher:, **rest)
 			super(**rest)
-			@clientLauncher = clientLauncher
+			@client_launcher = client_launcher
 		end
 
 		def copy_api_files
