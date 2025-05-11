@@ -28,8 +28,12 @@ module SaladPrep
 		end
 
 
-		def is_cert_expired(cert)
+		def is_cert_expired?(cert)
 			raise "is_cert_expired not implemented"
+		end
+
+		def cert_matches_common_name?(cert, common_name)
+			raise "is_cert_mismatched not implemented"
 		end
 
 
@@ -53,7 +57,7 @@ module SaladPrep
 			Toob.log&.puts("common name: #{common_name}")
 			Toob.log&.puts("cert name: #{cert_name}")
 			certs_matching_name(common_name).each do |cert|
-				if is_cert_expired(cert)
+				if is_cert_expired?(cert)
 					Toob.log&.puts("A cert is expired for #{common_name}")
 					remove_cert(cert_name, common_name)
 				end
