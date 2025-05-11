@@ -35,15 +35,15 @@ require_relative "test_honcho/py_test_honcho"
 require_relative "toob/toob"
 require_relative "w_spoon/cert_info"
 require_relative "w_spoon/w_spoon"
-require_relative "w_spoon/spoon/local_spoon",
-require_relative "w_spoon/spoon/remote_spoon",
-require_relative "w_spoon/spoon/where_spoon",
-require_relative "w_spoon/spoon_handle/debian_spoon_handle",
-require_relative "w_spoon/spoon_handle/linux_spoon_handle",
-require_relative "w_spoon/spoon_handle/mac_spoon_handle",
-require_relative "w_spoon/spoon_handle/oa_spoon_handle",
-require_relative "w_spoon/spoon_handle/unix_spoon_handle",
-require_relative "w_spoon/spoon_phone/nginx_phone",
+require_relative "w_spoon/spoon/local_spoon"
+require_relative "w_spoon/spoon/remote_spoon"
+require_relative "w_spoon/spoon/where_spoon"
+require_relative "w_spoon/spoon_handle/debian_spoon_handle"
+require_relative "w_spoon/spoon_handle/linux_spoon_handle"
+require_relative "w_spoon/spoon_handle/mac_spoon_handle"
+require_relative "w_spoon/spoon_handle/os_spoon_handle"
+require_relative "w_spoon/spoon_handle/unix_spoon_handle"
+require_relative "w_spoon/spoon_phone/nginx_phone"
 require_relative "w_spoon/spoon_phone/spoon_phone"
 
 #this is needed because I was running into a bizare case
