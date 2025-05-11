@@ -12,6 +12,7 @@ module SaladPrep
 			@w_spoon = w_spoon
 		end
 
+
 		def setup_api_dir
 			unless File.directory?(@egg.api_dest)
 				BoxBox.run_root_block do
@@ -20,9 +21,11 @@ module SaladPrep
 			end
 		end
 
+
 		def clean_up_running_processes
 			BoxBox.kill_process_using_port(@egg.api_port)
 		end
+
 
 		def copy_api_files
 			BoxBox.run_root_block do
@@ -33,6 +36,7 @@ module SaladPrep
 			end
 		end
 
+
 		def copy_support_files
 			FileHerder.copy_dir(
 				@egg.templates_src, 
@@ -40,22 +44,25 @@ module SaladPrep
 			)
 		end
 
+
 		def setup_api
 			clean_up_running_processes
 			setup_api_dir
 			copy_api_files
 			copy_support_files
 			@dbass.setup_db
-			@w_spoon.setup_nginx_confs(@egg.api_port.to_s)
+			@w_spoon.setup_server_confs(@egg.api_port.to_s)
 		end
 
-		def startup_api(skip_setup:false)
+
+		def startup_api(skip_setup:false, path_additions: [])
 			if skip_setup
 				clean_up_running_processes
 				return
 			end
 			setup_api
 		end
+
 
 		def restart_api(path_additions: [])
 			startup_api(skip_setup: true, path_additions:)

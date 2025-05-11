@@ -169,14 +169,9 @@ module SaladPrep
 
 		def self.nginx_and_setup(egg, w_spoon)
 			nginx
-			conf_dir_include = w_spoon.get_nginx_conf_dir_include
-			conf_dir = w_spoon.get_abs_path_from_nginx_include(conf_dir_include)
-			conf_path = File.join(
-				conf_dir,
-				"#{egg.app}.conf"
-			)
+			conf_path = w_spoon.server_config_path
 			if ! File.exist?(conf_path)
-				w_spoon.setup_nginx_confs(egg.api_port.to_s)
+				w_spoon.setup_server_confs(egg.api_port.to_s)
 				File.open(
 					File.join(conf_dir, "nginx_evil.conf"), "w"
 				).write(Resorcerer.nginx_evil_conf)
