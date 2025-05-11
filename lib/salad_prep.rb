@@ -7,7 +7,7 @@ require_relative "box_box/enums"
 require_relative "canary/canary"
 require_relative "cert_retriever/cert_keys",
 require_relative "cert_retriever/cert_retriever",
-require_relative "cert_retriever/porkbun_cert_retriever",
+require_relative "cert_retriever/porkbun_cert_retriever"
 require_relative "client_launcher/client_launcher"
 require_relative "client_launcher/node_client_launcher"
 require_relative "dbass/dbass"
