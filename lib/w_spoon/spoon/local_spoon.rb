@@ -41,7 +41,7 @@ module SaladPrep
 		end
 
 
-		def any_certs_matching_name_exact(common_name)
+		def any_certs_matching_name_exact?(common_name)
 			@spoon_handle.certs_matching_name(common_name).any? do |cert|
 				@spoon_handle.extract_common_name_from_cert(cert) == common_name
 			end
@@ -54,7 +54,7 @@ module SaladPrep
 			public_key_file_path = "#{cert_path}.public.key.crt"
 			private_key_file_path = "#{cert_path}.private.key.pem"
 			@spoon_handle.clean_up_invalid_certs(domain, cert_path)
-			if ! any_certs_matching_name_exact(domain)
+			if ! any_certs_matching_name_exact?(domain)
 				@spoon_handle.setup_ssl_cert_local(
 					domain,
 					domain,

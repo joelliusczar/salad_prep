@@ -33,7 +33,7 @@ module SaladPrep
 			cert_contents = File.open(public_key_file_path).read
 			if ! File.file?(public_key_file_path) \
 				|| !File.file?(private_key_file_path)\
-				|| @spoon_handle.is_cert_expired(cert_contents)\
+				|| @spoon_handle.is_cert_expired?(cert_contents)\
 				|| !@spoon_handle.cert_matches_common_name(
 							cert_contents,
 							@egg.domain_name
