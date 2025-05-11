@@ -88,7 +88,7 @@ module SaladPrep
 		def deployment_vars_check
 			puts("Deployment environmental variable check")
 			@egg.deployment_env_check_recommended.each do |e|
-				puts("Recomended var #{e} not set")
+				puts("var #{e} not set")
 			end
 			
 			required_env_vars = @egg.deployment_env_check_required.map do |e|
