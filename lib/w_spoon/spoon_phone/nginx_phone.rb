@@ -100,7 +100,7 @@ module SaladPrep
 
 
 		def set_deployed_nginx_app_conf!(content)
-			content.gsub!("<listen>","[::]:443 ssl")
+			content.gsub!("<listen>","[::]:443 ssl ipv6only=off")
 			content.gsub!("<ssl_public_key>",@where_spoon.public_key)
 			content.gsub!("<ssl_private_key>",@where_spoon.private_key)
 		end
