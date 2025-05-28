@@ -660,7 +660,7 @@ module SaladPrep
 
 
 		mark_for(:sh_cmd, :remote)
-		def_cmd("setup_debug") do
+		def_cmd("setup_debug_certs") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
@@ -680,12 +680,30 @@ module SaladPrep
 
 
 		mark_for(:sh_cmd, :remote)
-		def_cmd("setup_server") do
+		def_cmd("configure_server") do
 			body = <<~CODE
 				root_script = root_script_pre("<%= @ruby_version %>")
 				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
 					port = Provincial.egg.api_port.to_s
 					Provincial.w_spoon.setup_server_confs(port)
+				ROOT
+				
+				Provincial::BoxBox.sudo_run_and_put(
+					in_s: root_script,
+					exception: true,
+					home: ENV["HOME"],
+					path_additions: [ "#{ENV['HOME']}/.local/bin" ]
+				)
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
+
+		mark_for(:sh_cmd)
+		def_cmd("configure_server_debug") do
+			body = <<~CODE
+				root_script = root_script_pre("<%= @ruby_version %>")
+				root_script ^= wrap_ruby(<<~ROOT, redirect_outs: false)
+					Provincial.w_spoon.startup_server_for_debug
 				ROOT
 				
 				Provincial::BoxBox.sudo_run_and_put(
