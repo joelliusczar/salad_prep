@@ -220,6 +220,7 @@ module SaladPrep
 		end
 
 		def run_python_script(script, exception: true)
+			Toob.diag&.puts("### run_python_script ###")
 			@egg.load_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
