@@ -256,6 +256,7 @@ module SaladPrep
 
 		def self.script_run(*args, **options)
 			__script_wrap__(*args, **options) do |*args1, **options1|
+				Toob.diag&.puts("### script_run - wrapped ###")
 				system(
 					*args1,
 					**options1
