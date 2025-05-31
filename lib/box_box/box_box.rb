@@ -238,15 +238,18 @@ module SaladPrep
 
 			if options.include?(:in_s)
 				IO.pipe do |r,w|
+					Toob.diag&.puts("### __script_wrap__ pipe 1 ###")
 					w.write(options[:in_s])
 					w.close
 					options_to_pass = options.to_h do |k, v|
 						next [:in, r] if k == :in_s
 						next [k,v]
 					end
+					Toob.diag&.puts("### __script_wrap__ pipe 2 ###")
 					__script_arg_juggle__(*args, **options_to_pass, &block)
 				end
 			else
+				Toob.diag&.puts("### __script_wrap__ no pipe ###")
 				__script_arg_juggle__(*args, **options, &block)
 			end
 		end
