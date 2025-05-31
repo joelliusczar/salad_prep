@@ -1,6 +1,7 @@
 require "fileutils"
 require_relative "../box_box/box_box"
 require_relative "../file_herder/file_herder"
+require_relative "../toob/toob"
 
 
 module SaladPrep
@@ -56,6 +57,7 @@ module SaladPrep
 
 
 		def startup_api(skip_setup:false, path_additions: [])
+			Toob.diag&.puts("### startup_api ###")
 			if skip_setup
 				clean_up_running_processes
 				return
