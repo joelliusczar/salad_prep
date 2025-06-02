@@ -152,7 +152,7 @@ module SaladPrep
 			end
 		end
 
-		def self.nginx()
+		def self.nginx
 			case Gem::Platform::local.os
 			when Enums::BoxOSes::LINUX
 				if BoxBox.uses_aptget?
@@ -176,6 +176,30 @@ module SaladPrep
 					File.join(conf_dir, "nginx_evil.conf"), "w"
 				).write(Resorcerer.nginx_evil_conf)
 			end
+		end
+
+		def self.sdkman
+			BoxBox.install_if_missing("sdk") do
+				system("curl -s "https://get.sdkman.io?ci=true" | bash")
+			end
+		end
+
+		def self.java
+			#I need to test if some sort of sourcing needs to happen with sdk first
+			BoxBox.install_if_missing("java") do
+				system("sdk install java 21.0.7-tem")
+			end
+		end
+
+		def self.gradle
+			BoxBox.install_if_missing("gradle") do
+				system("sdk install gradle")
+			end
+		end
+
+		def self.postgresql
+			BoxBox.install_if_missing("postgresql")
+			BoxBox.install_if_missing(nil, apt_get_pkg:"postgresql-client")
 		end
 
 	end

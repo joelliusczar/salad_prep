@@ -44,8 +44,12 @@ module SaladPrep
 			which(Enums::PackageManagers::APTGET).any?
 		end
 
+
+
 		def self.is_installed?(pkg)
 			system(pkg, "--version", out: File::NULL, err: File::NULL) ||
+			system(pkg, "-version", out: File::NULL, err: File::NULL) ||
+			system(pkg, "version", out: File::NULL, err: File::NULL) ||
 			system(pkg, "-v", out: File::NULL, err: File::NULL) ||
 			system(pkg, "-V", out: File::NULL, err: File::NULL) ||
 			which(pkg).any? ||
@@ -115,10 +119,17 @@ module SaladPrep
 			end
 		end
 
-		def self.install_if_missing(pkg)
-			if ! BoxBox.is_installed?(pkg)
+		def self.install_if_missing(pkg, apt_get_pkg: nil)
+			if uses_aptget? && apt_get_pkg.populated?
+				pkg = apt_get_pkg
+			end
+			if pkg.populated && ! BoxBox.is_installed?(pkg)
 				run_root_block do
-					BoxBox.install_package(pkg)
+					if !block_given?
+						BoxBox.install_package(pkg)
+					else
+						yield
+					end
 				end
 			end
 		end
