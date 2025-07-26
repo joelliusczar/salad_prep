@@ -1,5 +1,4 @@
 require 'mysql'
-require_relative "../arg_checker/arg_checker"
 require_relative "./enums"
 require_relative "../extensions/string_ex"
 

@@ -300,6 +300,15 @@ module SaladPrep
 			:deploy_rq,
 			:env_enum,
 			:sanitize,
+			gen_key: SecureRandom.alphanumeric(32)
+		)
+		def_env_find(:api_back_key, "BACK_KEY", /BACK_KEY=(\w+)/)
+
+		mark_for(
+			:server_rq,
+			:deploy_rq,
+			:env_enum,
+			:sanitize,
 			gen_key: SecureRandom.uuid
 		)
 		def_env_find(:namespace_uuid, "NAMESPACE_UUID", /NAMESPACE_UUID=([\w\-]+)/)

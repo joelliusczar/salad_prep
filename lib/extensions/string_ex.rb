@@ -80,18 +80,20 @@ module SaladPrep
 			end
 
 			def domain_name_check
-				if ! (/[a-zA-Z0-9_\-\.]+/ =~ self)
+				if ! (/^[a-zA-Z0-9_\-\.]+$/ =~ self)
 					raise "domain_name #{self} is using illegal characters"
 				end
 			end
 
 			def quote_check
-				if ! (/[^'"`]+/ =~ self)
+				if ! (/^[^'"`]+$/ =~ self)
 					raise "value #{self} is using illegal characters"
 				end
 			end
 
 			alias_method :path_check, :quote_check
+
+			alias_method :pass_check, :domain_name_check
 
 			def api_version_check
 				if ! (/^[a-zA-Z][a-zA-Z0-9]{,5}/ =~ self)
@@ -104,7 +106,7 @@ module SaladPrep
 			end
 
 			def pkg_version_check
-				if ! (/\d+\.\d+(?:\.\d+)?/ =~ self)
+				if ! (/^\d+\.\d+(?:\.\d+)?$/ =~ self)
 					raise <<~MSG
 						version is using an illegal form.
 						Please use numbers seperated by dots
@@ -121,7 +123,7 @@ module SaladPrep
 			end
 
 			def db_name_check
-				if ! (/[a-zA-Z0-9_]{1,100}/ =~ self)
+				if ! (/^[a-zA-Z0-9_]{1,100}$/ =~ self)
 					raise "db_name #{self} is using illegal characters"
 				end
 			end

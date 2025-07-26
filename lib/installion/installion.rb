@@ -200,6 +200,7 @@ module SaladPrep
 		def self.postgresql
 			BoxBox.install_if_missing("postgresql")
 			BoxBox.install_if_missing(nil, apt_get_pkg:"postgresql-client")
+			BoxBox.install_if_missing(nil, apt_get_pkg: "libpq-dev")
 		end
 
 	end

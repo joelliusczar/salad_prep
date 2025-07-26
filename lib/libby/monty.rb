@@ -19,12 +19,14 @@ module SaladPrep
 		def initialize(
 			egg,
 			min_version:"3.9",
-			generated_file_dir: nil
+			generated_file_dir: nil,
+			replace_lib_files: true
 		)
 			@egg = egg
 			@min_version = min_version
 			raise "generated_file_dir is required" if generated_file_dir.zero?
 			@generated_file_dir = generated_file_dir
+			@replace_lib_files = replace_lib_files
 		end
 
 		def py_env_path
@@ -127,16 +129,21 @@ module SaladPrep
 				py_env_dir,
 				exception: true
 			)
+			should_install_requirements = @replace_lib_files ? 'yes': ''
 			#this is to make some of my newer than checks work
 			FileUtils.touch(py_env_dir)
 			script = <<~CALL
 				. '#{py_env_dir}/bin/activate' &&
 				# #python_env
-				# use regular python command rather mc-python
+				# use regular python command rather the prefixed python
 				# because #{python_command} still points to the homebrew location
 				python -m ensurepip --upgrade
 				python -m pip install --upgrade setuptools
-				python -m pip install -r '#{requirements_path}'
+				if [ -n '#{should_install_requirements}' ]; then
+					python -m pip install -r '#{requirements_path}'
+				else
+					echo 'No dependencies were installed'
+				fi
 			CALL
 			BoxBox.script_run(script, exception: true)
 		end
@@ -190,17 +197,17 @@ module SaladPrep
 
 		def create_py_env_in_app_trunk
 			Toob.log&.puts("create_py_env_in_app_trunk")
-			sync_requirement_list
+			sync_requirement_list if @replace_lib_files
 			create_py_env_in_dir
-			replace_lib_files
+			replace_lib_files if @replace_lib_files
 		end
 
 		def install_py_env_if_needed
 			if ! File.exist?(py_env_activate_path)
-				sync_requirement_list
+				sync_requirement_list if @replace_lib_files
 				create_py_env_in_app_trunk
 			else
-				replace_lib_files
+				replace_lib_files if @replace_lib_files
 			end
 		end
 
