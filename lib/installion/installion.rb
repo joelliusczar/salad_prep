@@ -180,7 +180,7 @@ module SaladPrep
 
 		def self.sdkman
 			BoxBox.install_if_missing("sdk") do
-				system("curl -s "https://get.sdkman.io?ci=true" | bash")
+				system('curl -s "https://get.sdkman.io?ci=true" | bash')
 			end
 		end
 
