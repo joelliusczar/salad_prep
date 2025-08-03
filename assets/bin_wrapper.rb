@@ -166,7 +166,11 @@ if cmd == "-V"
 elsif cmd == "-h"
 	show_commands
 else
-	instance_eval(&@actions_hash[cmd])
+	if @actions_hash.include?(cmd)
+		instance_eval(&@actions_hash[cmd])
+	else
+		raise "#{cmd} is not a valid procedure"
+	end
 end
 
 
