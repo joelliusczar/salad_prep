@@ -420,8 +420,8 @@ module SaladPrep
 		end
 
 		def setup_env_api_file(overrides = {})
-			Toob.log&.puts("setting up .env file")
-			env_file = "#{@egg.config_dir}/.env"
+		env_file = "#{@egg.config_dir}/.env"
+		Toob.log&.puts("setting up .env file at #{env_file}")
 			if !FileHerder.is_path_allowed(env_file)
 				raise "env_file file path has potential errors: #{env_file}"
 			end
