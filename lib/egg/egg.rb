@@ -496,12 +496,12 @@ module SaladPrep
 		end
 
 		def generate_initial_keys_file(rebuild_env:false, skip_db_keys: false)
-			if ! File.file? (key_file) || rebuild_env
+			if (!File.file? (key_file)) || rebuild_env
 				File.open(key_file, "w") do |file|
 					marked_methods(:gen_key).each do |symbol|
 						attrs = method_attrs(symbol)
 						key = attrs[:prefixed_env_key]
-						if ! skip_db_keys || ! attrs.include?(:db_pass)
+						if (!skip_db_keys) || (!attrs.include?(:db_pass))
 							value = attrs[:gen_key]
 							file.puts("#{key}=#{value}")
 						end
