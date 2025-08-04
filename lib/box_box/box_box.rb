@@ -420,16 +420,18 @@ module SaladPrep
 		end
 
 		def setup_env_api_file(overrides = {})
-		env_file = "#{@egg.config_dir}/.env"
-		Toob.log&.puts("setting up .env file at #{env_file}")
+			env_file = "#{@egg.config_dir}/.env"
+			Toob.log&.puts("setting up .env file at #{env_file}")
 			if !FileHerder.is_path_allowed(env_file)
 				raise "env_file file path has potential errors: #{env_file}"
 			end
 			contents = ""
-			@egg.env_hash(include_dirs: true).merge(overrides)
+			@egg.env_hash(include_dirs: true)
+				.merge(overrides)
 				.each_pair do |key, value|
-				contents ^= "#{key}='#{value}'"
-			end
+					Toob.diag&.puts("#{key}='#{value}'")
+					contents ^= "#{key}='#{value}'"
+				end
 			File.open(env_file, "w") { |f| f.write(contents)}
 		end
 
