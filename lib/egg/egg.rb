@@ -317,6 +317,7 @@ module SaladPrep
 			:deploy_sg,
 			:env_enum,
 			:sanitize,
+			:db_pass,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:db_setup_key, "DB_PASS_SETUP", /DB_PASS_SETUP=(\w+)/)
@@ -330,6 +331,7 @@ module SaladPrep
 			:deploy_sg,
 			:env_enum,
 			:sanitize,
+			:db_pass,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:db_owner_key, "DB_PASS_OWNER", /DB_PASS_OWNER=(\w+)/)
@@ -339,11 +341,12 @@ module SaladPrep
 			:deploy_rq,
 			:env_enum,
 			:sanitize,
+			:db_pass,
 			gen_key: SecureRandom.alphanumeric(32)
 		)
 		def_env_find(:api_db_user_key, "DB_PASS_API", /DB_PASS_API=(\w+)/)
  
-		mark_for(:server_rq, :deploy_rq, :env_enum, :sanitize)
+		mark_for(:server_rq, :deploy_rq, :env_enum, :sanitize, :db_pass)
 		def_env_find(
 			:janitor_db_user_key,
 			"DB_PASS_JANITOR",
@@ -492,14 +495,16 @@ module SaladPrep
 			File.join(bin_parent_dir(abs: abs), "bin")
 		end
 
-		def generate_initial_keys_file(rebuild_env:false)
+		def generate_initial_keys_file(rebuild_env:false, skip_db_keys: false)
 			if ! File.file? (key_file) || rebuild_env
 				File.open(key_file, "w") do |file|
 					marked_methods(:gen_key).each do |symbol|
 						attrs = method_attrs(symbol)
 						key = attrs[:prefixed_env_key]
-						value = attrs[:gen_key]
-						file.puts("#{key}=#{value}")
+						if ! skip_db_keys || ! attrs.include?(:db_pass)
+							value = attrs[:gen_key]
+							file.puts("#{key}=#{value}")
+						end
 					end
 				end
 			end
@@ -507,7 +512,7 @@ module SaladPrep
 
 		def run_test_block(rebuild_env: false)
 			@test_flags +=1
-			generate_initial_keys_file(rebuild_env:)
+			generate_initial_keys_file(rebuild_env:, skip_db_keys: true)
 			load_env
 			yield
 			@test_flags -= 1
