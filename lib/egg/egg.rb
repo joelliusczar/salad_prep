@@ -511,8 +511,11 @@ module SaladPrep
 		end
 
 		def run_test_block(rebuild_env: false)
+			#this method is liable to be called nested within itself
 			@test_flags +=1
-			generate_initial_keys_file(rebuild_env:, skip_db_keys: true)
+			if @test_flags < 2
+				generate_initial_keys_file(rebuild_env:, skip_db_keys: true)
+			end
 			load_env
 			yield
 			@test_flags -= 1
