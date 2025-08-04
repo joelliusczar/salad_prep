@@ -492,8 +492,8 @@ module SaladPrep
 			File.join(bin_parent_dir(abs: abs), "bin")
 		end
 
-		def generate_initial_keys_file
-			if ! File.file? (key_file)
+		def generate_initial_keys_file(rebuild_env:false)
+			if ! File.file? (key_file) || rebuild_env
 				File.open(key_file, "w") do |file|
 					marked_methods(:gen_key).each do |symbol|
 						attrs = method_attrs(symbol)
@@ -505,9 +505,9 @@ module SaladPrep
 			end
 		end
 
-		def run_test_block
+		def run_test_block(rebuild_env: false)
 			@test_flags +=1
-			generate_initial_keys_file
+			generate_initial_keys_file(rebuild_env:)
 			load_env
 			yield
 			@test_flags -= 1

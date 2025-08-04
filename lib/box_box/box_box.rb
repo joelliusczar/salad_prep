@@ -429,7 +429,6 @@ module SaladPrep
 			@egg.env_hash(include_dirs: true)
 				.merge(overrides)
 				.each_pair do |key, value|
-					Toob.diag&.puts("#{key}='#{value}'")
 					contents ^= "#{key}='#{value}'"
 				end
 			File.open(env_file, "w") { |f| f.write(contents)}

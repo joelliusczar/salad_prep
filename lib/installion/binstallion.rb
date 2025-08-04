@@ -720,7 +720,8 @@ module SaladPrep
 		mark_for(:sh_cmd, :remote)
 		def_cmd("setup_tests") do
 			body = <<~CODE
-				Provincial.egg.run_test_block do
+				rebuild_env = @args_hash[0] == "-rebuild-env"
+				Provincial.egg.run_test_block(rebuild_env:) do
 					Provincial.test_honcho.setup_unit_test_env({
 						"__TEST_FLAG__" => "true"
 					})
