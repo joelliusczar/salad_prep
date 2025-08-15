@@ -232,7 +232,7 @@ module SaladPrep
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
 			activate.path_check
-			oxBox.script_run("echo 'before py 1'; . '#{activate}' && python /dev/stdin", 
+			BoxBox.script_run("echo 'before py 1'; . '#{activate}' && python /dev/stdin", 
 				in_s: "print('py check')",
 				exception:
 			)
