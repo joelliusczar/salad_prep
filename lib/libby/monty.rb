@@ -233,7 +233,7 @@ module SaladPrep
 			activate = py_env_activate_path.dup
 			activate.path_check
 			BoxBox.script_run("echo 'before py 1'; . '#{activate}' && python /dev/stdin", 
-				in_s: "print('py check')",
+				in_s: "print('py check line 1')\nprint('py check line 2')",
 				exception:
 			)
 			BoxBox.script_run("echo 'before py 2'; . '#{activate}' && python /dev/stdin", 
