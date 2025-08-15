@@ -123,7 +123,7 @@ module SaladPrep
 			if uses_aptget? && apt_get_pkg.populated?
 				pkg = apt_get_pkg
 			end
-			if pkg.populated && ! BoxBox.is_installed?(pkg)
+			if pkg.populated? && ! BoxBox.is_installed?(pkg)
 				run_root_block do
 					if !block_given?
 						BoxBox.install_package(pkg)
