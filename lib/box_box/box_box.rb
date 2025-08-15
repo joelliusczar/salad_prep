@@ -256,7 +256,7 @@ module SaladPrep
 						next [:in, r] if k == :in_s
 						next [k,v]
 					end
-					Toob.diag&.puts("### __script_wrap__ pipe 2 ###")
+					Toob.diag&.puts(options[:in_s])
 					__script_arg_juggle__(*args, **options_to_pass, &block)
 				end
 			else
@@ -312,6 +312,9 @@ module SaladPrep
 
 		def self.run_and_get(*cmds, in_s:nil, err: nil, exception: false)
 			Tempfile.create do |tmp|
+				#irc, we're setting up this interception layer so
+				#that diagnostic output gets properly routed to output and not 
+				#included in results
 				Toob.register_sub(tmp) do
 					result = Open3.popen3(
 						*cmds

@@ -161,7 +161,7 @@ module SaladPrep
 				hash_index_dir(input_dir).each do |file, enum_name, sha256_hash|
 					line =\
 						"\t#{enum_name} = (\n\t\t\"#{file}\",\n\t\t\"#{sha256_hash}\"\n\t)\n"
-					Toob.log&.write(line)
+					Toob.diag&.write(line)
 					out.write(line)
 				end
 				out.write("\n\t@property\n")
