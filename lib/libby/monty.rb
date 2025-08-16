@@ -29,6 +29,7 @@ module SaladPrep
 			@replace_lib_files = replace_lib_files
 		end
 
+
 		def py_env_path
 			File.join(
 				@egg.app_root,
@@ -37,6 +38,7 @@ module SaladPrep
 			)
 		end
 
+
 		def py_env_activate_path
 			File.join(
 					py_env_path,
@@ -44,6 +46,7 @@ module SaladPrep
 					"activate"
 				)
 		end
+
 
 		def sync_requirement_list
 			requirements_src = File.join(@egg.repo_path, "requirements.txt")
@@ -57,6 +60,7 @@ module SaladPrep
 				File.join(@egg.app_root, @egg.app_trunk, "requirements.txt")
 			)
 		end
+
 
 		def link_app_python_if_not_linked
 			unless system("#{python_command} -V 2>/dev/null")
@@ -81,11 +85,13 @@ module SaladPrep
 			end
 		end
 
+
 		def python_command
 			env_prefix = @egg.env_prefix.dup
 			env_prefix.env_prefix_check
 			"#{env_prefix}-python".downcase
 		end
+
 
 		def python_version
 			if 
@@ -102,11 +108,18 @@ module SaladPrep
 			end
 		end
 
+		
+		def runtime_version
+			python_version
+		end
+
+
 		def is_installed_version_good?
 			min_version = @min_version.split(".").take(2).map(&:to_i)
 			installed_version = python_version.take(2).map(&:to_i)
 			installed_version.ge(min_version)
 		end
+
 
 		def create_py_env_in_dir(env_root=nil)
 			BoxBox.path_append(@egg.bin_dir)
@@ -148,6 +161,7 @@ module SaladPrep
 			BoxBox.script_run(script, exception: true)
 		end
 
+
 		def regen_lib_supports
 			output_file = File.join(@generated_file_dir, "file_reference.py")
 			Toob.log&.puts("regen_lib_supports: #{output_file} ")
@@ -174,6 +188,7 @@ module SaladPrep
 			end
 		end
 
+
 		def libs_dest_dir(env_root)
 			version = python_version
 			File.join(
@@ -186,6 +201,7 @@ module SaladPrep
 			)
 		end
 
+
 		def replace_lib_files
 			regen_lib_supports
 			env_root = File.join(@egg.app_root, @egg.app_trunk)
@@ -195,12 +211,14 @@ module SaladPrep
 			)
 		end
 
+
 		def create_py_env_in_app_trunk
 			Toob.log&.puts("create_py_env_in_app_trunk")
 			sync_requirement_list if @replace_lib_files
 			create_py_env_in_dir
 			replace_lib_files if @replace_lib_files
 		end
+
 
 		def install_py_env_if_needed
 			if ! File.exist?(py_env_activate_path)
@@ -211,6 +229,7 @@ module SaladPrep
 			end
 		end
 
+
 		def activate_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
@@ -218,7 +237,8 @@ module SaladPrep
 			exec(". '#{activate}'")
 		end
 
-		def start_python
+
+		def start_repl
 			@egg.load_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
@@ -226,20 +246,31 @@ module SaladPrep
 			exec(". '#{activate}' && python")
 		end
 
-		def run_python_script(script, exception: true)
-			Toob.diag&.puts("### run_python_script ###")
+
+		def run_script(script, exception: true)
+			Toob.diag&.puts("### run_script ###")
 			@egg.load_env
 			install_py_env_if_needed
 			activate = py_env_activate_path.dup
 			activate.path_check
-			BoxBox.script_run("echo 'before py 1'; . '#{activate}' && python /dev/stdin", 
-				in_s: "print('py check line 1')\nprint('py check line 2')",
-				exception:
-			)
-			BoxBox.script_run("echo 'before py 2'; . '#{activate}' && python /dev/stdin", 
+			BoxBox.script_run("echo '_ _'; . '#{activate}' && python /dev/stdin", 
 				in_s: script,
 				exception:
 			)
 		end
+
+		def run_module(module_name, exception: true)
+			Toob.diag&.puts("### run_module ###")
+			@egg.load_env
+			install_py_env_if_needed
+			activate = py_env_activate_path.dup
+			activate.path_check
+			module_name.quote_check
+			BoxBox.script_run(
+				"echo '_ _'; . '#{activate}' && python -m #{module_name}", 
+				exception:
+			)
+		end
+
 	end
 end

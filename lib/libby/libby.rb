@@ -26,5 +26,25 @@ module SaladPrep
 			end
 		end
 
+
+		def runtime_version
+			raise "runtime_version not implemented"
+		end
+
+		def start_repl
+			raise "start_repl not implemented"
+		end
+
+
+		def run_script(script, exception: true)
+			raise "run_script not implemented"
+		end
+
+
+		def run_module(module_name, exception: true)
+			raise "run_module not implemented"
+		end
+
+
 	end
 end

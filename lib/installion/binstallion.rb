@@ -788,9 +788,20 @@ module SaladPrep
 			ERB.new(body, trim_mode:">").result(binding)
 		end
 
+		mark_for(:sh_cmd)
+		def_cmd("run_module") do
+			body = <<~CODE
+				module_name = @args_hash[0]
+				if module_name.zero?
+					raise "Module name not provided"
+				end
+				Provincial.libby.run_module(module_name)
+				
+			CODE
+			ERB.new(body, trim_mode:">").result(binding)
+		end
 
-		#use this to download the latest locally, so
-		#I don't have to run an action without the local flag first
+
 		mark_for(:sh_cmd, :remote)
 		def_cmd("no_op") do
 			body = <<~CODE
