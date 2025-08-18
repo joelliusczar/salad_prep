@@ -135,6 +135,7 @@ module SaladPrep
 				end
 				is_running = false
 				result
+			end
 		end
 
 		def self.access(symbol)
