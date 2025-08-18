@@ -422,19 +422,21 @@ module SaladPrep
 			FileUtils.mkdir_p(@egg.build_dir)
 		end
 
-		def setup_env_api_file(overrides = {})
+		def setup_env_api_file(overrides = {}, rebuild_env: false)
 			env_file = "#{@egg.config_dir}/.env"
 			Toob.log&.puts("setting up .env file at #{env_file}")
 			if !FileHerder.is_path_allowed(env_file)
 				raise "env_file file path has potential errors: #{env_file}"
 			end
-			contents = ""
-			@egg.env_hash(include_dirs: true)
-				.merge(overrides)
-				.each_pair do |key, value|
-					contents ^= "#{key}='#{value}'"
-				end
-			File.open(env_file, "w") { |f| f.write(contents)}
+			if (!File.file?(env_file)) || rebuild_env
+				contents = ""
+				@egg.env_hash(include_dirs: true)
+					.merge(overrides)
+					.each_pair do |key, value|
+						contents ^= "#{key}='#{value}'"
+					end
+				File.open(env_file, "w") { |f| f.write(contents)}
+			end
 		end
 
 		def create_install_directory

@@ -1,5 +1,6 @@
 require_relative "../extensions/string_ex"
 require_relative "../extensions/object_ex"
+require_relative "./enums"
 
 module SaladPrep
 
@@ -59,15 +60,20 @@ module SaladPrep
 		@sanitize_outputs = true
 
 
+		#This only affects logging calls used with Toob
 		def self.register_sub(alt_out)
-			raise "Cannot redirect to stdout" if alt_out == $stdout
+			yield if alt_out == $stdout
 			if @alt_outs.nil?
 				@alt_outs = []
 			end
 			@alt_outs.push(alt_out)
 			result = yield
 			previous = @alt_outs.pop
-			if @alt_outs[-1] != previous && @alt_outs[-1].embodied?
+			if 
+				@alt_outs[-1] != previous &&
+				@alt_outs[-1].embodied? &&
+				previous != File::NULL
+			then
 				if ! previous.tty?
 					previous.rewind
 				end
@@ -76,6 +82,7 @@ module SaladPrep
 			result
 		end
 
+		#redirects stdout to a preassigned file
 		def self.contain_outs
 			if @alt_outs.populated?
 				if @contain_count.nil?
@@ -94,6 +101,40 @@ module SaladPrep
 			else
 				yield
 			end
+		end
+
+		def self.smother(smother_type = Enums::SmotherType::DEFAULT)
+			if smother_type == Enums::SmotherType::DEFAULT
+				yield
+			else
+				t = nil
+				is_running = true
+				if smother_type == Enums::SmotherType::WHEEL
+					t = Thread.new do 
+						i = 0
+						while is_running
+							case i
+							when 0
+								print("|\r")
+							when 1
+								print("/\r")
+							when 2
+								print("-\r")
+							when 3
+								print("\\\r")
+							end
+							i += 1
+							i %= 4
+						end
+					end
+				end
+				result = register_sub(File::NULL) do
+					contain_outs do
+						yield
+					end
+				end
+				is_running = false
+				result
 		end
 
 		def self.access(symbol)

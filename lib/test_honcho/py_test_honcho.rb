@@ -12,11 +12,11 @@ module SaladPrep
 			@monty = monty
 		end
 
-		def setup_unit_test_env(overrides = {})
+		def setup_unit_test_env(overrides = {}, rebuild_env: false)
 			super(overrides.merge({
 				"PYTHONPATH" => "#{@egg.src}:#{@egg.src}/api:#{@egg.src}/tests",
 				"#{@egg.env_prefix}_APP_ROOT" => @egg.app_root
-			}))
+			}), rebuild_env:)
 			py_env_path = @monty.py_env_path
 			src_files = Dir.glob(
 				"**/*",

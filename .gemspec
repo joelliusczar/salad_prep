@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
 	s.name = "salad_prep"
-	s.version = "0.37.0"
+	s.version = "0.38.0"
 	s.summary = "This is a shared repo between "
 		"my apps to manage devops type of needs."
 	s.authors = ["Joel Pridgen"]
@@ -49,6 +49,7 @@ Gem::Specification.new do |s|
 		"lib/salad_prep.rb",
 		"lib/test_honcho/test_honcho.rb",
 		"lib/test_honcho/py_test_honcho.rb",
+		"lib/toob/enums.rb",
 		"lib/toob/toob.rb",
 		"lib/w_spoon/cert_info.rb",
 		"lib/w_spoon/w_spoon.rb",

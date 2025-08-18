@@ -11,12 +11,12 @@ module SaladPrep
 		end
 	
 	
-		def setup_unit_test_env(overrides = {})
+		def setup_unit_test_env(overrides = {}, rebuild_env: false)
 			@egg.run_test_block do 
 				@box_box.setup_app_directories
 				FileHerder.copy_dir(@egg.templates_src, @egg.template_dest)
 				@dbass.replace_sql_scripts
-				@box_box.setup_env_api_file(overrides)
+				@box_box.setup_env_api_file(overrides, rebuild_env:)
 			end
 		end
 	

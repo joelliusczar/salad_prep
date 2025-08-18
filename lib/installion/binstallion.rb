@@ -724,7 +724,7 @@ module SaladPrep
 				Provincial.egg.run_test_block(rebuild_env:) do
 					Provincial.test_honcho.setup_unit_test_env({
 						"__TEST_FLAG__" => "true"
-					})
+					}, rebuild_env:)
 				end
 			CODE
 			ERB.new(body, trim_mode:">").result(binding)
